@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <script>
+        function download_excel()
+        {
+            document.getElementById("btn").click()
+        }
+    </script>
+    <body onload="download_excel();">
+        <div class="row" style="margin-top: 80px;margin-left: 80px">
+        <a id="btn" href="/file/123.xls" download="xxx考试考生口令"> 点击下载考生口令表 </a>
+        </div>
+    </body>
+
+{% endblock %}

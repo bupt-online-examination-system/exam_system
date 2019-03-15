@@ -1,0 +1,45 @@
+<html>
+<head>
+    {% load bootstrap3 %}<!-- 在你的settings.py的INSTALLED_APPS中添加bootstrap3  就可以load了 -->
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+
+<!-- 导航栏 -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/event_manage/">在线考试系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active">
+
+                <a href="#">个人主页</a></li><!--“#”是默认当前页面，可以把#换成想跳转的页面-->
+            <li><a href="/guest_manage/">论坛</a></li>
+              <li><a href="/send_email/">联系我们</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+           <li><a href="#">用户名</a></li>
+           <li><a href="/logout/">注销</a></li>
+         </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+
+{% block content %}
+
+<!--  如果你在当前模版页中定义了 block content 和 endblock ，那么它会覆盖掉父模版的content块的内容。 -->
+{% endblock %}
+
+    <div class="container theme-showcase" role="main">
+      <div class="page-header">
+      </div>
+      <footer class="footer">
+        <p>&copy; 在线考试系统</p>
+      </footer>
+    </div> <!-- /container -->
+
+</html>

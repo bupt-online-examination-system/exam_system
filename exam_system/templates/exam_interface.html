@@ -1,0 +1,205 @@
+<html>
+<head>
+    {% load bootstrap3 %}<!-- 在你的settings.py的INSTALLED_APPS中添加bootstrap3  就可以load了 -->
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+
+
+
+
+
+ <style>
+input[type='text']{width:40px;background:none;border:none;border-bottom:1px solid #ddd;}
+.inp{background:none;border:none;border-bottom:1px solid #ddd;}
+
+     body{
+  background-size: 100%;
+}
+
+</style>
+    <!-- 定义样式，将所有type为text的input的输入框改成下划线-->
+
+
+
+<script type="text/javascript">
+    window.onload=function()
+    {
+      var textarea=document.getElementById("mytext");
+      textarea.onkeyup=function()
+      {
+        checkMax(textarea,20);
+      }
+    }
+    function checkMax(textarea,maxLength)
+    {
+      var str=textarea.value;
+      var strlen=str.length;
+
+      if(strlen>maxLength)
+      {
+        alert('字数超过限制');
+        eval(textarea.value=str.substr(0,maxLength));
+      }
+    }
+
+
+    document.onkeydown = function (e)
+    {
+        var ev = window.event || e;
+        var code = ev.keyCode || ev.which;
+        if (code == 116)
+        {
+        ev.keyCode ? ev.keyCode = 0 : ev.which = 0;
+        cancelBubble = true;
+        return false;
+        }
+    } //禁止f5刷新
+    document.oncontextmenu=function(){return false};//禁止右键刷新
+
+    var time = 0;
+
+
+    function left()
+    {
+        if (time <2)//切标签离开焦点一次     点任务栏离开两次
+        {
+            alert("请不要离开考试界面或点击与考试无关的按钮，超过三次将视为作弊，自动交卷")
+        }
+        time+=1;
+        if(time == 6)
+        {
+            alert("切屏次数超过三次，视为作弊，将自动交卷");
+            setTimeout(function(){document.getElementById("btn1").click()},3000)
+
+        }
+    }
+
+
+
+
+{#    window.onbeforeunload=function(e)#}
+{#    {#}
+{#　　var e = window.event||e;#}
+{#　　e.returnValue=("关闭考试页面将自动交卷，您确定要关闭吗？");//一些浏览器中不能显示自定义的这段话#}
+{#    }#}
+
+var flag = 0
+    function getDistanceTime(time,showInterval){
+        if (flag==0) {
+            var endtime = time
+            var nowTime = new Date();
+            var distance = endtime - nowTime.getTime();
+            /*getTime把一个date对象转换成毫秒*/
+
+            var day = 0;
+            var hour = 0;
+            var minute = 0;
+            var second = 0;
+
+            if (distance > 0) {
+                day = Math.floor(distance / 1000 / 60 / 60 / 24);
+                hour = Math.floor(distance / 1000 / 60 / 60 % 24);
+                minute = Math.floor(distance / 1000 / 60 % 60);
+                second = Math.floor(distance / 1000 % 60);
+
+            }
+            else {
+                flag = 1
+                document.getElementById("btn1").click()
+            }
+            document.getElementById(showInterval).innerHTML = hour + "时" + minute + "分" + second + "秒";
+        }
+    }
+
+    setInterval(function(){getDistanceTime({{ end_time }},'showInterval');},0);
+
+
+
+</script>
+{% load staticfiles %}
+<body onblur="left()" background="{% static 'img/白纸.jpg'%}">
+
+<nav class="navbar  navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header" style="float:right">
+            <h1 id="showInterval" style="color:blue;"></h1>
+        </div>
+        </div>
+    </nav>
+
+
+
+<form role="form" method="post">
+    {% csrf_token %}
+    <div class="container theme-showcase" role="main">
+            <div class="page-header" style="margin-top: 80px;">
+                <h1 class="text-center ">xxxxxxxxxxx考试</h1><br></br>
+                <h2 class="text-center ">时间:xx分钟</h2>
+                <br id="navbar" class="navbar-collapse collapse" style="float:none;">
+                <form class="navbar-form" method="get" action="/submit/">
+                  <label>选择题</label>
+                    <div>第x题:这道题很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长
+                        <br>
+                            <input type="radio" name="choice" id="A" value="A" > <a>A</a>
+                            <br>
+                            </br>
+                            <input type="radio" name="choice" id="B"  value="B"> <a>B</a>
+                            <br>
+                            </br>
+                            <input type="radio" name="choice" id="C"  value="C"> <a>C</a>
+                            <br>
+                            </br>
+                            <input type="radio" name="choice" id="D"  value="D"> <a>D</a>
+
+                    </div>
+                  <label>填空题</label>
+                    <div>
+                        第1题:四大名捕是<input type="text" id="mytext">和追风。
+                        第2题
+                        3<br></br>
+
+                        4<br></br>
+                        5<br></br>
+                        6<br></br>
+                        7<br></br>
+                        8<br></br>
+                        9<br></br>
+                        10<br></br>
+                        11<br></br>
+                        12<br></br>
+                        13<br></br>
+                        14<br></br>
+                        15<br></br>
+                        16<br></br>
+                        17<br></br>
+                        18<br></br>
+                        19<br></br>
+                        20<br></br>
+                    </div>
+                </form>
+                <div class="form-group">
+                    <button type="submit" id="btn1" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">交卷</button>
+                </div>
+              </div>
+            </div>
+
+    </div>
+
+
+
+
+
+
+</form>
+
+
+<div class="container theme-showcase" role="main">
+      <div class="page-header">
+      </div>
+      <footer class="footer">
+        <p>&copy; 在线考试系统</p>
+      </footer>
+    </div> <!-- /container -->
+</body>
+</html>

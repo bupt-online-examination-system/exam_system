@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+
+
+{% block content %}
+    <script type="text/javascript">
+    function tip()
+    {
+        alert("考试已结束")
+    }
+
+    </script>
+
+    <body onload="tip();">
+    <meta http-equiv="refresh" content="3;href=/start_exam/">
+</body>
+{% endblock %}
