@@ -5,5 +5,3 @@ django-bootstrap3
 
 I love :coffee: , :pizza: and :dancer:!
 
-zyc_test
-zyc_test2
