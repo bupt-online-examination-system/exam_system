@@ -5,4 +5,3 @@ django-bootstrap3
 
 I love :coffee: , :pizza: and :dancer:!
 
-GR test
