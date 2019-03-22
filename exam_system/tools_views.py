@@ -6,7 +6,7 @@ import random
 from graduation_project import settings
 from django.http import HttpResponse
 from django.core.mail import send_mail
-
+from xlwt import *
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
 def start_exam(request):
@@ -55,3 +55,16 @@ def send_email(request):
             recipient_list=to_email
         )
         return HttpResponse('发送成功')#然后返回主页  未完成
+
+
+def data_in(request):
+    if request.method == "GET":
+        return render(request, "data_in.html")
+    elif request.method == "POST":
+        data_file = request.POST.get('txt',None)
+        print(type(data_file))
+        print(data_file)
+        return HttpResponse('发送成功')  # 然后返回主页
+
+def data_out(request):
+    pass
