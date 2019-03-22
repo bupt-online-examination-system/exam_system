@@ -73,3 +73,11 @@ class Forum(models.Model):
     content = models.CharField(max_length=50)                              #帖子(回复)的内容
     title = models.CharField(max_length=50)                                #帖子的标题
     courseId =models.CharField(max_length=50)                              #课程id
+
+#考试历史信息模板
+class History(models.Model):
+    studentId = models.ForeignKey('User', on_delete=models.CASCADE)           #学生id
+    courseId =models.CharField(max_length=50)                                 #课程id
+    examId = models.IntegerField()                                            #考试试卷id
+    ip = models.CharField(max_length=50)                                      #ip
+    time = models.DateTimeField()                                             #考试登录时的时间
