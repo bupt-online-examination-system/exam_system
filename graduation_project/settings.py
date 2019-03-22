@@ -79,15 +79,15 @@ WSGI_APPLICATION = 'graduation_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'USER':'root',
-        'PASSWORD':'073819',
-        'NAME':'exam_system',
-        'HOST':'localhost'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'USER':'root',
+#         'PASSWORD':'073819',
+#         'NAME':'exam_system',
+#         'HOST':'localhost'
+#     }
+# }
 
 
 # Password validation
