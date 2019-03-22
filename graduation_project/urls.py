@@ -26,10 +26,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^start_exam/$', tools_views.start_exam, name='start_exam'),
     url(r'^get_psw/$', tools_views.get_psw, name='get_psw'),
-    # url(r'^error/$', tools_views.error),
+
     url(r'^event_manage/$', bbs_views.event_manage, name='event_manage'),
     #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"
     url(r'^file/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
     url(r'^send_email/$', tools_views.send_email, name='send_email'),
+    url(r'^data_in/$', tools_views.data_in, name='data_in'),
+    url(r'^data_out/$', tools_views.data_out, name='data_out'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
