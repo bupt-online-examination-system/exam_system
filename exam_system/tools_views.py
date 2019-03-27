@@ -68,3 +68,11 @@ def data_in(request):
 
 def data_out(request):
     pass
+
+
+# def ajax_post(request):
+#     for i in range():
+#     a = request.GET.get("a")
+#     b = request.GET.get("b")
+#     n = int(a) * int(b)
+#     return HttpResponse(str(n))
