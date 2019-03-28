@@ -30,7 +30,8 @@ class Exam(models.Model):
     isOver = models.IntegerField()                                            #考试是否结束(1:未结束  2：已结束)
     score = models.IntegerField()                                             #考试分数
     type = models.IntegerField()                                              #考试类型(1：考试  2：练习)
-
+    choiceAnswer = models.CharField(max_length=50, blank=True, null=True)
+    fillAnswer = models.CharField(max_length=50, blank=True, null=True)
 
 # 选择题信息模板
 class ChoiceQuestion(models.Model):
@@ -41,8 +42,7 @@ class ChoiceQuestion(models.Model):
     questionB = models.CharField(max_length=50)                   #选项B
     questionC = models.CharField(max_length=50)                   #选项C
     questionD = models.CharField(max_length=50)                   #选项D
-    rightAnswer = models.CharField(max_length=50)
-    studentAnswer = models.CharField(max_length=50,blank=True,null=True) #学生答案
+    answer = models.CharField(max_length=50)
     type = models.IntegerField()                                  #题目类型(1：考试  2：练习)
 
 
@@ -51,8 +51,7 @@ class FillInTheBlank(models.Model):
     fillId = models.CharField(max_length=50, primary_key=True)   #填空题id
     courseId = models.CharField(max_length=50)                   #课程id
     content = models.CharField(max_length=50)                    #题目内容
-    rightAnswer = models.CharField(max_length=50)                     #答案
-    studentAnswer = models.CharField(max_length=50, blank=True, null=True)  # 学生答案
+    answer = models.CharField(max_length=50)                     #答案
     type = models.IntegerField()                                 #题目类型(1：考试  2：练习)
 
 # 学生成绩模板

@@ -61,9 +61,10 @@ def data_in(request):
     if request.method == "GET":
         return render(request, "data_in.html")
     elif request.method == "POST":
-        data_file = request.POST.get('txt',None)
-        print(type(data_file))
+        data_file = request.FILES.get('file',None)#注意这里是FILES
         print(data_file)
+        for line in data_file.chunks():
+            print(str(line, encoding='utf-8'))
         return HttpResponse('发送成功')  # 然后返回主页
 
 def data_out(request):
