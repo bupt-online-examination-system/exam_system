@@ -18,6 +18,7 @@ from django.urls import path
 from django.conf.urls import include, url
 from exam_system import tools_views
 from exam_system import bbs_views
+from exam_system import student_views
 from . import settings
 from django.views.static import serve
 
@@ -34,5 +35,9 @@ urlpatterns = [
     url(r'^data_in/$', tools_views.data_in, name='data_in'),
     url(r'^data_out/$', tools_views.data_out, name='data_out'),
     # url(r'^ajax/post/', tools_views.ajax_post,name='ajax/post'),
+
+    #学生模块
+    url(r'^student_login/$', student_views.student_login, name='student_login'),
+
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
