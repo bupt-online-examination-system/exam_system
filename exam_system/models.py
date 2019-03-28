@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 # 用户信息模板
-class user(AbstractUser):#继承自AbstractUser，大写的User会和Django自带的User冲突
+class Person(models.Model):
     userId = models.CharField(max_length=50, primary_key=True)  #用户id
     userType = models.IntegerField()                            #用户类型(1:管理员  2：老师  3：学生)
     userName = models.CharField(max_length=50)                  #用户姓名
@@ -14,8 +14,8 @@ class user(AbstractUser):#继承自AbstractUser，大写的User会和Django自�
 # 课程信息模板
 class Course(models.Model):
     courseId = models.CharField(max_length=50)                        #课程id
-    teacherId = models.ForeignKey('user', related_name='teacher_course',on_delete=models.CASCADE)   #教师id
-    studentId = models.ForeignKey('user', related_name='student_course',on_delete=models.CASCADE)   #学生id
+    teacherId = models.ForeignKey('Person', related_name='teacher_course',on_delete=models.CASCADE)   #教师id
+    studentId = models.ForeignKey('Person', related_name='student_course',on_delete=models.CASCADE)   #学生id
     courseName = models.CharField(max_length=50)                      #课程名称
     isOver = models.IntegerField()                                    #该课程是否结束，即教师已经打完分(1:未结课  2：已结课)
 
@@ -24,7 +24,7 @@ class Course(models.Model):
 class Exam(models.Model):
     examId = models.IntegerField()                                            #考试试卷id
     courseId = models.CharField(max_length=50)                                #课程id
-    studentId = models.ForeignKey('user',related_name='user_exam', on_delete=models.CASCADE)#学生id
+    studentId = models.ForeignKey('Person',related_name='Person_exam', on_delete=models.CASCADE)#学生id
     choiceId = models.ForeignKey('ChoiceQuestion', on_delete=models.CASCADE)  #选择题id
     fillId = models.ForeignKey('FillInTheBlank', on_delete=models.CASCADE)    #填空题id
     isOver = models.IntegerField()                                            #考试是否结束(1:未结束  2：已结束)
@@ -56,29 +56,29 @@ class FillInTheBlank(models.Model):
 
 # 学生成绩模板
 class Grade(models.Model):
-    studentId = models.ForeignKey('user',related_name='user_grade', on_delete=models.CASCADE) #学生id
+    studentId = models.ForeignKey('Person',related_name='Person_grade', on_delete=models.CASCADE) #学生id
     courseId =models.CharField(max_length=50)                       #课程id
     grade = models.IntegerField()                                   #学生该门课程最终成绩(多次考试加权得出)
     isPass = models.IntegerField()                                  #是否通过考试(1：及格  2：不及格)
 
 # 错题集信息模板
 class MistakesCollection(models.Model):
-    studentId = models.ForeignKey('user',related_name='user_mistake', on_delete=models.CASCADE)           #学生id
+    studentId = models.ForeignKey('Person',related_name='Person_mistake', on_delete=models.CASCADE)           #学生id
     courseId =models.CharField(max_length=50)                                 #课程id
     choiceId = models.ForeignKey('ChoiceQuestion', on_delete=models.CASCADE)  #选择题id
     fillId = models.ForeignKey('FillInTheBlank', on_delete=models.CASCADE)    #填空题id
 
 # 论坛信息模板
 class Forum(models.Model):
-    questionId = models.ForeignKey('user',related_name='teacher_forum', on_delete=models.CASCADE)       #发帖人id
-    answerId = models.ForeignKey('user',related_name='student_forum', on_delete=models.CASCADE)         #回帖人id
+    questionId = models.ForeignKey('Person',related_name='teacher_forum', on_delete=models.CASCADE)       #发帖人id
+    answerId = models.ForeignKey('Person',related_name='student_forum', on_delete=models.CASCADE)         #回帖人id
     content = models.CharField(max_length=50)                              #帖子(回复)的内容
     title = models.CharField(max_length=50)                                #帖子的标题
     courseId =models.CharField(max_length=50)                              #课程id
 
 #考试历史信息模板
 class History(models.Model):
-    studentId = models.ForeignKey('user', related_name='user_history',on_delete=models.CASCADE)           #学生id
+    studentId = models.ForeignKey('Person', related_name='Person_history',on_delete=models.CASCADE)           #学生id
     courseId =models.CharField(max_length=50)                                 #课程id
     examId = models.IntegerField()                                            #考试试卷id
     ip = models.CharField(max_length=50)                                      #ip
