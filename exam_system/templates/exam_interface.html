@@ -23,6 +23,28 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
 
 
 <script type="text/javascript">
+    var inputs = document.getElementsByTagName("input");
+    for (i=1; i<=inputs.length; i++)
+    {
+        inputs[i].onchange = ajax_post(i);
+    }
+    function ajax_post(i)
+    {
+        var id = i.toString()
+        var xmlhttp;
+        if (window.XMLHttpRequest)
+          {// code for IE7+, Firefox, Chrome, Opera, Safari
+          xmlhttp=new XMLHttpRequest();
+          }
+        else
+          {// code for IE6, IE5
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+        xmlhttp.open("POST","ajax/post/",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        var data="id="+id+"&answer="+document.getElementById(id).value
+        xmlhttp.send(data);
+    }
     window.onload=function()
     {
       var textarea=document.getElementById("mytext");
@@ -137,20 +159,20 @@ var flag = 0
                 <h1 class="text-center ">xxxxxxxxxxx考试</h1><br></br>
                 <h2 class="text-center ">时间:xx分钟</h2>
                 <br id="navbar" class="navbar-collapse collapse" style="float:none;">
-                <form class="navbar-form" method="post" action="/submit/">
+                <form class="navbar-form" method="post">
                   <label>选择题</label>
                     <div>第x题:这道题很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长
                         <br>
-                            <input type="radio" name="choice" id="A" value="A" > <a>A</a>
+                            <input type="radio" name="choice" id="1" value="A" > <a>A</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="B"  value="B"> <a>B</a>
+                            <input type="radio" name="choice" id="2"  value="B"> <a>B</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="C"  value="C"> <a>C</a>
+                            <input type="radio" name="choice" id="3"  value="C"> <a>C</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="D"  value="D"> <a>D</a>
+                            <input type="radio" name="choice" id="4"  value="D"> <a>D</a>
 
                     </div>
                   <label>填空题</label>

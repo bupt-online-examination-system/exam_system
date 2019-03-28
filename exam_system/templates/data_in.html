@@ -13,12 +13,12 @@
             <div class="row">
                 <div class="col-lg-10 offset-lg-1"><!--start contact form-->
                     <div class="contact-box text-center">
-                        <form  method="post" >
+                        <form  method="post" enctype="multipart/form-data">
                             {% csrf_token %}
 
 
                             <div class="form-group">
-                                <input type="file" name="txt">
+                                <input type="file" name="file">
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">开始导入</button>
                             <div id="form-messages"></div>
