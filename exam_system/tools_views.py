@@ -6,7 +6,10 @@ import random
 from graduation_project import settings
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from xlwt import *
+import xlrd
+from .models import *
+
+
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
 def start_exam(request):
@@ -61,11 +64,23 @@ def data_in(request):
     if request.method == "GET":
         return render(request, "data_in.html")
     elif request.method == "POST":
-        data_file = request.FILES.get('file',None)#注意这里是FILES
-        print(data_file)
-        for line in data_file.chunks():
-            print(str(line, encoding='utf-8'))
-        return HttpResponse('发送成功')  # 然后返回主页
+        f = request.FILES.get('file')
+        excel_type = f.name.split('.')[1]
+        if excel_type in ['xlsx', 'xls']:
+            # 开始解析上传的excel表格
+            wb = xlrd.open_workbook(filename=None, file_contents=f.read())
+            table = wb.sheets()[0]
+            rows = table.nrows  # 总行数
+
+
+            for i in range(1, rows):
+                rowVlaues = table.row_values(i)
+                print(rowVlaues[0])
+                # Person.objects.create(gradeid=rowVlaues[0], major=major, gradename=rowVlaues[2],
+                #                              memo=rowVlaues[3])
+
+
+
 
 def data_out(request):
     pass
