@@ -8,17 +8,17 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<th class="text-dark"><h2>课程名称</h2></th>
+			<th class="text-dark"><h2>帖子</h2></th>
 		</tr>
 	</thead>
 	<tbody>
-        {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
-        {#   get方法传参   #}
+        {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
+        {#get方法传参#}
         <tr>
-		<td><a href="/course_forum/">课程一</a></td>
+		    <td><a href="/course_post/">帖子一</a></td>
         </tr>
         <tr>
-		<td><a href="/course_forum/">课程二</a></td>
+		    <td><a href="/course_post/">帖子二</a></td>
         </tr>
 	</tbody>
 </table>

@@ -83,3 +83,5 @@ class History(models.Model):
     examId = models.IntegerField()                                            #考试试卷id
     ip = models.CharField(max_length=50)                                      #ip
     time = models.DateTimeField()                                             #考试登录时的时间
+
+

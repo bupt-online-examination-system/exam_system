@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+        <tr>
+            {# 传过来的帖子标题           #}
+            <td class="text-dark"><h2>帖子标题</h2></td>
+        </tr>
+	</thead>
+	<tbody>
+            {#循环输出所有回帖信息，及回帖人姓名        #}
+	</tbody>
+</table>
+ <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+ </div>
+{% endblock %}
