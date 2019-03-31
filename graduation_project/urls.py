@@ -42,6 +42,10 @@ urlpatterns = [
 
     #学生模块
     url(r'^student_login/$', student_views.student_login, name='student_login'),
-
+    url(r'^exam_list/$', student_views.exam_list, name='exam_list'),
+    url(r'^practice_list/$', student_views.practice_list, name='practice_list'),
+    url(r'^personal_homepage/$', student_views.personal_homepage, name='personal_homepage'),
+    url(r'^score_query/$', student_views.score_query, name='score_query'),
+    url(r'^exam_details/$', student_views.exam_details, name='exam_details'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
