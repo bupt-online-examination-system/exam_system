@@ -16,11 +16,10 @@ def event_manage(request):
 
 def course_forum(request):
     courseId = request.GET.get("courseId")
-    course_forum_info = Forum.objects.filter(courseId=courseId)
+    course_forum_info = ForumQuestion.objects.filter(courseId=courseId)
     return render(request, "course_forum.html", locals())
 
 def course_post(request):
-    
     return render(request, "course_post.html")
 
 def new_post(request):
