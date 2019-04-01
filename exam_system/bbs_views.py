@@ -12,13 +12,15 @@ from django.http import HttpResponse
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
 def event_manage(request):
     course_info=Course.objects.all() #全部用 all，部分条件用filter
-    return render(request, "guest_manage.html",locals())
+    return render(request, "guest_manage.html", locals())
 
 def course_forum(request):
-    course_forum_info = Forum.objects.filter(courseId="1")
-    return render(request, "course_forum.html",locals())
+    courseId = request.GET.get("courseId")
+    course_forum_info = Forum.objects.filter(courseId=courseId)
+    return render(request, "course_forum.html", locals())
 
 def course_post(request):
+    
     return render(request, "course_post.html")
 
 def new_post(request):
@@ -37,9 +39,6 @@ def edit_post(request):
     elif request.method == "POST":
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
-
-        edit_post_sql="UPDATE `exam_system`.`exam_system_forum` t SET t.`content` = message, t.`title` = subject WHERE t.`id` = 1"
-        cursor.execute(edit_post_sql)
 
         return render(request, "course_forum.html")
 

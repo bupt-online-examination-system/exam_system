@@ -14,7 +14,7 @@
         {#   get方法传参   #}
         {% for course in course_info %}
         <tr>
-		<td><a href="/course_forum/">{{ course.courseName}}</a></td>
+		<td><a href="/course_forum/?courseId={{ course.courseId }}">{{ course.courseName}}</a></td>
         </tr>
         {% endfor %}
 	</tbody>
