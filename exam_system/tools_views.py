@@ -10,6 +10,7 @@ import xlrd
 from .models import *
 
 
+
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
 def start_exam(request):
@@ -62,9 +63,26 @@ def send_email(request):
 
 def data_in(request):
     if request.method == "GET":
-        return render(request, "data_in.html")
+
+        from django.apps import apps
+        tables = list(apps.get_app_config('exam_system').get_models())
+        return render(request, "data_in.html",locals())
+
+
+
     elif request.method == "POST":
+
+        from django.apps import apps
+        app_models = list(apps.get_app_config('exam_system').get_models())
+
+        # print(type(Person))
+        # print(app_models[0])
+
+
         f = request.FILES.get('file')
+        table_num = request.POST.get('table')
+
+        model_class = app_models[int(table_num)]
         excel_type = f.name.split('.')[1]
         if excel_type in ['xlsx', 'xls']:
             # 开始解析上传的excel表格
@@ -73,12 +91,38 @@ def data_in(request):
             rows = table.nrows  # 总行数
 
 
+
             for i in range(1, rows):
                 rowVlaues = table.row_values(i)
-                print(rowVlaues[0])
-                # Person.objects.create(gradeid=rowVlaues[0], major=major, gradename=rowVlaues[2],
-                #                              memo=rowVlaues[3])
+                rowVlaues = tuple(rowVlaues)
+                if table_num == '0':
+                    Person.objects.create(userId=str(int(rowVlaues[0])),
+                                          userType=int(rowVlaues[1]),
+                                          userName=rowVlaues[2],
+                                          passWord = rowVlaues[3])
+                # elif table_num == '1':
+                #     Course.objects.create(
+                #     courseId = str(int(rowVlaues[0])),
+                #     teacherId = str(),
+                #                                   on_delete=models.CASCADE)  # 教师id
+                #     studentId = models.ForeignKey('Person', related_name='student_course',
+                #                                   on_delete=models.CASCADE)  # 学生id
+                #     courseName = models.CharField(max_length=50)  # 课程名称
+                #     isOver
+                #     )
+                #     elif table_num == '2':
+                #     elif table_num == '3':
+                #     elif table_num == '4':
+                #     elif table_num == '5':
+                #     elif table_num == '6':
+                #     elif table_num == '7':
+                #     elif table_num == '8':
 
+
+
+
+
+    return HttpResponse('导入成功')
 
 
 
