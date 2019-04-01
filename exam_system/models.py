@@ -68,13 +68,19 @@ class MistakesCollection(models.Model):
     choiceId = models.ForeignKey('ChoiceQuestion', on_delete=models.CASCADE)  #选择题id
     fillId = models.ForeignKey('FillInTheBlank', on_delete=models.CASCADE)    #填空题id
 
-# 论坛信息模板
-class Forum(models.Model):
+# 论坛信息发帖信息模板
+class ForumQuestion(models.Model):
+    postId = models.CharField(max_length=50, primary_key=True)  #帖子id
     questionId = models.ForeignKey('Person',related_name='teacher_forum', on_delete=models.CASCADE)       #发帖人id
-    answerId = models.ForeignKey('Person',related_name='student_forum', on_delete=models.CASCADE)         #回帖人id
     content = models.CharField(max_length=50)                              #帖子(回复)的内容
     title = models.CharField(max_length=50)                                #帖子的标题
     courseId =models.CharField(max_length=50)                              #课程id
+
+# 论坛回帖信息模板
+class ForumAnswer(models.Model):
+    postId = models.CharField(max_length=50, primary_key=True)  #帖子id
+    answerId = models.ForeignKey('Person',related_name='student_forum', on_delete=models.CASCADE)         #回帖人id
+    content = models.CharField(max_length=50)                              #帖子(回复)的内容
 
 #考试历史信息模板
 class History(models.Model):
