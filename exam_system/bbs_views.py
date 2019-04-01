@@ -20,6 +20,7 @@ def course_forum(request):
     return render(request, "course_forum.html", locals())
 
 def course_post(request):
+    
     return render(request, "course_post.html")
 
 def new_post(request):
