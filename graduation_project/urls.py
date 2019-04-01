@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
-from exam_system import tools_views
+from exam_system import tools_views, adminstrator_views
 from exam_system import bbs_views
 from exam_system import student_views
 from . import settings
@@ -47,5 +47,11 @@ urlpatterns = [
     url(r'^personal_homepage/$', student_views.personal_homepage, name='personal_homepage'),
     url(r'^score_query/$', student_views.score_query, name='score_query'),
     url(r'^exam_details/$', student_views.exam_details, name='exam_details'),
+
+    #管理员模块
+    url(r'^administrator_login/$', adminstrator_views.adminstrator_login, name='adminstrator_login'),
+    url(r'^student_list/$', adminstrator_views.student_list, name='student_list'),
+    url(r'^teacher_list/$', adminstrator_views.teacher_list, name='teacher_list'),
+    url(r'^question_list/$', adminstrator_views.question_list, name='question_list'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
