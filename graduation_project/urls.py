@@ -52,6 +52,7 @@ urlpatterns = [
     url(r'^administrator_login/$', adminstrator_views.adminstrator_login, name='adminstrator_login'),
     url(r'^student_list/$', adminstrator_views.student_list, name='student_list'),
     url(r'^teacher_list/$', adminstrator_views.teacher_list, name='teacher_list'),
+    
     url(r'^question_list/$', adminstrator_views.question_list, name='question_list'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
