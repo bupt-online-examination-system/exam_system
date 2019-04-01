@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 
-
-
 {% block content %}
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
@@ -14,14 +12,13 @@
 	<tbody>
         {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
         {#   get方法传参   #}
+        {% for course in course_info %}
         <tr>
-		<td><a href="/course_forum/">课程一</a></td>
+		<td><a href="/course_forum/">{{ course.courseName}}</a></td>
         </tr>
-        <tr>
-		<td><a href="/course_forum/">课程二</a></td>
-        </tr>
+        {% endfor %}
 	</tbody>
 </table>
- <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+
  </div>
 {% endblock %}
