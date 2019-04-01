@@ -32,6 +32,9 @@ urlpatterns = [
     url(r'^event_manage/$', bbs_views.event_manage, name='event_manage'),
     url(r'^course_forum/$', bbs_views.course_forum, name='course_forum'),
     url(r'^course_post/$', bbs_views.course_post, name='course_post'),
+    url(r'^new_post/$', bbs_views.new_post, name='new_post'),
+    url(r'^edit_post/$', bbs_views.edit_post, name='edit_post'),
+    url(r'^answer_post/$', bbs_views.answer_post, name='answer_post'),
 
     #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"
     url(r'^file/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),

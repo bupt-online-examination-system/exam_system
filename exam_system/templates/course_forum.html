@@ -14,14 +14,15 @@
 	<tbody>
         {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
         {#get方法传参#}
+        {% for course_forum in course_forum_info %}
         <tr>
-		    <td><a href="/course_post/">帖子一</a></td>
+		<td><a href="/course_post/">{{ course_forum.title}}</a></td>
         </tr>
-        <tr>
-		    <td><a href="/course_post/">帖子二</a></td>
-        </tr>
+        {% endfor %}
 	</tbody>
 </table>
- <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+    <div class="text-center">
+    <a  href="/new_post/" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要发帖</a>
+    </div>
  </div>
 {% endblock %}
