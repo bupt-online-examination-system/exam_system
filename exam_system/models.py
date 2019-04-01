@@ -70,16 +70,16 @@ class MistakesCollection(models.Model):
 
 # 论坛信息发帖信息模板
 class ForumQuestion(models.Model):
-    postId = models.CharField(max_length=50, primary_key=True)  #帖子id
-    questionId = models.ForeignKey('Person',related_name='teacher_forum', on_delete=models.CASCADE)       #发帖人id
+    postId = models.AutoField(primary_key=True)  #帖子id
+    questionId = models.ForeignKey('Person',related_name='forum_question', on_delete=models.CASCADE)       #发帖人id
     content = models.CharField(max_length=50)                              #帖子(回复)的内容
     title = models.CharField(max_length=50)                                #帖子的标题
     courseId =models.CharField(max_length=50)                              #课程id
 
 # 论坛回帖信息模板
 class ForumAnswer(models.Model):
-    postId = models.CharField(max_length=50, primary_key=True)  #帖子id
-    answerId = models.ForeignKey('Person',related_name='student_forum', on_delete=models.CASCADE)         #回帖人id
+    postId = models.ForeignKey('ForumQuestion',related_name='forum_question', on_delete=models.CASCADE)    #帖子id
+    answerId = models.ForeignKey('Person',related_name='forum_answer', on_delete=models.CASCADE)         #回帖人id
     content = models.CharField(max_length=50)                              #帖子(回复)的内容
 
 #考试历史信息模板
