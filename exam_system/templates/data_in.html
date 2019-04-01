@@ -19,10 +19,9 @@
                                 <input type="file" name="file">
                                 <select name="table">
                                     <option value="none">--选择要导入的数据表--</option>
-                                    <option value="lpl">中国</option>
-                                    <option value="eu">欧洲</option>
-                                    <option value="na">北美</option>
-                                    <option value="lck">韩国</option>
+                                    {% for table in tables %}
+                                    <option value={{ forloop.counter0 }}>{{ table }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">开始导入</button>
