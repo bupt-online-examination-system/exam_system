@@ -16,30 +16,58 @@ def event_manage(request):
 
 def course_forum(request):
     courseId = request.GET.get("courseId")
-    course_forum_info = ForumQuestion.objects.filter(courseId=courseId)
+    post_question_info = ForumQuestion.objects.filter(courseId=courseId)
     return render(request, "course_forum.html", locals())
 
 def course_post(request):
-    return render(request, "course_post.html")
+    postId = request.GET.get("postId")
+    courseId = request.GET.get("courseId")
+    post_question_info = ForumQuestion.objects.filter(postId=postId)
+    post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
+    # answer_post_info = Person.objects.filter(userId=course_post_info.answerId)
+    return render(request, "course_post.html", locals())
 
 def new_post(request):
     if request.method == "GET":
         return render(request, "new_post.html")
     elif request.method == "POST":
-        subject = request.POST.get('subject','')
-        message = request.POST.get('message','')
-        new_post=Forum.objects.create(content=message,title=subject,courseId=1,answerId_id=12,questionId_id=123)
-
-        return render(request, "course_forum.html")
+        courseId = request.GET.get("courseId")
+        subject = request.POST.get('subject','无标题')
+        message = request.POST.get('message','无内容')
+        ForumQuestion.objects.create(content=message,title=subject,courseId=courseId,questionId_id=4)
+        post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+        # bug 返回时会重新插入一遍数据
+        return render(request, "course_forum.html",locals())
 
 def edit_post(request):
     if request.method == "GET":
         return render(request, "edit_post.html")
     elif request.method == "POST":
+        postId = request.GET.get("postId")
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
+        ForumQuestion.objects.filter(postId=postId).update(content=message, title=subject)
+        post_question_info = ForumQuestion.objects.filter(postId=postId)
+        post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
 
-        return render(request, "course_forum.html")
+        return render(request, "course_post.html", locals())
+
+def delete_post(request):
+    postId = request.GET.get("postId")
+    courseId = request.GET.get("courseId")
+    ForumQuestion.objects.filter(postId=postId).delete()
+    ForumAnswer.objects.filter(postId_id=postId).delete()
+    post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+
+    return render(request, "course_forum.html", locals())
 
 def answer_post(request):
-    return render(request, "answer_post.html")
+    if request.method == "GET":
+        return render(request, "answer_post.html")
+    elif request.method == "POST":
+        postId = request.GET.get("postId")
+        message = request.POST.get('message','无内容')
+        ForumAnswer.objects.create(content=message,answerId_id=4,postId_id=postId)
+        post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
+        # bug 返回时会重新插入一遍数据 刷新网页也会多添加一次数据
+        return render(request, "course_post.html",locals())

@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^course_post/$', bbs_views.course_post, name='course_post'),
     url(r'^new_post/$', bbs_views.new_post, name='new_post'),
     url(r'^edit_post/$', bbs_views.edit_post, name='edit_post'),
+    url(r'^delete_post/$', bbs_views.delete_post, name='delete_post'),
     url(r'^answer_post/$', bbs_views.answer_post, name='answer_post'),
 
     #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"

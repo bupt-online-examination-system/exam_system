@@ -7,17 +7,32 @@
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
 	<thead>
+        {% for post_question in post_question_info %}
         <tr>
-            {# 传过来的帖子标题           #}
-            <td class="text-dark"><h2>帖子标题</h2></td>
+            {#  把楼主id改为楼主名称      #}
+            <td class="text-dark"><h2>{{ post_question.title }}</h2><h4>{{ post_question.questionId_id }}</h4></td>
         </tr>
+        <tr>
+            <td>{{ post_question.content }}</td>
+        </tr>
+        {% endfor %}
 	</thead>
 	<tbody>
             {#循环输出所有回帖信息，及回帖人姓名        #}
+        {% for post_answer in post_answer_info %}
+        <tr>
+		    <td>{{ post_answer.content}}</td>
+{#            <td>{{ answer_post_info.userName}}</td>#}
+        </tr>
+        {% endfor %}
 	</tbody>
 </table>
     <div class="text-center">
-    <a  href="/answer_post/" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
+    {#   如果是楼主，则会出现编辑,删除帖子按钮 这里可以使用if     #}
+    {#  {% if user_id == 帖子楼主id %}  #}
+    <a  href="/edit_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">编辑帖子</a>
+    <a  href="/delete_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除帖子</a>
+    <a  href="/answer_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
     </div>
  </div>
 {% endblock %}
