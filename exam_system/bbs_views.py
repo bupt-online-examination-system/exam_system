@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from.models import *
 from django.db.models import Q
+from django.db.models.aggregates import Count
 from django.contrib.auth.decorators import login_required
 import time
 
@@ -45,6 +46,7 @@ def edit_post(request):
         return render(request, "edit_post.html")
     elif request.method == "POST":
         postId = request.GET.get("postId")
+        courseId = request.GET.get("courseId")
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
         ForumQuestion.objects.filter(postId=postId).update(content=message, title=subject)
@@ -67,6 +69,7 @@ def answer_post(request):
         return render(request, "answer_post.html")
     elif request.method == "POST":
         postId = request.GET.get("postId")
+        courseId = request.GET.get("courseId")
         message = request.POST.get('message','无内容')
         ForumAnswer.objects.create(content=message,answerId_id=4,postId_id=postId)
         post_question_info = ForumQuestion.objects.filter(postId=postId)
@@ -90,7 +93,7 @@ def stop_top_post(request):
     return render(request, "course_forum.html", locals())
 
 def count(request):
-    # count_course_info = Course.objects.annotate(count('courseId'))
-    # count_question_info = ForumQuestion.objects.annotate(count('courseId'))
+    count_course_info = Course.objects.values('courseId','courseName').annotate(course_id=Count('courseId'))
+    #count_question_info = ForumQuestion.objects.annotate(count('courseId'))
     # count_answer_info = ForumAnswer.objects.annotate(count('courseId'))
     return render(request, "count.html", locals())
