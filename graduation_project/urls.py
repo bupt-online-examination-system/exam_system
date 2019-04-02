@@ -37,6 +37,9 @@ urlpatterns = [
     url(r'^edit_post/$', bbs_views.edit_post, name='edit_post'),
     url(r'^delete_post/$', bbs_views.delete_post, name='delete_post'),
     url(r'^answer_post/$', bbs_views.answer_post, name='answer_post'),
+    url(r'^top_post/$', bbs_views.top_post, name='top_post'),
+    url(r'^stop_top_post/$', bbs_views.stop_top_post, name='stop_top_post'),
+    url(r'^count/$', bbs_views.count, name='count'),
 
     #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"
     url(r'^file/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
