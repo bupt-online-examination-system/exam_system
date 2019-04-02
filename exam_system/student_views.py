@@ -17,5 +17,11 @@ def personal_homepage(request):    #在个人主页界面
 def score_query(request):    #考试成绩界面
     return render(request, "score_query.html")
 
+def pass_score_query(request):    #全部及格成绩
+    return render(request, "pass_score_query.html")
+
+def fail_score_query(request):    #不及格成绩
+    return render(request, "fail_score_query.html")
+
 def exam_details(request):    #课程考试信息详情界面
     return render(request, "exam_details.html")

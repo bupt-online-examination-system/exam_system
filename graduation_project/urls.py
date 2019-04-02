@@ -51,6 +51,8 @@ urlpatterns = [
     url(r'^practice_list/$', student_views.practice_list, name='practice_list'),
     url(r'^personal_homepage/$', student_views.personal_homepage, name='personal_homepage'),
     url(r'^score_query/$', student_views.score_query, name='score_query'),
+    url(r'^pass_score_query/$', student_views.pass_score_query, name='pass_score_query'),
+    url(r'^fail_score_query/$', student_views.fail_score_query, name='fail_score_query'),
     url(r'^exam_details/$', student_views.exam_details, name='exam_details'),
 
     #管理员模块
