@@ -30,9 +30,9 @@
     <div class="text-center">
     {#   如果是楼主或者管理员，则会出现编辑,删除帖子按钮 这里可以使用if 进行判断    #}
     {#  {% if user_id == 帖子楼主id %}  #}
-    <a  href="/edit_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">编辑帖子</a>
-    <a  href="/delete_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除帖子</a>
-    <a  href="/answer_post/?postId={{ postId }}&courseId={{courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
+    <a  href="/edit_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">编辑帖子</a>
+    <a  href="/delete_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除帖子</a>
+    <a  href="/answer_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
     </div>
  </div>
 {% endblock %}

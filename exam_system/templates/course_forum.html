@@ -4,7 +4,23 @@
 
 
 {% block content %}
- <div class="row" style="margin-top: 80px;margin-left: 80px">
+     <div class="row" style="margin-top: 80px;margin-left: 80px">
+
+        <div>
+	    <form class="bs-example bs-example-form" role="form" method="post">
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="input-group">
+					<input type="text" class="form-control" id="message" name="message">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button">搜索</button>
+					</span>
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+	    </form>
+        </div>
+
 <table class="table table-hover">
 	<thead>
 		<tr>
@@ -35,4 +51,5 @@
     <a  href="/new_post/?courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要发帖</a>
     </div>
  </div>
+
 {% endblock %}
