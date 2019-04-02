@@ -19,6 +19,7 @@ from django.conf.urls import include, url
 from exam_system import tools_views, adminstrator_views
 from exam_system import bbs_views
 from exam_system import student_views
+from exam_system import teacher_views
 from . import settings
 from django.views.static import serve
 
@@ -58,5 +59,15 @@ urlpatterns = [
     url(r'^teacher_list/$', adminstrator_views.teacher_list, name='teacher_list'),
     
     url(r'^question_list/$', adminstrator_views.question_list, name='question_list'),
+
+    # 教师模块
+    url(r'^teacher_login/$', teacher_views.teacher_login, name='teacher_login'),
+    url(r'^student_name/$', teacher_views.teacher_login, name='student_name'),
+    url(r'^exam_specification/$', teacher_views.teacher_login, name='exam_specification'),
+    url(r'^teacher_homepage/$', teacher_views.teacher_login, name='teacher_homepage'),
+    url(r'^student_detail/$', teacher_views.teacher_login, name='student_detail'),
+    url(r'^all_student/$', teacher_views.teacher_login, name='all_student'),
+    url(r'^question_added/$', teacher_views.teacher_login, name='question_added'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
+
