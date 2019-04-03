@@ -20,12 +20,12 @@ def score_query(request):    #考试成绩界面
     return render(request, "score_query.html")
 
 def pass_score_query(request):    #全部及格成绩
-    pass_score_info = Grade.objects.filter(studentId=studentId, grade__gte=60).values('courseId','grade')
+    pass_score_info = Grade.objects.filter(studentId=studentId, isPass=1).values('courseId','grade')
     course_info = Course.objects.all().values('courseId','courseName').distinct()
     return render(request, "pass_score_query.html", locals())
 
 def fail_score_query(request):    #不及格成绩
-    fail_score_info = Grade.objects.filter(studentId=studentId, grade__gte=0,grade__lt=60).values('courseId','grade')
+    fail_score_info = Grade.objects.filter(studentId=studentId, isPass=2).values('courseId','grade')
     course_info = Course.objects.all().values('courseId','courseName').distinct()
     return render(request, "fail_score_query.html", locals())
 
