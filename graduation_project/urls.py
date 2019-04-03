@@ -67,12 +67,12 @@ urlpatterns = [
 
     # 教师模块
     url(r'^teacher_login/$', teacher_views.teacher_login, name='teacher_login'),
-    url(r'^student_name/$', teacher_views.teacher_login, name='student_name'),
-    url(r'^exam_specification/$', teacher_views.teacher_login, name='exam_specification'),
-    url(r'^teacher_homepage/$', teacher_views.teacher_login, name='teacher_homepage'),
-    url(r'^student_detail/$', teacher_views.teacher_login, name='student_detail'),
-    url(r'^all_student/$', teacher_views.teacher_login, name='all_student'),
-    url(r'^question_added/$', teacher_views.teacher_login, name='question_added'),
+    url(r'^student_name/$', teacher_views.student_name, name='student_name'),
+    url(r'^exam_specification/$', teacher_views.exam_specification, name='exam_specification'),
+    url(r'^teacher_homepage/$', teacher_views.teacher_homepage, name='teacher_homepage'),
+    url(r'^student_detail/$', teacher_views.student_detail, name='student_detail'),
+    url(r'^all_student/$', teacher_views.all_student, name='all_student'),
+    url(r'^question_added/$', teacher_views.question_added, name='question_added'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
 
