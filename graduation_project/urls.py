@@ -56,7 +56,10 @@ urlpatterns = [
     url(r'^score_query/$', student_views.score_query, name='score_query'),
     url(r'^pass_score_query/$', student_views.pass_score_query, name='pass_score_query'),
     url(r'^fail_score_query/$', student_views.fail_score_query, name='fail_score_query'),
-    url(r'^exam_details/$', student_views.exam_details, name='exam_details'),
+    url(r'^pass_exam_details/$', student_views.pass_exam_details, name='exam_details'),
+    url(r'^fail_exam_details/$', student_views.fail_exam_details, name='fail_exam_details'),
+    url(r'^exam_schedule/$', student_views.exam_schedule, name='exam_schedule'),
+    url(r'^exam_schedule_details/$', student_views.exam_schedule_details, name='schedule_exam_details'),
 
     #管理员模块
     url(r'^administrator_login/$', adminstrator_views.adminstrator_login, name='adminstrator_login'),

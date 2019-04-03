@@ -22,7 +22,9 @@
               <li><a href="/send_email/">联系我们</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-           <li><a href="#">用户名</a></li>
+            {% for info in studentName %}
+             <li><a href="">{{ info.userName }}</a></li>
+            {% endfor %}
            <li><a href="/logout/">注销</a></li>
          </ul>
         </div><!--/.nav-collapse -->
@@ -36,12 +38,12 @@
 <!--  如果你在当前模版页中定义了 block content 和 endblock ，那么它会覆盖掉父模版的content块的内容。 -->
 {% endblock %}
 
-    <div class="container theme-showcase" role="main">
-      <div class="page-header">
-      </div>
-      <footer class="footer">
-        <p>&copy; 在线考试系统</p>
-      </footer>
-    </div> <!-- /container -->
+{#    <div class="container theme-showcase" role="main">#}
+{#      <div class="page-header">#}
+{#      </div>#}
+{#      <footer class="footer">#}
+{#        <p>&copy; 在线考试系统</p>#}
+{#      </footer>#}
+{#    </div> <!-- /container -->#}
 
 </html>

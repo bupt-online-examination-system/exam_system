@@ -31,7 +31,7 @@
         <td>{{ info.courseId }}</td>
             {% for course in course_info %}
                 {% if course.courseId == info.courseId %}
-		        <td><a href="/exam_details/?courseId={{ course.courseId }}">{{ course.courseName}}</a></td>
+		        <td><a href="/fail_exam_details/?courseId={{ course.courseId }}">{{ course.courseName}}</a></td>
                 {% endif %}
             {% endfor %}
         <td>{{ info.grade }}</td>
@@ -39,6 +39,6 @@
         {% endfor %}
 	</tbody>
 </table>
- <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+     <center><a href="/score_query/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>
 {% endblock %}
