@@ -16,7 +16,7 @@ class Course(models.Model):
     courseId = models.AutoField(primary_key=True)                                                     # 课程id
     teacherId = models.ForeignKey('Person', related_name='teacher_course', on_delete=models.CASCADE)  # 教师id
     courseName = models.CharField(max_length=50)  # 课程名称
-    isOver = models.IntegerField()  # 该课程是否结束，即最后一次考试已结束(1:未结课  2：已结课)
+    isOver = models.IntegerField(default=1)  # 该课程是否结束，即最后一次考试已结束(1:未结课  2：已结课)
 
 
 # 学生-课程对照关系
@@ -30,8 +30,8 @@ class Exam(models.Model):
     examId = models.AutoField(primary_key=True)  # 考试试卷id
     courseId = models.ForeignKey('Course', related_name='course_exam', on_delete=models.CASCADE)  # 课程id
     studentId = models.ForeignKey('Person', related_name='Person_exam', on_delete=models.CASCADE)  # 学生id
-    isOver = models.IntegerField()  # 考试是否结束(1:未结束  2：已结束)
-    score = models.IntegerField()  # 考试分数
+    isOver = models.IntegerField(default=1)  # 考试是否结束(1:未结束  2：已结束)
+    score = models.IntegerField(default=-1)  # 考试分数
     type = models.IntegerField()  # 考试类型(1：第一次月考  2：期中考 3：第二次月考 4：期末考 5：练习)
 
 
