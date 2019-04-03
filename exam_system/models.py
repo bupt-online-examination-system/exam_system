@@ -88,6 +88,8 @@ class ForumQuestion(models.Model):
     content = models.CharField(max_length=50)  # 帖子的内容
     title = models.CharField(max_length=50)  # 帖子的标题
     courseId = models.ForeignKey('Course', related_name='course_forum_question', on_delete=models.CASCADE)  # 课程id
+    postTime = models.DateTimeField(default='1970-01-01 00:00:00')  # 发帖时间
+    topTime = models.DateTimeField(default='1970-01-01 00:00:00')  # 上一次置顶时间
 
 
 # 论坛回帖信息模板
@@ -95,6 +97,7 @@ class ForumAnswer(models.Model):
     postId = models.ForeignKey('ForumQuestion', related_name='forum_question', on_delete=models.CASCADE)  # 帖子id
     answerId = models.ForeignKey('Person', related_name='forum_answer', on_delete=models.CASCADE)  # 回帖人id
     content = models.CharField(max_length=50)  # 回复的内容
+    answerTime = models.DateTimeField(default='1970-01-01 00:00:00')  # 回复时间
 
 
 # 考试历史信息模板
@@ -103,6 +106,6 @@ class History(models.Model):
     courseId = models.ForeignKey('Course', related_name='course_history', on_delete=models.CASCADE)  # 课程id
     examId = models.ForeignKey('Exam', related_name='exam_history', on_delete=models.CASCADE)  # 考试试卷id
     ip = models.CharField(max_length=50)  # ip
-    time = models.DateTimeField()  # 考试登录时的时间
+    time = models.DateTimeField(default='1970-01-01 00:00:00')  # 考试登录时的时间
 
 
