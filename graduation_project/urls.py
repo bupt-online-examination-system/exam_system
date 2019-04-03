@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
-from exam_system import tools_views, adminstrator_views
+from exam_system import tools_views, administrator_views
 from exam_system import bbs_views
 from exam_system import student_views
 from exam_system import teacher_views
@@ -62,11 +62,16 @@ urlpatterns = [
     url(r'^exam_schedule_details/$', student_views.exam_schedule_details, name='schedule_exam_details'),
 
     #管理员模块
-    url(r'^administrator_login/$', adminstrator_views.adminstrator_login, name='adminstrator_login'),
-    url(r'^student_list/$', adminstrator_views.student_list, name='student_list'),
-    url(r'^teacher_list/$', adminstrator_views.teacher_list, name='teacher_list'),
-    
-    url(r'^question_list/$', adminstrator_views.question_list, name='question_list'),
+    url(r'^administrator_login/$', administrator_views.administrator_login, name='administrator_login'),
+    url(r'^administrator_mlist/$', administrator_views.administrator_mlist, name='administrator_mlist'),
+    url(r'^administrator_tlist/$', administrator_views.administrator_tlist, name='administrator_tlist'),
+    url(r'^administrator_qlist/$', administrator_views.administrator_qlist, name='administrator_qlist'),
+    url(r'^administrator_feedback/$', administrator_views.administrator_feedback, name='administrator_feedback'),
+    url(r'^administrator_fmanage/$', administrator_views.administrator_fmanage, name='administrator_fmanage'),
+    url(r'^administrator_studentlist/$', administrator_views.administrator_studentlist, name='administrator_studentlist'),
+    url(r'^administrator_teacherlist/$', administrator_views.administrator_teacherlist, name='administrator_teacherlist'),
+    url(r'^administrator_aftlist/$', administrator_views.administrator_aftlist, name='administrator_aftlist'),
+    url(r'^administrator_uftlist/$', administrator_views.administrator_uftlist, name='administrator_uftlist'),
 
     # 教师模块
     url(r'^teacher_login/$', teacher_views.teacher_login, name='teacher_login'),
