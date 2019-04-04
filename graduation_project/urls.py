@@ -60,6 +60,7 @@ urlpatterns = [
     url(r'^fail_exam_details/$', student_views.fail_exam_details, name='fail_exam_details'),
     url(r'^exam_schedule/$', student_views.exam_schedule, name='exam_schedule'),
     url(r'^exam_schedule_details/$', student_views.exam_schedule_details, name='schedule_exam_details'),
+    url(r'^post_record/$', student_views.post_record, name='post_record'),
 
     #管理员模块
     url(r'^administrator_login/$', administrator_views.administrator_login, name='administrator_login'),
