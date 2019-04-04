@@ -3,6 +3,8 @@ from.models import *
 from django.contrib.auth.decorators import login_required
 from graduation_project import settings
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def student_login(request): #学生界面模板
     return render(request, "student_login.html",locals())
 
@@ -14,7 +16,18 @@ def exam_list(request):    #在线考试待考课程列表界面
 def practice_list(request):    #练习课程列表界面
     studentId = request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
+    my_course_info = CourseStudent.objects.filter(studentId=studentId).values('courseId')
+    course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "practice_list.html",locals())
+
+def practice_details(request):    #练习详情界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+    examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
+    exam_question_info = ExamQuestion.objects.filter(examId=examId[0]).values('questionId','type')
+    course_info = Course.objects.all().values('courseId','courseName')
+    return render(request, "practice_details.html",locals())
 
 def personal_homepage(request):    #在个人主页界面
     request.session['studentId'] = 1
