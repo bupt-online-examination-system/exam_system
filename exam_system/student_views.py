@@ -67,3 +67,10 @@ def exam_schedule_details(request):    #待考课程考试信息详情界面
     courseId = request.GET.get("courseId")
     exam_details_info = Exam.objects.filter(courseId=courseId).values('type','score')
     return render(request, "exam_schedule_details.html", locals())
+
+def post_record(request):    #发帖记录
+    studentId=request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    forum_question_info = ForumQuestion.objects.filter(questionId=studentId).values('title','courseId','postId')
+    course_info = Course.objects.all().values('courseId','courseName')
+    return render(request, "post_record.html", locals())
