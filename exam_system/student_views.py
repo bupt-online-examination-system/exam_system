@@ -25,8 +25,24 @@ def practice_details(request):    #练习详情界面
     studentName = Person.objects.filter(userId=studentId).values('userName')
     courseId = request.GET.get("courseId")
     examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
+    if(examId == []):
+        return render(request, "practice_details.html")
     exam_question_info = ExamQuestion.objects.filter(examId=examId[0]).values('questionId','type')
-    course_info = Course.objects.all().values('courseId','courseName')
+    choice_question_info = ChoiceQuestion.objects.filter(type=2)
+    fill_question_info = FillInTheBlank.objects.filter(type=2)
+
+    contact_list = exam_question_info
+    paginator = Paginator(contact_list, 1)  # 每页1条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
     return render(request, "practice_details.html",locals())
 
 def personal_homepage(request):    #在个人主页界面

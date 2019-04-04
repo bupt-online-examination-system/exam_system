@@ -1,41 +1,65 @@
 {% extends "student_login.html" %}
 
-
-
-
 {% block content %}
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
-	<thead>
-		<tr>
-            <th>考试类型</th>        {#   第一次月考、期中考、第二次月考、期末考   #}
-            <th>成绩</th>
-		</tr>
-	</thead>
+{#	<thead>#}
+{#		<tr>#}
+{#			<th class="text-dark"><h2>我的练习</h2></th>#}
+{#		</tr>#}
+{#        <tr>#}
+{#            <th>课程编号</th>        {#   第一次月考、期中考、第二次月考、期末考   #}
+{#            <th>课程名称</th>#}
+{#        </tr>#}
+{#	</thead>#}
 	<tbody>
-        {% for info in exam_details_info %}
-        <tr>
-        {% if info.type == 1 %}
-            <td>第一次月考</td>
-        {% endif %}
-            {% if info.type == 2 %}
-                <td>期中考</td>
+        {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
+        {#   get方法传参   #}
+{% for info in exam_question_info %}
+    {% for choice_info in choice_question_info %}
+        {% if info.questionId == choice_info.choiceId and info.type == 1%}
+            {% if forloop.parentloop.counter == contacts.number %}
+                <tr>
+                    <td>{{ choice_info.content }}</td>
+                </tr>
+                <tr>
+                    <td>{{ choice_info.questionA }}</td>
+                    <td>{{ choice_info.questionB}}</td>
+                    <td>{{ choice_info.questionC }}</td>
+                    <td>{{ choice_info.questionD }}</td>
+                </tr>
             {% endif %}
-                {% if info.type == 3 %}
-                    <td>第二次月考</td>
-                {% endif %}
-                    {% if info.type == 4 %}
-                        <td>期末考</td>
-                    {% endif %}
-        {% if info.score == -1 %}
-            <td>未完成</td>
-            {% else %}
-                <td>{{ info.score }}</td>
         {% endif %}
-        </tr>
-        {% endfor %}
+    {% endfor %}
+    {% for fill_info in fill_question_info %}
+        {% if info.questionId == fill_info.fillId and info.type == 2%}
+            {% if forloop.parentloop.counter == contacts.number %}
+                <td>{{ fill_info.content }}</td>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
 	</tbody>
 </table>
-     <center><a href="/fail_score_query/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>
+
+
+
+<center><div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/practice_details/?courseId={{ courseId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+{#            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.#}
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/practice_details/?courseId={{ courseId }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div></center>
+    <center><a href="/practice_list/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
 {% endblock %}
