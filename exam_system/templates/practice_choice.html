@@ -21,7 +21,7 @@
     {% for choice_info in choice_question_info %}
         {% if info.questionId == choice_info.choiceId %}
             <tr>
-                <td><a href="/practice_details/?choiceId={{ choice_info.choiceId }}">{{ choice_info.content }}</a></td>
+                <td><a href="/practice_choice_details/?choiceId={{ choice_info.choiceId }}">{{ choice_info.content }}</a></td>
             </tr>
         {% endif %}
     {% endfor %}

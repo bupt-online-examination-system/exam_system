@@ -21,7 +21,7 @@
     {% for fill_info in fill_question_info %}
         {% if info.questionId == fill_info.fillId %}
             <tr>
-                <td><a href="/practice_details/?fillId={{ fill_info.fillId }}">{{ fill_info.content }}</a></td>
+                <td><a href="/practice_fill_details/?fillId={{ fill_info.fillId }}">{{ fill_info.content }}</a></td>
             </tr>
         {% endif %}
     {% endfor %}
