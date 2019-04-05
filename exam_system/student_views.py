@@ -73,6 +73,37 @@ def practice_fill(request):    #该课程填空题练习界面
         contacts = paginator.page(paginator.num_pages)
     return render(request, "practice_fill.html", locals())
 
+def practice_choice_details(request):    #该课程选择题详情练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    choiceId = request.GET.get("choiceId")
+    print(choiceId)
+    choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
+    print(choice_question_info)
+    return render(request, "practice_choice_details.html", locals())
+
+def practice_choice_details_answer(request):    #该课程选择题详情练习界面(有答案)
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    choiceId = request.GET.get("choiceId")
+    print(choiceId)
+    choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
+    print(choice_question_info)
+    return render(request, "practice_choice_details_answer.html", locals())
+
+def practice_fill_details(request):    #该课程填空题详情练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+    print(courseId)
+    examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
+    if(examId == []):
+        return render(request, "practice_fill_details.html")
+    exam_question_info = ExamQuestion.objects.filter(examId=examId[0],type=1).values('questionId')#该课程选择题所有练习题号
+    print(exam_question_info)
+    choice_question_info = ChoiceQuestion.objects.filter(type=2)#所有选择题练习信息
+    print(choice_question_info)
+    return render(request, "practice_fill_details.html", locals())
 
 def practice_details(request):    #练习详情界面
     studentId = request.session.get('studentId')
