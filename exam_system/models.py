@@ -46,7 +46,7 @@ class ExamQuestion(models.Model):
 # 选择题信息模板
 class ChoiceQuestion(models.Model):
     choiceId = models.AutoField(primary_key=True)  # 选择题id
-    courseId = models.CharField(max_length=50)  # 课程id
+    courseId = models.ForeignKey('Course', related_name='course_question', on_delete=models.CASCADE)  # 课程id
     content = models.CharField(max_length=50)  # 题目内容
     questionA = models.CharField(max_length=50)  # 选项A
     questionB = models.CharField(max_length=50)  # 选项B
@@ -59,7 +59,7 @@ class ChoiceQuestion(models.Model):
 # 填空题信息模板
 class FillInTheBlank(models.Model):
     fillId = models.AutoField(primary_key=True)  # 填空题id
-    courseId = models.CharField(max_length=50)  # 课程id
+    courseId = models.ForeignKey('Course', related_name='course_fill', on_delete=models.CASCADE)  # 课程id
     content = models.CharField(max_length=50)  # 题目内容
     answer = models.CharField(max_length=50)  # 正确答案
     type = models.IntegerField()  # 题目类型(1：考试  2：练习)
