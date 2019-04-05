@@ -20,6 +20,60 @@ def practice_list(request):    #练习课程列表界面
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "practice_list.html",locals())
 
+def practice_choice(request):    #该课程选择题练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+    print(courseId)
+    examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
+    if(examId == []):
+        return render(request, "practice_choice.html")
+    exam_question_info = ExamQuestion.objects.filter(examId=examId[0],type=1).values('questionId')#该课程选择题所有练习题号
+    print(exam_question_info)
+    choice_question_info = ChoiceQuestion.objects.filter(type=2)#所有选择题练习信息
+    print(choice_question_info)
+
+    contact_list = exam_question_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "practice_choice.html", locals())
+
+def practice_fill(request):    #该课程填空题练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+    examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
+    if(examId == []):
+        return render(request, "practice_fill.html")
+    exam_question_info = ExamQuestion.objects.filter(examId=examId[0],type=2).values('questionId')#该课程填空题所有练习题号
+    print(exam_question_info)
+    fill_question_info = FillInTheBlank.objects.filter(type=2)#所有填空题练习信息
+    print(fill_question_info)
+
+    contact_list = exam_question_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "practice_fill.html", locals())
+
+
 def practice_details(request):    #练习详情界面
     studentId = request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
