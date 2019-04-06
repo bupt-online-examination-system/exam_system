@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from graduation_project import settings
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from django.db.models.aggregates import Min
 
 def student_login(request): #学生界面模板
     return render(request, "student_login.html",locals())
@@ -11,6 +13,9 @@ def student_login(request): #学生界面模板
 def exam_list(request):    #在线考试待考课程列表界面
     studentId = request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
+    exam_course_info = Exam.objects.filter(~Q(type=5),studentId=studentId,isOver=1).values('courseId').distinct()
+    print(exam_course_info)
+    course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "exam_list.html",locals())
 
 def mistake_list(request):    #错题集课程列表界面
@@ -256,30 +261,37 @@ def practice_fill_details_answer(request):    #该课程填空题详情练习界
     mistake_info = MistakesCollection.objects.filter(questionId=fillId,type=2)#错题集中寻找
     return render(request, "practice_fill_details_answer.html", locals())
 
-def practice_details(request):    #练习详情界面
-    studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
-    courseId = request.GET.get("courseId")
-    examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
-    if(examId == []):
-        return render(request, "practice_details.html")
-    exam_question_info = ExamQuestion.objects.filter(examId=examId[0]).values('questionId','type')
-    choice_question_info = ChoiceQuestion.objects.filter(type=2)
-    fill_question_info = FillInTheBlank.objects.filter(type=2)
+def exam_details(request):    #考试详情界面
+    if request.method == "GET":
+        studentId = request.session.get('studentId')
+        studentName = Person.objects.filter(userId=studentId).values('userName')
+        courseId = request.GET.get("courseId")
+        examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).values_list('examId',flat=True).order_by('examId')) #得到该学生该课程下一次考试的examId
+        if(examId == []):
+            return render(request, "exam_details.html")
+        exam_question_info = ExamQuestion.objects.filter(examId=examId[0]).values('questionId','type')
+        choice_question_info = ChoiceQuestion.objects.filter(type=1)
+        fill_question_info = FillInTheBlank.objects.filter(type=1)
 
-    contact_list = exam_question_info
-    paginator = Paginator(contact_list, 1)  # 每页1条
+        contact_list = exam_question_info
+        paginator = Paginator(contact_list, 1)  # 每页1条
 
-    page = request.GET.get('page')
-    try:
-        contacts = paginator.page(page)  # contacts为Page对象！
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        contacts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        contacts = paginator.page(paginator.num_pages)
-    return render(request, "practice_details.html",locals())
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)  # contacts为Page对象！
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+        return render(request, "exam_details.html", locals())
+    elif request.method == "POST":
+        a = request.POST.get('choice')
+        print(a)
+        b = request.POST.get('2')
+        print(b)
+    return render(request, "exam_details.html", locals())
 
 def personal_homepage(request):    #在个人主页界面
     request.session['studentId'] = 1
