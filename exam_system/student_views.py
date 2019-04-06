@@ -78,8 +78,19 @@ def practice_choice_details(request):    #该课程选择题详情练习界面
     studentName = Person.objects.filter(userId=studentId).values('userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
+
+    addMistake = request.GET.get("addMistake")  #判断是否点击了添加到错题集按钮
+    print(addMistake)
+    courseId = list(ChoiceQuestion.objects.filter(choiceId=choiceId).values_list('courseId',flat=True))
+    if addMistake is not None:
+        studentIdInstance = Person.objects.get(userId=studentId)
+        courseIdInstance = Course.objects.get(courseId=courseId[0])
+        MistakesCollection.objects.create(studentId=studentIdInstance,courseId=courseIdInstance,questionId=choiceId,type=1)
+
     choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
     print(choice_question_info)
+    mistake_info = MistakesCollection.objects.filter(questionId=choiceId,type=1)#错题集中寻找
+    print(mistake_info)
     return render(request, "practice_choice_details.html", locals())
 
 def practice_choice_details_answer(request):    #该课程选择题详情练习界面(有答案)
@@ -87,8 +98,18 @@ def practice_choice_details_answer(request):    #该课程选择题详情练习�
     studentName = Person.objects.filter(userId=studentId).values('userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
+
+    addMistake = request.GET.get("addMistake")  #判断是否点击了添加到错题集按钮
+    print(addMistake)
+    courseId = list(ChoiceQuestion.objects.filter(choiceId=choiceId).values_list('courseId',flat=True))
+    if addMistake is not None:
+        studentIdInstance = Person.objects.get(userId=studentId)
+        courseIdInstance = Course.objects.get(courseId=courseId[0])
+        MistakesCollection.objects.create(studentId=studentIdInstance,courseId=courseIdInstance,questionId=choiceId,type=1)
+
     choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
     print(choice_question_info)
+    mistake_info = MistakesCollection.objects.filter(questionId=choiceId,type=1)#错题集中寻找
     return render(request, "practice_choice_details_answer.html", locals())
 
 def practice_fill_details(request):    #该课程填空题详情练习界面
@@ -96,8 +117,18 @@ def practice_fill_details(request):    #该课程填空题详情练习界面
     studentName = Person.objects.filter(userId=studentId).values('userName')
     fillId = request.GET.get("fillId")
     print(fillId)
+
+    addMistake = request.GET.get("addMistake")  #判断是否点击了添加到错题集按钮
+    print(addMistake)
+    courseId = list(FillInTheBlank.objects.filter(fillId=fillId).values_list('courseId',flat=True))
+    if addMistake is not None:
+        studentIdInstance = Person.objects.get(userId=studentId)
+        courseIdInstance = Course.objects.get(courseId=courseId[0])
+        MistakesCollection.objects.create(studentId=studentIdInstance,courseId=courseIdInstance,questionId=fillId,type=2)
+
     fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
     print(fill_question_info)
+    mistake_info = MistakesCollection.objects.filter(questionId=fillId,type=2)#错题集中寻找
     return render(request, "practice_fill_details.html", locals())
 
 def practice_fill_details_answer(request):    #该课程填空题详情练习界面(有答案)
@@ -105,8 +136,18 @@ def practice_fill_details_answer(request):    #该课程填空题详情练习界
     studentName = Person.objects.filter(userId=studentId).values('userName')
     fillId = request.GET.get("fillId")
     print(fillId)
+
+    addMistake = request.GET.get("addMistake")  #判断是否点击了添加到错题集按钮
+    print(addMistake)
+    courseId = list(FillInTheBlank.objects.filter(fillId=fillId).values_list('courseId',flat=True))
+    if addMistake is not None:
+        studentIdInstance = Person.objects.get(userId=studentId)
+        courseIdInstance = Course.objects.get(courseId=courseId[0])
+        MistakesCollection.objects.create(studentId=studentIdInstance,courseId=courseIdInstance,questionId=fillId,type=2)
+
     fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
     print(fill_question_info)
+    mistake_info = MistakesCollection.objects.filter(questionId=fillId,type=2)#错题集中寻找
     return render(request, "practice_fill_details_answer.html", locals())
 
 def practice_details(request):    #练习详情界面

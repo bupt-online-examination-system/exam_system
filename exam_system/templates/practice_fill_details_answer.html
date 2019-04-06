@@ -13,6 +13,13 @@
 	</thead>
 	<tbody>
     {% for info in fill_question_info %}
+        {% for mistake in mistake_info %}
+            {% if mistake.questionId == info.fillId %}
+                <button class="btn btn-success disabled" role="button">已添加到错题集</button>
+            {% endif %}
+            {% empty %}
+                <a  href="/practice_fill_details_answer/?fillId={{ info.fillId }}&addMistake=1" class="btn btn-success" style="margin: 0px auto;">添加到错题集</a>
+        {% endfor %}
         <tr>
             <td>{{ info.content }}</td>
         </tr>
