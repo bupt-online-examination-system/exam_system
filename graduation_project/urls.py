@@ -57,6 +57,7 @@ urlpatterns = [
     url(r'^practice_choice_details/$', student_views.practice_choice_details, name='practice_choice_details'),
     url(r'^practice_choice_details_answer/$', student_views.practice_choice_details_answer, name='practice_choice_details_answer'),
     url(r'^practice_fill_details/$', student_views.practice_fill_details, name='practice_fill_details'),
+    url(r'^practice_fill_details_answer/$', student_views.practice_fill_details_answer, name='practice_fill_details_answer'),
     url(r'^practice_details/$', student_views.practice_details, name='practice_details'),
     url(r'^personal_homepage/$', student_views.personal_homepage, name='personal_homepage'),
     url(r'^score_query/$', student_views.score_query, name='score_query'),

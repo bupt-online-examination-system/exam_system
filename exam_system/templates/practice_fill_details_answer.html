@@ -20,8 +20,10 @@
 	</tbody>
 </table>
      {% for info in fill_question_info %}
-         <a  href="/practice_fill_details_answer/?fillId={{ info.fillId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">查看正确答案</a>
-         <center><a href="/practice_fill/?courseId={{ info.courseId.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+         <tr>
+            <td>正确答案: {{ info.answer }}</td>
+            <center><a href="/practice_fill/?courseId={{ info.courseId.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+         </tr>
      {% endfor %}
  </div>
 
