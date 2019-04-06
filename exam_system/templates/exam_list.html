@@ -8,18 +8,23 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<th class="text-dark"><h2>待考课程</h2></th>
+			<th>课程编号</th>
+            <th>课程名称</th>
 		</tr>
 	</thead>
 	<tbody>
         {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
         {#   get方法传参   #}
+        {% for info in exam_course_info %}
         <tr>
-		<td><a href="/start_exam/">课程一</a></td>
+        <td>{{ info.courseId }}</td>
+            {% for course in course_info %}
+                {% if course.courseId == info.courseId %}
+		        <td><a href="/exam_details/?courseId={{ course.courseId }}">{{ course.courseName}}</a></td>
+                {% endif %}
+            {% endfor %}
         </tr>
-        <tr>
-		<td><a href="/start_exam/">课程二</a></td>
-        </tr>
+        {% endfor %}
 	</tbody>
 </table>
  </div>

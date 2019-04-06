@@ -1,0 +1,87 @@
+{% extends "student_login.html" %}
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+{#	<thead>#}
+{#		<tr>#}
+{#			<th class="text-dark"><h2>我的练习</h2></th>#}
+{#		</tr>#}
+{#        <tr>#}
+{#            <th>课程编号</th>        {#   第一次月考、期中考、第二次月考、期末考   #}
+{#            <th>课程名称</th>#}
+{#        </tr>#}
+{#	</thead>#}
+    <tbody>
+{% for info in exam_question_info %}
+    {% for choice_info in choice_question_info %}
+        {% if info.questionId == choice_info.choiceId and info.type == 1%}
+            {% if forloop.parentloop.counter == contacts.number %}
+                <div>{{ choice_info.content }}</div>
+                <form  method="post">
+                    {% csrf_token %}
+                    <div class="radio">
+                    <label>
+                        <input type="radio" name="choice" id="1" value="A" > <div>A</div>
+                    </label>
+                    </div>
+                    <div class="radio">
+                    <label>
+                        <input type="radio" name="choice" id="2" value="B" > <div>B</div>
+                    </label>
+                    </div>
+                    <div class="radio">
+                    <label>
+                        <input type="radio" name="choice" id="3" value="C" > <div>C</div>
+                    </label>
+                    </div>
+                    <div class="radio">
+                    <label>
+                         <input type="radio" name="choice" id="4" value="D" > <div>D</div>
+                    </label>
+                    </div>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% for fill_info in fill_question_info %}
+        {% if info.questionId == fill_info.fillId and info.type == 2%}
+            {% if forloop.parentloop.counter == contacts.number %}
+                <form  method="post">
+                    {% csrf_token %}
+                    <div>{{ fill_info.content }}<input type="text" id="mytext"></div>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+	</tbody>
+</table>
+ </div>
+
+
+
+<center><div class="pagination">
+    <span class="step-links">
+        {% if not contacts.has_next %}
+            <div class="form-group">
+                <button type="submit" id="btn1" class="btn btn-success" style="margin: 0px auto;display: table;">交卷</button>
+            </div>
+        {% endif %}
+
+        {% if contacts.has_previous %}
+            <td><a href="/exam_details/?courseId={{ courseId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+{#            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.#}
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/exam_details/?courseId={{ courseId }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div></center>
+    <center><a href="/exam_list/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+{% endblock %}
