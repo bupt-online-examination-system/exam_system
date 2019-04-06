@@ -77,8 +77,8 @@ class Grade(models.Model):
 class MistakesCollection(models.Model):
     studentId = models.ForeignKey('Person', related_name='Person_mistake', on_delete=models.CASCADE)  # 学生id
     courseId = models.ForeignKey('Course', related_name='course_mistake', on_delete=models.CASCADE)  # 课程id
-    choiceId = models.ForeignKey('ChoiceQuestion', on_delete=models.CASCADE)  # 选择题id
-    fillId = models.ForeignKey('FillInTheBlank', on_delete=models.CASCADE)  # 填空题id
+    questionId = models.IntegerField()  # 题目id
+    type = models.IntegerField()  # 题目类型(1：选择  2：填空)
 
 
 # 论坛发帖信息模板
