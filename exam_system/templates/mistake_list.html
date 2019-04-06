@@ -1,0 +1,32 @@
+{% extends "student_login.html" %}
+
+
+
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+{#	<thead>#}
+{#		<tr>#}
+{#			<th class="text-dark">               </th>#}
+{#		</tr>#}
+{#	</thead>#}
+	<tbody>
+        {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
+        {#   get方法传参   #}
+        {% for info in my_course_info %}
+        <tr>
+{#        <td>{{ info.courseId }}</td>#}
+            {% for course in course_info %}
+                {% if course.courseId == info.courseId %}
+                    <td>{{ course.courseName}}</td>
+                    <td><a href="/mistake_choice/?courseId={{ course.courseId }}">单选题</a></td>
+                    <td><a href="/mistake_fill/?courseId={{ course.courseId }}">填空题</a></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+	</tbody>
+</table>
+ </div>
+{% endblock %}

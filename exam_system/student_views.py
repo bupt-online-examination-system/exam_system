@@ -13,6 +13,112 @@ def exam_list(request):    #在线考试待考课程列表界面
     studentName = Person.objects.filter(userId=studentId).values('userName')
     return render(request, "exam_list.html",locals())
 
+def mistake_list(request):    #错题集课程列表界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    my_course_info = CourseStudent.objects.filter(studentId=studentId).values('courseId')
+    course_info = Course.objects.all().values('courseId','courseName')
+    return render(request, "mistake_list.html",locals())
+
+def mistake_choice(request):    #该课程错题集选择题练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+    print(courseId)
+
+    deleteMistake = request.GET.get("deleteMistake")  #判断是否点击了从错题集中删除此题按钮
+    print(deleteMistake)
+    choiceId = request.GET.get("choiceId")
+    print(choiceId)
+    if deleteMistake is not None and choiceId is not None:
+        MistakesCollection.objects.filter(type=1,questionId=choiceId).delete()
+
+    exam_question_info = MistakesCollection.objects.filter(studentId=studentId,type=1,courseId=courseId).values('questionId')#该课程选择题所有练习题号
+    print(exam_question_info)
+    choice_question_info = ChoiceQuestion.objects.filter(type=2)#所有选择题练习信息
+    print(choice_question_info)
+
+    contact_list = exam_question_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "mistake_choice.html", locals())
+
+def mistake_fill(request):    #该课程错题集填空题练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    courseId = request.GET.get("courseId")
+
+    deleteMistake = request.GET.get("deleteMistake")  #判断是否点击了从错题集中删除此题按钮
+    print(deleteMistake)
+    fillId = request.GET.get("fillId")
+    print(fillId)
+    if deleteMistake is not None and fillId is not None:
+        MistakesCollection.objects.filter(type=2,questionId=fillId).delete()
+
+    exam_question_info = MistakesCollection.objects.filter(studentId=studentId,type=2,courseId=courseId).values('questionId')#该课程填空题所有练习题号
+    print(exam_question_info)
+    fill_question_info = FillInTheBlank.objects.filter(type=2)#所有填空题练习信息
+    print(fill_question_info)
+
+    contact_list = exam_question_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "mistake_fill.html", locals())
+
+def mistake_choice_details(request):    #该课程错题集选择题详情练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    choiceId = request.GET.get("choiceId")
+    print(choiceId)
+    choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
+    print(choice_question_info)
+    return render(request, "mistake_choice_details.html", locals())
+
+def mistake_choice_details_answer(request):    #该课程错题集选择题详情练习界面(有答案)
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    choiceId = request.GET.get("choiceId")
+    print(choiceId)
+    choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
+    print(choice_question_info)
+    return render(request, "mistake_choice_details_answer.html", locals())
+
+def mistake_fill_details(request):    #该课程错题集填空题详情练习界面
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    fillId = request.GET.get("fillId")
+    print(fillId)
+    fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
+    print(fill_question_info)
+    return render(request, "mistake_fill_details.html", locals())
+
+def mistake_fill_details_answer(request):    #该课程错题集填空题详情练习界面(有答案)
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userName')
+    fillId = request.GET.get("fillId")
+    print(fillId)
+    fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
+    print(fill_question_info)
+    return render(request, "mistake_fill_details_answer.html", locals())
+
 def practice_list(request):    #练习课程列表界面
     studentId = request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
