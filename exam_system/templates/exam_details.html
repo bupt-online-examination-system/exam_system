@@ -22,23 +22,26 @@
                     {% csrf_token %}
                     <div class="radio">
                     <label>
-                        <input type="radio" name="choice" id="1" value="A" > <div>A</div>
+                        <input type="radio" name="choice" id="1" value="A" > <div>{{ choice_info.questionA }}</div>
                     </label>
                     </div>
                     <div class="radio">
                     <label>
-                        <input type="radio" name="choice" id="2" value="B" > <div>B</div>
+                        <input type="radio" name="choice" id="2" value="B" > <div>{{ choice_info.questionB }}</div>
                     </label>
                     </div>
                     <div class="radio">
                     <label>
-                        <input type="radio" name="choice" id="3" value="C" > <div>C</div>
+                        <input type="radio" name="choice" id="3" value="C" > <div>{{ choice_info.questionC }}</div>
                     </label>
                     </div>
                     <div class="radio">
                     <label>
-                         <input type="radio" name="choice" id="4" value="D" > <div>D</div>
+                         <input type="radio" name="choice" id="4" value="D" > <div>{{ choice_info.questionD }}</div>
                     </label>
+                        <div class="form-group">
+                            <button type="submit" id="btn1" class="btn btn-success" style="margin: 0px auto;display: table;">交卷</button>
+                        </div>
                     </div>
                 </form>
             {% endif %}

@@ -289,8 +289,12 @@ def exam_details(request):    #考试详情界面
     elif request.method == "POST":
         a = request.POST.get('choice')
         print(a)
-        b = request.POST.get('2')
-        print(b)
+        # b = request.POST.get('choice2')
+        # print(b)
+        # c = request.POST.get('choice3')
+        # print(c)
+        # d = request.POST.get('choice4')
+        # print(d)
     return render(request, "exam_details.html", locals())
 
 def personal_homepage(request):    #在个人主页界面
