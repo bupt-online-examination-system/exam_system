@@ -23,14 +23,11 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
 
 
 <script type="text/javascript">
-    var inputs = document.getElementsByTagName("input");
-    for (i=1; i<=inputs.length; i++)
+
+    function ajax_post(i,j,type,exam)
     {
-        inputs[i].onchange = ajax_post(i);
-    }
-    function ajax_post(i)
-    {
-        var id = i.toString()
+
+
         var xmlhttp;
         if (window.XMLHttpRequest)
           {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -42,7 +39,8 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
           }
         xmlhttp.open("POST","ajax/post/",true);
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        var data="id="+id+"&answer="+document.getElementById(id).value
+        {#var data="id="+id+"&answer="+value_#}
+        var data="exam="+exam+"&type="+type+"&id="+i+"&answer="+j
         xmlhttp.send(data);
     }
     window.onload=function()
@@ -86,19 +84,32 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
     {
         if (time <2)//切标签离开焦点一次     点任务栏离开两次
         {
-            alert("请不要离开考试界面或点击与考试无关的按钮，超过三次将视为作弊，自动交卷")
+            alert("请不要离开考试界面或点击与考试无关的按钮，超过三次将视为作弊")
         }
         time+=1;
-        if(time == 6)
-        {
-            alert("切屏次数超过三次，视为作弊，将自动交卷");
-            setTimeout(function(){document.getElementById("btn1").click()},3000)
 
-        }
     }
 
 
 
+
+    function end(exam,course)
+    {
+        var xmlhttp;
+        if (window.XMLHttpRequest)
+          {// code for IE7+, Firefox, Chrome, Opera, Safari
+          xmlhttp=new XMLHttpRequest();
+          }
+        else
+          {// code for IE6, IE5
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+        xmlhttp.open("POST","score_count/",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        {#var data="id="+id+"&answer="+value_#}
+        var data="exam="+exam+"&course"+course
+        xmlhttp.send(data);
+    }
 
 {#    window.onbeforeunload=function(e)#}
 {#    {#}
@@ -152,56 +163,81 @@ var flag = 0
 
 
 
-<form role="form" method="post">
+<form role="form" method="post" >
     {% csrf_token %}
     <div class="container theme-showcase" role="main">
             <div class="page-header" style="margin-top: 80px;">
-                <h1 class="text-center ">xxxxxxxxxxx考试</h1><br></br>
-                <h2 class="text-center ">时间:xx分钟</h2>
+                <h1 class="text-center ">{{ course.courseName }}考试</h1><br></br>
+                <h2 class="text-center ">时间:60分钟</h2>
                 <br id="navbar" class="navbar-collapse collapse" style="float:none;">
                 <form class="navbar-form" method="post">
-                  <label>选择题</label>
-                    <div>第x题:这道题很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长
+                  <label id="choice">选择题</label>
+                    {% for i in choice_question_info %}
+                    <div>{{ forloop.counter }}.{{ i.0.content }}
                         <br>
-                            <input type="radio" name="choice" id="1" value="A" > <a>A</a>
+                            <input type="radio"
+                                    name="choice{{ i.0.choiceId }}"
+                                    id="{{ i.0.choiceId }}"
+                                    value="A"
+                                    onchange = "ajax_post(this.id,this.value,1,{{ exam.examId }});"
+                                    {% if i.1 == 'A' %}
+                                        checked = ""
+                                    {% endif %}
+                            >
+                        <a>A.{{ i.0.questionA }}</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="2"  value="B"> <a>B</a>
+                            <input type="radio"
+                                    name="choice{{ i.0.choiceId }}"
+                                    id="{{ i.0.choiceId }}" value="B"
+                                    onchange = "ajax_post(this.id,this.value,1,{{ exam.examId }});"
+                                    {% if i.1 == 'B' %}
+                                        checked = ""
+                                    {% endif %}
+                            >
+                        <a>B.{{ i.0.questionB }}</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="3"  value="C"> <a>C</a>
+                            <input type="radio"
+                                    name="choice{{ i.0.choiceId }}"
+                                    id="{{ i.0.choiceId }}"  value="C"
+                                    onchange = "ajax_post(this.id,this.value,1,{{ exam.examId }});"
+                                    {% if i.1 == 'C' %}
+                                        checked = ""
+                                    {% endif %}
+                                    >
+                        <a>C.{{ i.0.questionC }}</a>
                             <br>
                             </br>
-                            <input type="radio" name="choice" id="4"  value="D"> <a>D</a>
+                            <input type="radio"
+                                    name="choice{{ i.0.choiceId }}"
+                                    id="{{ i.0.choiceId }}"  value="D"
+                                    onchange = "ajax_post(this.id,this.value,1,{{ exam.examId }});"
+                                    {% if i.1 == 'D' %}
+                                        checked = ""
+                                    {% endif %}
+                            >
+                        <a>D.{{ i.0.questionD }}</a>
 
                     </div>
-                  <label>填空题</label>
+                    {% endfor %}
+                  <label id="fill">填空题</label>
+                {% for j in fill_question_info %}
                     <div>
-                        第1题:四大名捕是<input type="text" id="mytext">和追风。
-                        第2题
-                        3<br></br>
+                        <br>{{ forloop.counter }}.{{ j.0.content }}
+                        <input type="text" name="fill" value="{{ j.1 }}" id="{{ j.0.fillId }}" onchange = "ajax_post(this.id,this.value,2,{{ exam.examId }});"   >
+                        </br>
 
-                        4<br></br>
-                        5<br></br>
-                        6<br></br>
-                        7<br></br>
-                        8<br></br>
-                        9<br></br>
-                        10<br></br>
-                        11<br></br>
-                        12<br></br>
-                        13<br></br>
-                        14<br></br>
-                        15<br></br>
-                        16<br></br>
-                        17<br></br>
-                        18<br></br>
-                        19<br></br>
-                        20<br></br>
+
+
+
+
                     </div>
+                {% endfor %}
+                <input  hidden="hidden" name="exam" value="{{ exam.examId }}" >
                 </form>
-                <div class="form-group">
-                    <button type="submit" id="btn1" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">交卷</button>
+                <div class="form-group" hidden="hidden">
+                    <button  type="submit" id="btn1" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">交卷</button>
                 </div>
               </div>
             </div>

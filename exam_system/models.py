@@ -33,7 +33,7 @@ class Exam(models.Model):
     isOver = models.IntegerField(default=1)  # 考试是否结束(1:未结束  2：已结束)
     score = models.IntegerField(default=-1)  # 考试分数
     type = models.IntegerField()  # 考试类型(1：第一次月考  2：期中考 3：第二次月考 4：期末考 5：练习)
-
+    start_time = models.DateTimeField(default='1970-01-01 00:00:00')#学生开始考试的时间，用于判断考试是否结束
 
 # 试卷-题目对照关系
 class ExamQuestion(models.Model):
@@ -77,8 +77,8 @@ class Grade(models.Model):
 class MistakesCollection(models.Model):
     studentId = models.ForeignKey('Person', related_name='Person_mistake', on_delete=models.CASCADE)  # 学生id
     courseId = models.ForeignKey('Course', related_name='course_mistake', on_delete=models.CASCADE)  # 课程id
-    questionId = models.IntegerField()  # 题目id
-    type = models.IntegerField()  # 题目类型(1：选择  2：填空)
+    questionId = models.IntegerField(default=0)  # 题目id
+    type = models.IntegerField(default=0)  # 题目类型(1：选择  2：填空)
 
 
 # 论坛发帖信息模板

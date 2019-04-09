@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "student_login.html" %}
 
 
 
@@ -16,22 +16,16 @@
 	<tbody>
 		<tr>
 			<td>姓名</td>
-			<td>总分</td>
-            <td>选择题</td>
-            <td>填空题</td>
+			<td>考试得分</td>
 		</tr>
 		<tr>
-			<td>Sachin</td>
-			<td>20</td>
-			<td>20</td>
+			<td>{{ studentName }}</td>
+			<td>{{ score }}</td>
+
 		</tr>
-		<tr>
-			<td>Uma</td>
-			<td>20</td>
-			<td>20</td>
-		</tr>
+
 	</tbody>
 </table>
- <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+{# <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>#}
  </div>
 {% endblock %}

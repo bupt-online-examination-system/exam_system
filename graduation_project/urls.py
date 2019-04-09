@@ -26,8 +26,8 @@ from django.views.static import serve
 from django.conf.urls.static import static
 #使用其他模块的东西要先import      as tool_views是为了区分不同模块的views
 urlpatterns = [
-    url(r'^start_exam/$', tools_views.start_exam, name='start_exam'),
-    url(r'^get_psw/$', tools_views.get_psw, name='get_psw'),
+    # url(r'^start_exam/$', tools_views.start_exam, name='start_exam'),
+
 
     # 论坛模块
     url(r'^event_manage/$', bbs_views.event_manage, name='event_manage'),
@@ -42,11 +42,12 @@ urlpatterns = [
     url(r'^count/$', bbs_views.count, name='count'),
 
     #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"
+    url(r'^get_psw/$', tools_views.get_psw, name='get_psw'),
     url(r'^file/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
     url(r'^send_email/$', tools_views.send_email, name='send_email'),
     url(r'^data_in/$', tools_views.data_in, name='data_in'),
     url(r'^data_out/$', tools_views.data_out, name='data_out'),
-    # url(r'^ajax/post/', tools_views.ajax_post,name='ajax/post'),
+    url(r'^exam_details/ajax/post/$', tools_views.ajax_post,name='ajax/post'),
 
     #学生模块
     url(r'^student_login/$', student_views.student_login, name='student_login'),
@@ -65,7 +66,7 @@ urlpatterns = [
     url(r'^mistake_choice_details_answer/$', student_views.mistake_choice_details_answer,name='mistake_choice_details_answer'),
     url(r'^mistake_fill_details/$', student_views.mistake_fill_details, name='mistake_fill_details'),
     url(r'^mistake_fill_details_answer/$', student_views.mistake_fill_details_answer,name='mistake_fill_details_answer'),
-    url(r'^exam_details/$', student_views.exam_details, name='exam_details'),
+    url(r'^exam_details/$', tools_views.exam_details, name='exam_details'),
     url(r'^personal_homepage/$', student_views.personal_homepage, name='personal_homepage'),
     url(r'^score_query/$', student_views.score_query, name='score_query'),
     url(r'^pass_score_query/$', student_views.pass_score_query, name='pass_score_query'),
