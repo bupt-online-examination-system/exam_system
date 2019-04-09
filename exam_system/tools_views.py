@@ -8,22 +8,86 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 import xlrd
 from .models import *
-
+from datetime import datetime
 
 
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
-def start_exam(request):
-    if request.method == 'GET':
-        exam_time =  10     #获取设置的考试时间，转成秒
-        now_time = time.time()
-        #当前时间戳    这里应该判断一下该学生的状态是考试中还是未考试，如果是考试中，从数据库获取end_time(之后会把考试答卷改成异步上传，每次改动都传)。如果是未考试才获取当前时间
-        end_time = now_time + exam_time#截止时间戳
-        return render(request, "exam_interface.html",{"end_time":end_time*1000})#js中的时间戳是毫秒，转换一下
+def exam_details(request):
+
+    if request.method == 'GET':#获取本次考试的所有数据
+        exam_time = 10    #获取设置的考试时间，转成秒         写死成1小时
+        # now_time = time.time()
+        # end_time = now_time + exam_time#截止时间戳
+        # end_time = 1000*end_time
+
+        studentId = request.session.get('studentId')
+        studentName = Person.objects.filter(userId=studentId).values('userName')
+        courseId = request.GET.get("courseId")
+        exam = Exam.objects.filter(studentId=studentId, courseId=courseId)[0]
+        course = Course.objects.filter(courseId = courseId)
+        choice_question_info = []
+        fill_question_info = []
+
+
+
+        if exam.isOver == 1:#考试未结束
+            # print(exam.start_time)
+            # print(type(exam.start_time.strftime('%Y-%m-%d %H:%M:%S')))
+            if exam.start_time.strftime('%Y-%m-%d %H:%M:%S') == '1970-01-01 00:00:00':#考试未开始
+                print("开始考试")
+                exam.start_time = datetime.now()
+                exam.save()
+
+                end_time = (exam_time + time.mktime(exam.start_time.timetuple()))*1000
+                print(end_time)
+            else:
+                end_time = (exam_time + time.mktime(datetime.now().timetuple())) * 1000
+                print(end_time)
+            exam_question_info = ExamQuestion.objects.filter(examId=exam.examId).values('questionId', 'type','answer')
+            for i in exam_question_info:
+                if i['type'] == 1:
+                    choice_question_info.append(
+                        [ChoiceQuestion.objects.filter(type=1,choiceId=i['questionId'])[0]  , i['answer']]
+                    )
+                elif i['type'] == 2:
+                    fill_question_info.append(
+                        [FillInTheBlank.objects.filter(type=1,fillId=i['questionId'])[0],i['answer']]
+                    )
+
+            return render(request,"exam_interface.html",locals())#js中的时间戳是毫秒，转换一下
+
+        elif exam.isOver == 2:  # 考试中途退出再打开
+            return HttpResponse('考试已结束')
+
+
+
     elif request.method == 'POST':
-        #存到数据库     算分，显示在页面上
-        pass
-        return render(request, "exam_result.html")
+
+        exam_id = int(request.POST.get("exam"))
+        studentId = request.session.get('studentId')
+        studentName = Person.objects.filter(userId=studentId).values('userName')[0]['userName']
+
+        exam = Exam.objects.filter(examId = exam_id)[0]
+        print(studentName)
+        exam_question_info = ExamQuestion.objects.filter(examId=exam.examId).values('questionId', 'type', 'answer')
+        right_choice = 0
+        right_fill  = 0
+        for i in exam_question_info:
+            if i['type'] == 1:
+                if ChoiceQuestion.objects.filter(type=1, choiceId=i['questionId'])[0].answer == i['answer']:
+                    right_choice+=1
+            elif i['type'] == 2:
+                if FillInTheBlank.objects.filter(type=1, fillId=i['questionId'])[0].answer == i['answer']:
+                    right_choice+=1
+        score = (right_choice+right_fill)*5
+        exam.score =  score  #写死  每题5分
+        exam.isOver = 2
+        exam.save()
+
+        print(exam.examId)
+        print(score)
+        return render(request, "exam_result.html",locals())
 
 def get_psw(request):
     #为了防止代考，给每个考生生成6位随机口令 与考号绑定
@@ -130,9 +194,18 @@ def data_out(request):
     pass
 
 
-# def ajax_post(request):
-#     for i in range():
-#     a = request.GET.get("a")
-#     b = request.GET.get("b")
-#     n = int(a) * int(b)
-#     return HttpResponse(str(n))
+def ajax_post(request):
+    stu = request.session.get('studentId')
+    exam = int(request.POST.get("exam"))
+    type_ = int(request.POST.get("type"))
+    num = request.POST.get("id")
+    answer = request.POST.get("answer")
+    print(stu,exam,type_,num,answer)
+
+
+    instance = ExamQuestion.objects.filter(examId = exam,type = type_,questionId = num)
+    if instance:
+        instance[0].answer = answer
+        instance[0].save()
+    else:
+        ExamQuestion.objects.create(examId = exam,type = type_,answer = answer,questionId = num)
