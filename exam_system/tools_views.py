@@ -24,7 +24,10 @@ def exam_details(request):
         studentId = request.session.get('studentId')
         studentName = Person.objects.filter(userId=studentId).values('userName')
         courseId = request.GET.get("courseId")
-        exam = Exam.objects.filter(studentId=studentId, courseId=courseId)[0]
+        #examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).values_list('examId',flat=True).order_by('examId')) #得到该学生该课程下一次考试的examId
+        #exam = Exam.objects.filter(studentId=studentId, courseId=courseId)[0]
+        exam = Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).order_by('examId')[0] #得到该学生该课程下一次考试的examId
+        print(exam)
         course = Course.objects.filter(courseId = courseId)
         choice_question_info = []
         fill_question_info = []

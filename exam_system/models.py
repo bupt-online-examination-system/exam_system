@@ -40,6 +40,7 @@ class ExamQuestion(models.Model):
     examId = models.ForeignKey('Exam', related_name='exam_question', on_delete=models.CASCADE)  # 考试试卷id
     questionId = models.IntegerField()  # 题目id
     answer = models.CharField(max_length=50, blank=True, null=True)  # 学生给出的答案
+    isRight = models.IntegerField(default=-1) #学生是否做对该题(0：错  1：对)
     type = models.IntegerField()  # 题目类型(1：选择  2：填空)
 
 
