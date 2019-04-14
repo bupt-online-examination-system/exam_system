@@ -36,7 +36,7 @@ def new_post(request):
         courseId = request.GET.get("courseId")
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
-        ForumQuestion.objects.create(content=message,title=subject,courseId=courseId,questionId_id=4)
+        ForumQuestion.objects.create(content=message,title=subject,courseId=courseId,questionId_id=2)
         post_question_info = ForumQuestion.objects.filter(courseId=courseId)
         # bug 返回时会重新插入一遍数据
         return render(request, "course_forum.html",locals())
@@ -71,7 +71,7 @@ def answer_post(request):
         postId = request.GET.get("postId")
         courseId = request.GET.get("courseId")
         message = request.POST.get('message','无内容')
-        ForumAnswer.objects.create(content=message,answerId_id=4,postId_id=postId)
+        ForumAnswer.objects.create(content=message,answerId_id=2,postId_id=postId)
         post_question_info = ForumQuestion.objects.filter(postId=postId)
         post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
         # bug 返回时会重新插入一遍数据 刷新网页也会多添加一次数据
