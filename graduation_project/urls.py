@@ -22,14 +22,20 @@ from exam_system import student_views
 from exam_system import teacher_views
 from . import settings
 from django.views.static import serve
+from django.contrib.auth import views as auth_views
+from exam_system import administrator_views
 
 from django.conf.urls.static import static
 #使用其他模块的东西要先import      as tool_views是为了区分不同模块的views
+from django.conf.urls import url, include
+from django.contrib import admin
 urlpatterns = [
-    # url(r'^start_exam/$', tools_views.start_exam, name='start_exam'),
+#     # url(r'^start_exam/$', tools_views.start_exam, name='start_exam'),
 
 
-    # 论坛模块
+
+
+# 论坛模块
     url(r'^event_manage/$', bbs_views.event_manage, name='event_manage'),
     url(r'^course_forum/$', bbs_views.course_forum, name='course_forum'),
     url(r'^course_post/$', bbs_views.course_post, name='course_post'),
@@ -88,6 +94,14 @@ urlpatterns = [
     url(r'^administrator_teacherlist/$', administrator_views.administrator_teacherlist, name='administrator_teacherlist'),
     url(r'^administrator_aftlist/$', administrator_views.administrator_aftlist, name='administrator_aftlist'),
     url(r'^administrator_uftlist/$', administrator_views.administrator_uftlist, name='administrator_uftlist'),
+    url(r'^index/$', administrator_views.index, name='index'),
+    url(r'^admin/', admin.site.urls),
+    url(r'^$',administrator_views.login.administrator_login),
+    url(r'^$',administrator_views.login.student_login),
+    url(r'^$',administrator_views.login.teacher_login),
+    url(r'^login/',administrator_views.login.LOGIN),
+
+
 
     # 教师模块
     url(r'^teacher_login/$', teacher_views.teacher_login, name='teacher_login'),
