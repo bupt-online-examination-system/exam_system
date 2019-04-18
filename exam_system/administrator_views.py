@@ -8,7 +8,6 @@ import random
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
-from .form import LoginForm,PwdmodifyForm
 from django.views.generic.base import View
 
 

@@ -91,6 +91,7 @@ class ForumQuestion(models.Model):
     courseId = models.ForeignKey('Course', related_name='course_forum_question', on_delete=models.CASCADE)  # 课程id
     postTime = models.DateTimeField(default='1970-01-01 00:00:00')  # 发帖时间
     topTime = models.DateTimeField(default='1970-01-01 00:00:00')  # 上一次置顶时间
+    answerNum = models.IntegerField(default=0)   #回帖数
 
 
 # 论坛回帖信息模板
