@@ -14,12 +14,17 @@
 	<tbody>
         {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
         {#   get方法传参   #}
-        {% for info in exam_schedule_info %}
+        {% for info in my_exam_schedule_info %}
         <tr>
-        <td>{{ info.courseId }}</td>
-            <td><a href="/exam_schedule_details/?courseId={{ info.courseId }}">{{ info.courseName}}</a></td>
-        {% endfor %}
+            {% for course in exam_schedule_info %}
+                {% if course.courseId == info.courseId %}
+                    <td>{{ info.courseId }}</td>
+                    <td><a href="/exam_schedule_details/?courseId={{ info.courseId }}">{{ course.courseName}}</a></td>
+                {% endif %}
+            {% endfor %}
         </tr>
+        {% endfor %}
+
 	</tbody>
 </table>
      <center><a href="/personal_homepage/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
