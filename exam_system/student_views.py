@@ -339,6 +339,11 @@ def fail_exam_details(request):    #未通过课程考试信息详情界面
 def exam_schedule(request):    #待考课程界面
     studentId=request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
+    over_course = list(Exam.objects.filter(isOver=2,type=4).values_list('courseId', flat=True))#所有期末考结束的课
+    print(over_course)
+    length = len(over_course)
+    for i in range(length):
+        Course.objects.filter(courseId=over_course[i]).update(isOver=2)   #把期末考结课的课程状态改为已结课
     exam_schedule_info = Course.objects.filter(isOver=1).values('courseId','courseName') #找出期末考未结束的课
     print(exam_schedule_info)
     return render(request, "exam_schedule.html", locals())
