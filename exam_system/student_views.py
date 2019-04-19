@@ -344,8 +344,8 @@ def exam_schedule(request):    #待考课程界面
     length = len(over_course)
     for i in range(length):
         Course.objects.filter(courseId=over_course[i]).update(isOver=2)   #把期末考结课的课程状态改为已结课
-    exam_schedule_info = Course.objects.filter(isOver=1).values('courseId','courseName') #找出期末考未结束的课
-    print(exam_schedule_info)
+    exam_schedule_info = Course.objects.filter(isOver=1).values('courseId','courseName') #找出所有期末考未结束的课
+    my_exam_schedule_info = CourseStudent.objects.filter(studentId=studentId).values('courseId')#当前登录学生所选的课程
     return render(request, "exam_schedule.html", locals())
 
 def exam_schedule_details(request):    #待考课程考试信息详情界面
