@@ -16,7 +16,7 @@ from datetime import datetime
 def exam_details(request):
 
     if request.method == 'GET':#获取本次考试的所有数据
-        exam_time = 10    #获取设置的考试时间，转成秒         写死成1小时
+        exam_time = 60    #获取设置的考试时间，转成秒         写死成1小时
         # now_time = time.time()
         # end_time = now_time + exam_time#截止时间戳
         # end_time = 1000*end_time
@@ -79,10 +79,16 @@ def exam_details(request):
         for i in exam_question_info:
             if i['type'] == 1:
                 if ChoiceQuestion.objects.filter(type=1, choiceId=i['questionId'])[0].answer == i['answer']:
+                    i.isRight = 1
                     right_choice+=1
+                else:
+                    i.isRight = 0
             elif i['type'] == 2:
                 if FillInTheBlank.objects.filter(type=1, fillId=i['questionId'])[0].answer == i['answer']:
+                    i.isRight = 1
                     right_choice+=1
+                else:
+                    i.isRight = 0
         score = (right_choice+right_fill)*5
         exam.score =  score  #写死  每题5分
         exam.isOver = 2
@@ -92,8 +98,8 @@ def exam_details(request):
         print(score)
         return render(request, "exam_result.html",locals())
 
-def get_psw(request):
-    #为了防止代考，给每个考生生成6位随机口令 与考号绑定
+def reset_psw(request):
+    #为了防止代考，给所有考生重置密码
     if request.method == 'GET':
         return render(request, "psw_out.html")
     elif request.method == "post":
