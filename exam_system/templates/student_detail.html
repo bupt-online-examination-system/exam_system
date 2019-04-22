@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "teacher_login.html" %}
 
-</body>
-</html>
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th class="text-dark"><h2>       </h2></th>
+		</tr>
+	</thead>
+	<tbody>
+        <th> <class="text-dark"><a10>小明</a10>
+        <tr>
+        <th class="text-dark"><a10>题号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否正确</a10>
+        <tr>
+        <th class="text-dark"><a10>01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;正确</a10>
+        <tr>
+        <th class="text-dark"><a10>02&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;错误</a10>
+        <tr>
+        <th class="text-dark"><a10>03&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;正确</a10>
+        </tr>
+	</tbody>
+</table>
+  <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回上级页面</button>
+ </div>
+{% endblock %}

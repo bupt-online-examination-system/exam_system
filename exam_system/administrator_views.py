@@ -8,6 +8,10 @@ import random
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
+# <<<<<<< GR
+
+# =======
+# >>>>>>> master
 from django.views.generic.base import View
 
 

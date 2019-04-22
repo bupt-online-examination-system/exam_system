@@ -111,6 +111,12 @@ urlpatterns = [
     url(r'^student_detail/$', teacher_views.student_detail, name='student_detail'),
     url(r'^all_student/$', teacher_views.all_student, name='all_student'),
     url(r'^question_added/$', teacher_views.question_added, name='question_added'),
+    url(r'^course_name/$', teacher_views.course_name, name='course_name'),
+    url(r'^exam_number/$', teacher_views.exam_number, name='exam_number'),
+    url(r'^first_exam/$', teacher_views.first_exam, name='first_exam'),
+    url(r'^second_exam/$', teacher_views.second_exam, name='second_exam'),
+    url(r'^third_exam/$', teacher_views.third_exam, name='third_exam'),
+    url(r'^final_exam/$', teacher_views.final_exam, name='final_exam'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
 

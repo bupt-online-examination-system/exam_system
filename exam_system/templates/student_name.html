@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "teacher_login.html" %}
 
-</body>
-</html>
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th class="text-dark"><h2>       </h2></th>
+		</tr>
+	</thead>
+	<tbody>
+        {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
+        {#   get方法传参   #}
+        <th class="text-dark"><a10><a href="/student_detail/">小明</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学号：1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;考试成绩：80</a10>
+        </tr>
+        <th class="text-dark"><a10><a href="/student_detail/">小红</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学号：2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;考试成绩：60</a10>
+        </tr>
+        <th class="text-dark"><a10><a href="/student_detail/">阿蛋</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学号：3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;考试成绩：90</a10>
+        </tr>
+	</tbody>
+
+
+
