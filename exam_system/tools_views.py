@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 import xlrd
 from .models import *
 from datetime import datetime
-
+from xlwt import Workbook
 
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
@@ -27,6 +27,8 @@ def exam_details(request):
         #examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).values_list('examId',flat=True).order_by('examId')) #得到该学生该课程下一次考试的examId
         #exam = Exam.objects.filter(studentId=studentId, courseId=courseId)[0]
         exam = Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).order_by('examId')[0] #得到该学生该课程下一次考试的examId
+        if not exam:
+            return HttpResponse('现在不能考试')
         print(exam)
         course = Course.objects.filter(courseId = courseId)
         choice_question_info = []
@@ -35,8 +37,22 @@ def exam_details(request):
 
 
         if exam.isOver == 1:#考试未结束
-            # print(exam.start_time)
-            # print(type(exam.start_time.strftime('%Y-%m-%d %H:%M:%S')))
+            user = request.user
+            user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR', '')
+
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+
+            History.objects.create(
+                studentId = Person.objects.get(userId=studentId),
+                courseId = Course.objects.get(courseId=courseId),
+                examId = exam,
+                ip = ip,
+                time = datetime.now(),
+            )
             if exam.start_time.strftime('%Y-%m-%d %H:%M:%S') == '1970-01-01 00:00:00':#考试未开始
                 print("开始考试")
                 exam.start_time = datetime.now()
@@ -60,7 +76,7 @@ def exam_details(request):
 
             return render(request,"exam_interface.html",locals())#js中的时间戳是毫秒，转换一下
 
-        elif exam.isOver == 2:  # 考试中途退出再打开
+        elif exam.isOver == 2:
             return HttpResponse('考试已结束')
 
 
@@ -73,18 +89,18 @@ def exam_details(request):
 
         exam = Exam.objects.filter(examId = exam_id)[0]
         print(studentName)
-        exam_question_info = ExamQuestion.objects.filter(examId=exam.examId).values('questionId', 'type', 'answer')
+        exam_question_info = ExamQuestion.objects.filter(examId=exam.examId)
         right_choice = 0
         right_fill  = 0
         for i in exam_question_info:
-            if i['type'] == 1:
-                if ChoiceQuestion.objects.filter(type=1, choiceId=i['questionId'])[0].answer == i['answer']:
+            if i.type == 1:
+                if ChoiceQuestion.objects.filter(type=1, choiceId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1
                     right_choice+=1
                 else:
                     i.isRight = 0
-            elif i['type'] == 2:
-                if FillInTheBlank.objects.filter(type=1, fillId=i['questionId'])[0].answer == i['answer']:
+            elif i.type == 2:
+                if FillInTheBlank.objects.filter(type=1, fillId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1
                     right_choice+=1
                 else:
@@ -100,20 +116,36 @@ def exam_details(request):
 
 def reset_psw(request):
     #为了防止代考，给所有考生重置密码
+    person_list = Person.objects.all()
     if request.method == 'GET':
-        return render(request, "psw_out.html")
-    elif request.method == "post":
-        path = request['path']#或者request.POST.get('path'):
+
+        # path = request['path']#或者request.POST.get('path'):
         chars = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         # 随机产生6个不同字符
-        random_chars = "".join(random.sample(chars, 6))
+        for i in person_list:
+            i.passWord = "".join(random.sample(chars, 6))
+            i.save()
 
 
+        person_list = Person.objects.all()
+        if person_list:
+            # 创建工作薄
+            ws = Workbook(encoding='utf-8')
+            w = ws.add_sheet(u"数据报表第一页")
+            w.write(0, 0, "考生姓名")
+            w.write(0, 1, "密码")
+
+
+            excel_row = 1
+            for obj in person_list:
+                w.write(excel_row, 0, obj.userName)
+                w.write(excel_row, 1, obj.passWord)
+
+                excel_row += 1
+
+            ws.save(r"file\考试名单.xls")
+            # return HttpResponse('导出成功')
         return render(request, "psw_out.html")
-
-
-
-
 
 
 def send_email(request):
@@ -163,33 +195,163 @@ def data_in(request):
             table = wb.sheets()[0]
             rows = table.nrows  # 总行数
 
+            if table_num == '0':
+
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    Person.objects.create(
+                          userId=int(rowVlaues[0]),
+                          userType=int(rowVlaues[1]),
+                          userName=rowVlaues[2],
+                          passWord=rowVlaues[3]
+                          )
+
+            elif table_num == '1':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    Course.objects.create(
+                        courseId = int(rowVlaues[0]),
+                        teacherId = Person.objects.get(userId = int(rowVlaues[1])),
+                        courseName=str(rowVlaues[2]),
+                        isOver = int(rowVlaues[3])
+                    )
 
 
-            for i in range(1, rows):
-                rowVlaues = table.row_values(i)
-                rowVlaues = tuple(rowVlaues)
-                if table_num == '0':
-                    Person.objects.create(userId=str(int(rowVlaues[0])),
-                                          userType=int(rowVlaues[1]),
-                                          userName=rowVlaues[2],
-                                          passWord = rowVlaues[3])
-                # elif table_num == '1':
-                #     Course.objects.create(
-                #     courseId = str(int(rowVlaues[0])),
-                #     teacherId = str(),
-                #                                   on_delete=models.CASCADE)  # 教师id
-                #     studentId = models.ForeignKey('Person', related_name='student_course',
-                #                                   on_delete=models.CASCADE)  # 学生id
-                #     courseName = models.CharField(max_length=50)  # 课程名称
-                #     isOver
-                #     )
-                #     elif table_num == '2':
-                #     elif table_num == '3':
-                #     elif table_num == '4':
-                #     elif table_num == '5':
-                #     elif table_num == '6':
-                #     elif table_num == '7':
-                #     elif table_num == '8':
+            elif table_num == '2':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    CourseStudent.objects.create(
+                        courseId=Course.objects.get(courseId = int(rowVlaues[0])),
+                        studentId=Person.objects.get(userId = int(rowVlaues[1])),
+                    )
+            elif table_num == '3':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    Exam.objects.create(
+                        examId=int(rowVlaues[0]),
+                        courseId = Course.objects.get(courseId = rowVlaues[1]),
+                        studentId = Person.objects.get(userId = rowVlaues[2]),
+                        isOver = int(rowVlaues[3]),
+                        score = int(rowVlaues[4]),
+                        type = int(rowVlaues[5]),
+                        start_time = str(rowVlaues[6]),
+                    )
+
+            elif table_num == '4':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    ExamQuestion.objects.create(
+                        examId = Exam.objects.getint(examId = rowVlaues[0]),
+                        questionId = int(rowVlaues[1]),
+                        answer =  str(rowVlaues[2]),
+                        isRight = int(rowVlaues[3]),
+                        type = int(rowVlaues[4]),
+                    )
+
+            elif table_num == '5':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    ChoiceQuestion.objects.create(
+                        choiceId= int(rowVlaues[0]),
+                        courseId =  Course.objects.get(courseId = int(rowVlaues[1])),
+                        content =  str(rowVlaues[2]),
+                        questionA = str(rowVlaues[3]),
+                        questionB =  str(rowVlaues[4]),
+                        questionC =  str(rowVlaues[5]),
+                        questionD = str(rowVlaues[6]),
+                        answer = str(rowVlaues[7]),
+                        type = int(rowVlaues[8]),
+                    )
+            elif table_num == '6':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    FillInTheBlank.objects.create(
+                        fillId = int(rowVlaues[0]),
+                        courseId = Course.objects.get(courseId = int(rowVlaues[1])),
+                        content = str(rowVlaues[2]),
+                        answer = str(rowVlaues[3]),
+                        type = int(rowVlaues[4]),
+                    )
+            elif table_num == '7':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    Grade.objects.create(
+                        studentId = Person.objects.get(userId=int(rowVlaues[0])),
+                        courseId = Course.objects.get(courseId = int(rowVlaues[1])),
+                        grade=int(rowVlaues[2]),
+                        isPass=int(rowVlaues[3]),
+                    )
+
+            elif table_num == '8':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    MistakesCollection.objects.create(
+                        studentId=Person.objects.get(userId=int(rowVlaues[0])),
+                        courseId=Course.objects.get(courseId=int(rowVlaues[1])),
+                        questionId=int(rowVlaues[2]),
+                        type=int(rowVlaues[3]),
+                    )
+
+            elif table_num == '9':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    ForumQuestion.objects.create(
+                        postId =  int(rowVlaues[0]),
+                        questionId = Person.objects.get(questionId = int(rowVlaues[1])),
+                        content = rowVlaues[2],
+                        title = rowVlaues[3],
+                        courseId = Course.objects.get(courseId = rowVlaues[4]),
+                        postTime = rowVlaues[5],
+                        topTime = rowVlaues[6],
+                        answerNum = int(rowVlaues[7]),
+                    )
+            elif table_num == '10':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    ForumAnswer.objects.create(
+                        postId = int(rowVlaues[0]),
+                        answerId = int(rowVlaues[1]),
+                        content = rowVlaues[2],
+                        answerTime = rowVlaues[3],
+                    )
+
+            elif table_num == '11':
+                for i in range(1, rows):
+                    rowVlaues = table.row_values(i)
+                    rowVlaues = tuple(rowVlaues)
+
+                    History.objects.create(
+                        studentId=Person.objects.get(userId=int(rowVlaues[0])),
+                        courseId=Course.objects.get(courseId=int(rowVlaues[1])),
+                        examId = Exam.objects.get(examId = int(rowVlaues[2])),
+                        ip = rowVlaues[3],
+                        time = rowVlaues[4],
+                    )
+
+
+
 
 
 
@@ -200,7 +362,42 @@ def data_in(request):
 
 
 def data_out(request):
-    pass
+    if request.method == "GET":
+        from django.apps import apps
+        tables = list(apps.get_app_config('exam_system').get_models())
+        return render(request, "data_out.html",locals())
+
+    elif request.method == "POST":
+
+        path = request.POST['path']
+        table_num = request.POST.get('table')
+
+        if not request.POST['path']:
+            return HttpResponse('没有选择导出的路径')
+
+        if request.POST['table'] == '0':
+            person_list = Person.objects.all()
+            if person_list:
+                # 创建工作薄
+                ws = Workbook(encoding='utf-8')
+                w = ws.add_sheet(u"数据报表第一页")
+                w.write(0, 0, "userId")
+                w.write(0, 1, "userType")
+                w.write(0, 2, "userName")
+                w.write(0, 3, "passWord")
+
+                # 写入数据
+                excel_row = 1
+                for obj in person_list:
+                    w.write(excel_row, 0, obj.userId)
+                    w.write(excel_row, 1, obj.userType)
+                    w.write(excel_row, 2, obj.userName)
+                    w.write(excel_row, 3, obj.passWord)
+
+                    excel_row += 1
+
+                ws.save(path + r"\Person.xls")
+                return HttpResponse('导出成功')
 
 
 def ajax_post(request):
