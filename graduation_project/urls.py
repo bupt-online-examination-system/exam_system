@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^stop_top_post/$', bbs_views.stop_top_post, name='stop_top_post'),
     url(r'^count/$', bbs_views.count, name='count'),
 
-    #name=xxx是为了在html中直接引用，例如href="/xxx/"   替代了href="127.0.0.1/xxx/"
+    #工具模块
     url(r'^reset_psw/$', tools_views.reset_psw, name='reset_psw'),
     url(r'^file/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
     url(r'^send_email/$', tools_views.send_email, name='send_email'),

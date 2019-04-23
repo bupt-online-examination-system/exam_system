@@ -16,15 +16,15 @@
                         <form  method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
-                                <input type="file" name="file">
+                                <input type="text" name="path" value="请手动输入导出的路径">
                                 <select name="table">
-                                    <option value="none">--选择要导入的数据表--</option>
+                                    <option value="none">--选择要导出的数据表--</option>
                                     {% for table in tables %}
                                     <option value={{ forloop.counter0 }}>{{ table }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg">开始导入</button>
+                            <button type="submit" class="btn btn-primary btn-lg">开始导出</button>
                             <div id="form-messages"></div>
                         </form>
                     </div><!--end contact form-->
