@@ -2,6 +2,7 @@ from django.shortcuts import render
 from.models import *
 from django.db.models import Q
 from django.db.models.aggregates import Count
+
 from django.contrib.auth.decorators import login_required
 import time
 
@@ -13,15 +14,23 @@ from django.http import HttpResponse
 #@login_required
 #python的装饰器，相当于java中的注解     @login_required表示必须登录才能访问，否则跳转到登录页面，在settings.py中配置LGOIN_URL参数（即登陆url）
 def event_manage(request):
+    request.session['userId'] = 1
+    request.session['userName'] = "学生1"
+    userId = request.session.get('userId')
+    userName = request.session.get('userName')
     course_info=Course.objects.all() #全部用 all，部分条件用filter
     return render(request, "guest_manage.html", locals())
 
 def course_forum(request):
+    userId = request.session.get('userId')
+    userName = request.session.get('userName')
     courseId = request.GET.get("courseId")
     post_question_info = ForumQuestion.objects.filter(courseId=courseId)
     return render(request, "course_forum.html", locals())
 
 def course_post(request):
+    userId = request.session.get('userId')
+    userName = request.session.get('userName')
     postId = request.GET.get("postId")
     courseId = request.GET.get("courseId")
     post_question_info = ForumQuestion.objects.filter(postId=postId)
@@ -33,10 +42,12 @@ def new_post(request):
     if request.method == "GET":
         return render(request, "new_post.html")
     elif request.method == "POST":
+        userName = request.session.get('userName')
+        userId = request.session.get('userId')
         courseId = request.GET.get("courseId")
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
-        ForumQuestion.objects.create(content=message,title=subject,courseId=courseId,questionId_id=2)
+        ForumQuestion.objects.create(content=message,title=subject,courseId_id=courseId,questionId_id=userId)
         post_question_info = ForumQuestion.objects.filter(courseId=courseId)
         # bug 返回时会重新插入一遍数据
         return render(request, "course_forum.html",locals())
@@ -45,6 +56,8 @@ def edit_post(request):
     if request.method == "GET":
         return render(request, "edit_post.html")
     elif request.method == "POST":
+        userName = request.session.get('userName')
+        userId = request.session.get('userId')
         postId = request.GET.get("postId")
         courseId = request.GET.get("courseId")
         subject = request.POST.get('subject','无标题')
@@ -56,6 +69,7 @@ def edit_post(request):
         return render(request, "course_post.html", locals())
 
 def delete_post(request):
+    userName = request.session.get('userName')
     postId = request.GET.get("postId")
     courseId = request.GET.get("courseId")
     ForumQuestion.objects.filter(postId=postId).delete()
@@ -68,10 +82,12 @@ def answer_post(request):
     if request.method == "GET":
         return render(request, "answer_post.html")
     elif request.method == "POST":
+        userName = request.session.get('userName')
+        userId = request.session.get('userId')
         postId = request.GET.get("postId")
         courseId = request.GET.get("courseId")
         message = request.POST.get('message','无内容')
-        ForumAnswer.objects.create(content=message,answerId_id=2,postId_id=postId)
+        ForumAnswer.objects.create(content=message,answerId_id=userId,postId_id=postId)
         post_question_info = ForumQuestion.objects.filter(postId=postId)
         post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
         # bug 返回时会重新插入一遍数据 刷新网页也会多添加一次数据
@@ -79,6 +95,8 @@ def answer_post(request):
         return render(request, "course_post.html", locals())
 
 def top_post(request):
+    userName = request.session.get('userName')
+    userId = request.session.get('userId')
     postId = request.GET.get("postId")
     courseId = request.GET.get("courseId")
     post_question_top_info = ForumQuestion.objects.filter(postId=postId)
@@ -88,11 +106,15 @@ def top_post(request):
 
 
 def stop_top_post(request):
+    userId = request.session.get('userId')
+    userName = request.session.get('userName')
     courseId = request.GET.get("courseId")
     post_question_info = ForumQuestion.objects.filter(courseId=courseId)
     return render(request, "course_forum.html", locals())
 
 def count(request):
+    userId = request.session.get('userId')
+    userName = request.session.get('userName')
     count_course_info = Course.objects.values('courseId','courseName').annotate(course_id=Count('courseId'))
     #count_question_info = ForumQuestion.objects.annotate(count('courseId'))
     # count_answer_info = ForumAnswer.objects.annotate(count('courseId'))
