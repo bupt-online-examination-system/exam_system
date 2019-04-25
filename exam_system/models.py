@@ -42,7 +42,7 @@ class ExamQuestion(models.Model):
     answer = models.CharField(max_length=50, blank=True, null=True)  # 学生给出的答案
     isRight = models.IntegerField(default=-1) #学生是否做对该题(0：错  1：对)
     type = models.IntegerField()  # 题目类型(1：选择  2：填空)
-
+    checkTime = models.IntegerField(default=0)#考试中的切屏次数
 
 # 选择题信息模板
 class ChoiceQuestion(models.Model):

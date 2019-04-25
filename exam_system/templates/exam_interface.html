@@ -24,6 +24,8 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
 
 <script type="text/javascript">
 
+    var time = 0;
+
     function ajax_post(i,j,type,exam)
     {
 
@@ -40,8 +42,10 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
         xmlhttp.open("POST","ajax/post/",true);
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
         {#var data="id="+id+"&answer="+value_#}
-        var data="exam="+exam+"&type="+type+"&id="+i+"&answer="+j
+        var data="exam="+exam+"&type="+type+"&id="+i+"&answer="+j+"&time="+Math.ceil(time/2)
+        alert(data)
         xmlhttp.send(data);
+        time = 0
     }
     window.onload=function()
     {
@@ -77,14 +81,14 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
     } //禁止f5刷新
     document.oncontextmenu=function(){return false};//禁止右键刷新
 
-    var time = 0;
+
 
 
     function left()
     {
         if (time <2)//切标签离开焦点一次     点任务栏离开两次
         {
-            alert("请不要离开考试界面或点击与考试无关的按钮，超过三次将视为作弊")
+            alert("请不要离开考试界面或点击与考试无关的按钮")
         }
         time+=1;
 
@@ -168,7 +172,7 @@ var flag = 0
     <div class="container theme-showcase" role="main">
             <div class="page-header" style="margin-top: 80px;">
                 <h1 class="text-center ">{{ course.courseName }}考试</h1><br></br>
-                <h2 class="text-center ">时间:60分钟</h2>
+                <h2 class="text-center ">时间:{{ exam_time }}秒</h2>
                 <br id="navbar" class="navbar-collapse collapse" style="float:none;">
                 <form class="navbar-form" method="post">
                   <label id="choice">选择题</label>
