@@ -406,12 +406,15 @@ def ajax_post(request):
     type_ = int(request.POST.get("type"))
     num = request.POST.get("id")
     answer = request.POST.get("answer")
-    print(stu,exam,type_,num,answer)
+    time = request.POST.get("time")
+    print(stu,exam,type_,num,answer,time)
 
 
     instance = ExamQuestion.objects.filter(examId = exam,type = type_,questionId = num)
     if instance:
+
+        instance[0].checkTime += int(time)
         instance[0].answer = answer
         instance[0].save()
     else:
-        ExamQuestion.objects.create(examId = exam,type = type_,answer = answer,questionId = num)
+        ExamQuestion.objects.create(examId = exam,type = type_,answer = answer,questionId = num,checkTime=time)
