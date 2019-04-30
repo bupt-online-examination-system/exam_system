@@ -1,0 +1,23 @@
+
+<center>
+{% block content %}
+    <body>
+        <form  method="POST" action="/personal_homepage/">
+            {% csrf_token %}
+            <Br></Br><Br></Br><Br></Br>
+            <h1>同学你好，欢迎来到在线考试系统！</h1><Br></Br>
+            <div class="form-group">
+                <label>账&nbsp;&nbsp;&nbsp;&nbsp;号</label>
+                <input type="text" class="form-control" id="userId" name="userId" placeholder="请输入您的账号" required></div>
+                <Br></Br>
+            <div class="form-group">
+                <label>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+                <input type="password" class="form-control" id="passWord" name="passWord" placeholder="请输入您的密码" required></div>
+                <Br></Br>
+                <a class="fr" href="administrator_forgetpsw">忘记密码？</a>
+            <Br></Br>
+                <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />
+        </form>
+    </body>
+
+{% endblock %}

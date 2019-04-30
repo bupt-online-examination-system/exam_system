@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.db.models.aggregates import Min
+from django.contrib.auth import authenticate
+import MySQLdb
 
 def student_login(request): #学生界面模板
     return render(request, "student_login.html",locals())
@@ -298,10 +300,19 @@ def exam_details(request):    #考试详情界面
     return render(request, "exam_details.html", locals())
 
 def personal_homepage(request):    #在个人主页界面
-    request.session['studentId'] = 1
-    studentId = request.session.get('studentId')
+    studentId = request.POST.get('userId')
+    student_password = request.POST.get("passWord")
+    login_user_type = list(Person.objects.filter(userId=studentId).values_list('userType',flat=True))
     studentName = Person.objects.filter(userId=studentId).values('userName')
-    return render(request, "personal_homepage.html",locals())
+    count = Person.objects.filter(userId=studentId).count()
+    if count == 1 and login_user_type[0] == 3:
+        real_password = list(Person.objects.filter(userId=studentId).values_list('passWord',flat=True))
+        if student_password == real_password[0]:
+            return render(request, "personal_homepage.html", locals())
+        else:
+            return render(request, 'administrator_error_stu.html')
+    else:
+        return render(request, 'administrator_error_stu.html')
 
 def score_query(request):    #考试成绩界面
     studentId=request.session.get('studentId')

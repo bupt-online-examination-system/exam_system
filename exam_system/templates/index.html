@@ -1,46 +1,26 @@
-<html >
-<head>
-    {% load bootstrap3 %}<!-- 在你的settings.py的INSTALLED_APPS中添加bootstrap3  就可以load了 -->
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-{#    {% load staticfiles %}#}
-    <title>在线学习网</title>
-</head>
-
-<!-- 导航栏 -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/event_manage/">在线考试系统</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active">
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-
-
 <center>
-{% block body %}
-        <form method="POST" action="/login/">
-        {% csrf_token %}
-<section>
-<Br></Br><Br></Br><Br></Br><Br></Br>
-                <h1>欢迎来到在线考试系统！</h1>
-    <Br></Br>
-                        <label>账&nbsp;&nbsp;&nbsp;&nbsp;号</label>
-{#                        <input name="username" id="username" type="text" value="{{ login_form.username.value }}" placeholder="邮箱" />#}
-                        <input name="userId" type="text" value="" placeholder="请输入您的账号" />
-    <Br></Br>
-                        <label>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码</label>
-{#                        <input name="password" id="password_l" type="password" value="{{ login_form.password.value }}" placeholder="请输入您的密码" />#}
-                        <input name="passWord" type="password" value="" placeholder="请输入您的密码" />
-    <Br></Br>
-                        <a class="fr" href="administrator_forgetpsw">忘记密码？</a>
-    <Br></Br>
-                     <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />
+{% block content %}
+	<Br></Br><Br></Br><Br></Br>
+            <h1>在线考试系统</h1><Br></Br>
+    <thead>
+		<tr>
+			<th class="text-dark"><h2>请选择您的身份进行登录</h2></th>
+		</tr>
+	</thead>
+	<tbody>
+        <tr>
+		<td><a href="/administrator_index_stu/">学生登录</a></td>
+        </tr>
 
-</section>
+        <tr>
+		<td><a href="/administrator_index_tea/">教师登录</a></td>
+        </tr>
+        <tr>
+		<td><a href="/administrator_index_adm/">管理员登录</a></td>
+        </tr>
+	</tbody>
+</table>
+ </div>
+
 {% endblock %}
+<center>

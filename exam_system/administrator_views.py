@@ -6,20 +6,76 @@ import MySQLdb
 import re
 import random
 from django.http import HttpResponse,HttpResponseRedirect
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import authenticate
 from django.urls import reverse
-# <<<<<<< GR
-
-# =======
-# >>>>>>> master
 from django.views.generic.base import View
+from.models import *
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request): #管理员界面模板
     return render(request, "index.html")
 
-def administrator_login(request): #管理员界面模板
-    return render(request, "administrator_login.html")
+def administrator_login(request):
+    return render(request,"administrator_login.html")
+
+def administrator_index_tea(request): #管理员界面模板
+    if request.method == "GET":
+        return render(request, "administrator_index_tea.html")
+    elif request.method == "POST":
+        login_user = request.POST.get('userId')
+        login_password = request.POST.get("passWord")
+        login_user_type = list(Person.objects.filter(userId = login_user).values_list('userType',flat=True))
+        user = list(Person.objects.filter(userId=login_user, passWord=login_password).values_list('userId',flat=True))
+        request.session["userId"] = login_user
+        print(login_user)
+        request.session["passWord"] = login_password
+        request.session["userType"] = login_user
+        request.session["user"] = user
+        return render(request, "teacher_homepage.html",locals())
+
+def administrator_index_adm(request): #管理员界面模板
+    if request.method == "GET":
+        return render(request, "administrator_index_adm.html")
+    elif request.method == "POST":
+        login_user = request.POST.get('userId')
+        login_password = request.POST.get("passWord")
+        login_user_type = list(Person.objects.filter(userId = login_user).values_list('userType',flat=True))
+        user = list(Person.objects.filter(userId=login_user, passWord=login_password).values_list('userId',flat=True))
+        request.session["userId"] = login_user
+        request.session["passWord"] = login_password
+        request.session["userType"] = login_user
+        request.session["user"] = user
+        return render(request, "administrator_homepage.html",locals())
+
+def administrator_index_stu(request): #管理员界面模板
+    return render(request, "administrator_index_stu.html")
+
+def administrator_homepage(request):    #在个人主页界面
+    login_user = request.POST.get('userId')
+    login_password = request.POST.get("passWord")
+    login_user_type = list(Person.objects.filter(userId=login_user).values_list('userType',flat=True))
+    administrator_name = Person.objects.filter(userId=login_user).values('userName')
+    count = Person.objects.filter(userId=login_user).count()
+    if count == 1 and login_user_type[0] == 1:
+        real_password = list(Person.objects.filter(userId=login_user).values_list('passWord',flat=True))
+        if login_password == real_password[0]:
+            return render(request, "administrator_homepage.html", locals())
+        else:
+            return render(request, 'administrator_error_adm.html')
+    else:
+        return render(request, 'administrator_error_adm.html')
+
+
+def administrator_error_tea(request): #管理员界面模板
+    return render(request, "administrator_error_tea.html")
+
+def administrator_error_adm(request):
+    return render(request, "administrator_error_adm.html")
+
+def administrator_error_stu(request): #管理员界面模板
+    return render(request, "administrator_error_stu.html")
 
 def administrator_mlist(request):    #在线考试待考课程列表界面
     return render(request, "administrator_mlist.html")
@@ -49,126 +105,3 @@ def administrator_uftlist(request):    #未通过成绩界面
     return render(request, "administrator_uftlist.html", locals())
 
 
-class login():
-    def LOGIN(request):
-        # 判断是否为 post请求
-        if request.POST:
-            # 取输入信息
-            userid= request.POST['userId']
-            password = request.POST['passWord']
-
-            # # 检测是否有sql注入
-            # check_result = login.checkSql(userId, passWord)
-            # if check_result == 'wrring':
-            #     return HttpResponse('想注入我没那么简单！')
-
-                # 验证用户名
-            real_passwd = login.getPasswd(userid)
-
-            if real_passwd == "ERROR":
-                return HttpResponse('没有这个用户名!')
-
-            print(real_passwd, password)
-
-            # 验证密码
-            if password == real_passwd:
-                usertype = login.getUsertype(userid)
-                if usertype == 1:
-                    # 渲染网页
-                    connect = {
-                        'login_result': "管理员登录成功!",
-                    }
-                    return render(request, "administrator_login.html", connect)
-                elif usertype == 2:
-                    connect = {
-                        'login_result': "教师登陆成功"
-                    }
-                    return render(request, 'teacher_login.html', connect)
-                else:
-                    connect = {
-                        'login_result': "学生登陆成功"
-                    }
-                    return render(request, 'student_login.html', connect)
-            else:
-                return HttpResponse("密码错误！")
-
-    def getUsertype(userId):
-        # 取用户类型
-        conn = MySQLdb.connect(host="localhost",user="root",password="root",db="exam_system",charset="utf8")
-        cursor = conn.cursor()
-        sql = 'select userType from exam_system_person where userId= "{}"'.format(userId)
-        userType = cursor.fetchone()[0]
-
-
-    def getPasswd(userId):
-        # 取正确密码
-        conn = MySQLdb.connect(host="localhost", user="root", passwd="root", db="userinformation", charset="utf8")
-        cursor = conn.cursor()
-        sql = 'select passWord from exam_system_person where userId = "{}"'.format(userId)
-        sql_return = cursor.execute(sql)
-
-        # 如果出现错误返回 ERROR
-        if sql_return == 0:
-            conn.close()
-            return "ERROR"
-        elif sql_return == 1:
-            passWord = cursor.fetchone()
-            conn.close()
-            return passWord[0]
-
-
-    # def getUserInfo(userId):
-    #     # 取个人信息
-    #     print('getting info')
-    #     conn = MySQLdb.connect(host="localhost", user="root", passwd="root", db="userinformation", charset="utf8")
-    #     cursor = conn.cursor()
-    #
-    #     try:
-    #         # 这里代码比较凌乱 因为刚学 django 和 mysql 不长时间 所以不知道有什么好的语法
-    #         cursor.execute('select name from userinfo where Uid = "{}"'.format(Uid))
-    #         username = cursor.fetchone()[0]
-    #         cursor.execute('select sex from userinfo where Uid = "{}"'.format(Uid))
-    #         sex = cursor.fetchone()[0]
-    #         cursor.execute('select age from userinfo where Uid = "{}"'.format(Uid))
-    #         age = cursor.fetchone()[0]
-    #         cursor.execute('select Email from userinfo where Uid = "{}"'.format(Uid))
-    #         Email = cursor.fetchone()[0]
-    #         cursor.execute('select tel from userinfo where Uid = "{}"'.format(Uid))
-    #         tel = cursor.fetchone()[0]
-    #         conn.close()
-    #         print(username, sex, age, Email, tel)
-    #
-    #         # 返回1 代表成功获取信息
-    #         # 后面的list 是个人信息
-    #         return 1, [username, sex, age, Email, tel]
-    #
-    #     except:
-    #         conn.close()
-    #         return 0, []
-
-
-    def checkSql(inputUserid, inputPassword):
-        #判断是否有sql注入
-        if inputUserid[-1] == '\'':
-            print('有人尝试注入！')
-            return 'wrring'
-        elif inputPassword[-1] == '\'':
-            print('有人尝试注入！')
-            return 'wrring'
-        else:
-            return 0
-
-    def administrator_login(response):
-        # 显示主页
-        connect = {}
-        return render(response, 'administrator_login.html', connect)
-
-    def teacher_login(response):
-        # 显示主页
-        connect = {}
-        return render(response, 'teacher_login.html', connect)
-
-    def student_login(response):
-        # 显示主页
-        connect = {}
-        return render(response, 'student_login.html', connect)
