@@ -9,11 +9,9 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate
 from django.urls import reverse
 from django.views.generic.base import View
-from .forms import LoginForm
 from.models import *
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib import messages
 
 
 def index(request): #管理员界面模板
