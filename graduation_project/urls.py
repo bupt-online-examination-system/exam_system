@@ -25,6 +25,7 @@ from django.views.static import serve
 from django.contrib.auth import views as auth_views
 from exam_system import administrator_views
 
+
 from django.conf.urls.static import static
 #使用其他模块的东西要先import      as tool_views是为了区分不同模块的views
 from django.conf.urls import url, include
@@ -95,11 +96,14 @@ urlpatterns = [
     url(r'^administrator_aftlist/$', administrator_views.administrator_aftlist, name='administrator_aftlist'),
     url(r'^administrator_uftlist/$', administrator_views.administrator_uftlist, name='administrator_uftlist'),
     url(r'^index/$', administrator_views.index, name='index'),
+    url(r'^administrator_index_stu/$', administrator_views.administrator_index_stu, name='administrator_index_stu'),
+    url(r'^administrator_index_tea/$', administrator_views.administrator_index_tea, name='administrator_index_tea'),
+    url(r'^administrator_index_adm/$', administrator_views.administrator_index_adm, name='administrator_index_adm'),
     url(r'^admin/', admin.site.urls),
-    url(r'^$',administrator_views.login.administrator_login),
-    url(r'^$',administrator_views.login.student_login),
-    url(r'^$',administrator_views.login.teacher_login),
-    url(r'^login/',administrator_views.login.LOGIN),
+    # url(r'^index/$', administrator_views.login.index,name='index'),
+    #
+    url(r'^administrator_homepage/$',administrator_views.administrator_homepage,name='administrator_homepage'),
+    url(r'^administrator_error_stu/$',administrator_views.administrator_error_stu,name='administrator_error_stu'),
 
 
 

@@ -22,7 +22,9 @@
               <li><a href="/administrator_feedback/">问题反馈</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-             <li><a href="">欢迎您，管理员！</a></li>
+             {% for info in administrator_name %}
+             <li><a href="">{{ info.userName }}</a></li>
+            {% endfor %}
            <li><a href="/logout/">注销</a></li>
          </ul>
         </div><!--/.nav-collapse -->
