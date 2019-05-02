@@ -26,8 +26,17 @@ def course_forum(request):
     userId = request.session.get('userId')
     userName = request.session.get('userName')
     courseId = request.GET.get("courseId")
-    post_question_info = ForumQuestion.objects.filter(courseId=courseId)
-    return render(request, "course_forum.html", locals())
+    if request.method == "GET":
+        post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+        return render(request, "course_forum.html",locals())
+    elif request.method == "POST":
+        # userId = request.session.get('userId')
+        # userName = request.session.get('userName')
+        # courseId = request.GET.get("courseId")
+        # post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+        keyword = request.POST.get('message')
+        post_question_info = ForumQuestion.objects.filter(Q(title__icontains=keyword)|Q(content__icontains=keyword)|Q(title__icontains=keyword))
+        return render(request, "course_forum.html", locals())
 
 def course_post(request):
     userId = request.session.get('userId')
@@ -82,13 +91,13 @@ def delete_post(request):
     return render(request, "course_forum.html", locals())
 
 def answer_post(request):
+    userName = request.session.get('userName')
+    userId = request.session.get('userId')
+    postId = request.GET.get("postId")
+    courseId = request.GET.get("courseId")
     if request.method == "GET":
         return render(request, "answer_post.html")
     elif request.method == "POST":
-        userName = request.session.get('userName')
-        userId = request.session.get('userId')
-        postId = request.GET.get("postId")
-        courseId = request.GET.get("courseId")
         message = request.POST.get('message','无内容')
         ForumAnswer.objects.create(content=message,answerId_id=userId,postId_id=postId)
         post_question_info = ForumQuestion.objects.filter(postId=postId)
@@ -119,6 +128,7 @@ def count(request):
     userId = request.session.get('userId')
     userName = request.session.get('userName')
     count_course_info = Course.objects.values('courseId','courseName').annotate(course_id=Count('courseId'))
+    count_answer_info = ForumQuestion.objects.all()
     #count_question_info = ForumQuestion.objects.annotate(count('courseId'))
     # count_answer_info = ForumAnswer.objects.annotate(count('courseId'))
     return render(request, "count.html", locals())
