@@ -8,7 +8,7 @@
 <table class="table table-hover">
 	<thead>
         <tr>
-			<th class="text-dark"><h2>统计与展示</h2></th>
+			<th class="text-dark"><h2>课程帖子数</h2></th>
 		</tr>
 		<tr>
 			<th class="text-dark">课程名称</th>
@@ -23,6 +23,29 @@
             <tr>
                 <td>{{ count_course.courseName }}</td>
                 <td>{{ count_course.course_id }}</td>
+            </tr>
+        {% endfor %}
+
+
+	</tbody>
+
+    <thead>
+        <tr>
+			<th class="text-dark"><h2>帖子回复数</h2></th>
+		</tr>
+		<tr>
+			<th class="text-dark">帖子标题</th>
+            <th class="text-dark">回复总数</th>
+		</tr>
+	</thead>
+	<tbody>
+        {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
+        {#get方法传参#}
+
+        {% for count_answer in count_answer_info %}
+            <tr>
+                <td>{{ count_answer.title }}</td>
+                <td>{{ count_answer.answerNum }}</td>
             </tr>
         {% endfor %}
 
