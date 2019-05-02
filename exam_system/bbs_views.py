@@ -2,6 +2,7 @@ from django.shortcuts import render
 from.models import *
 from django.db.models import Q
 from django.db.models.aggregates import Count
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 import time
@@ -47,7 +48,9 @@ def new_post(request):
         courseId = request.GET.get("courseId")
         subject = request.POST.get('subject','无标题')
         message = request.POST.get('message','无内容')
-        ForumQuestion.objects.create(content=message,title=subject,courseId_id=courseId,questionId_id=userId)
+        time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        newPostTime = datetime.strptime(time,'%Y-%m-%d %H:%M:%S')
+        ForumQuestion.objects.create(content=message,title=subject,courseId_id=courseId,postTime=newPostTime,questionId_id=userId)
         post_question_info = ForumQuestion.objects.filter(courseId=courseId)
         # bug 返回时会重新插入一遍数据
         return render(request, "course_forum.html",locals())
