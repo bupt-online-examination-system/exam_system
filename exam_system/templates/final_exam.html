@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "teacher_login.html" %}
 
-</body>
-</html>
+
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+        <th>期末考</th>
+		<tr>
+			<th>学生编号</th>
+            <th>学生姓名</th>
+{#            <th>考试类型</th>        {#   第一次月考、期中考、第二次月考、期末考   #}
+            <th>成绩</th>
+		</tr>
+	</thead>
+	<tbody>
+        {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
+        {#get方法传参#}
+        {% for info in exam_info %}
+        <tr>
+        <td>{{ info.studentId }}</td>
+            {% for student in student_info %}
+                {% if student.userId == info.studentId %}
+		        <td><a href="/student_details/?studentId={{ student.userId }}&examId={{ info.examId }}">{{ student.userName}}</a></td>
+                {% endif %}
+            {% endfor %}
+        <td>{{ info.score }}</td>
+        </tr>
+        {% endfor %}
+	</tbody>
+</table>
+     <center><a href="/exam_number/?courseId={{ courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+ </div>
+{% endblock %}
