@@ -1,0 +1,92 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+{% for student in student_info %}
+    <thead>
+        <tr>
+            <td class="text-dark"><h1>学生账号：{{ student.userId }}</h1></td>
+        <tr>
+            <td class="text-dark"><h1>学生姓名：{{ student.userName }}</h1></td>
+        </tr>
+{% endfor %}
+        <tr>
+            {% for  course in course_info %}
+                <td class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</td>
+            {% endfor %}
+        </tr>
+        </thead>
+    <tbody>
+		<tr>
+			<th>考试类别</th>
+            <th>权重</th>
+            <th>考试是否完成</th>
+            <th>考试时间</th>
+            <th>考试成绩</th>
+		</tr>
+    {%for info in get_exam_info %}
+        <tr>
+            {% if info.type == 1 %}
+                <td>第一次月考</td>
+                {% if info.isOver == 1 %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试已完成</td>
+                    <td>{{ info.start_time }}</td>
+                    <td>{{ info.score }}</td>
+                {% else %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试未完成</td>
+                    <td>考试未开始</td>
+                    <td>无成绩</td>
+                {% endif %}
+            {% elif info.type == 2 %}
+                <td>期中考试</td>
+                {% if info.isOver == 1 %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试已完成</td>
+                    <td>{{ info.start_time }}</td>
+                    <td>{{ info.score }}</td>
+                {% else %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试未完成</td>
+                    <td>考试未开始</td>
+                    <td>无成绩</td>
+                {% endif %}
+            {% elif info.type == 3 %}
+                <td>第二次月考</td>
+                {% if info.isOver == 1 %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试已完成</td>
+                    <td>{{ info.start_time }}</td>
+                    <td>{{ info.score }}</td>
+                {% else %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试未完成</td>
+                    <td>考试未开始</td>
+                    <td>无成绩</td>
+                {% endif %}
+            {% elif info.type == 4 %}
+                <td>期末考试</td>
+                {% if info.isOver == 1 %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试已完成</td>
+                    <td>{{ info.start_time }}</td>
+                    <td>{{ info.score }}</td>
+                {% else %}
+                    <td>{{ info.weight }}</td>
+                    <td>考试未完成</td>
+                    <td>考试未开始</td>
+                    <td>无成绩</td>
+                {% endif %}
+            {% endif %}
+        </tr>
+    {% endfor %}
+
+	</tbody>
+</table>
+</div>
+    {% for  course in course_info %}
+        <center><a href="/administrator_course_student/?userId={{ course.teacherId }}&courseId={{ course.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% endfor %}
+{% endblock %}

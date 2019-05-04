@@ -1,0 +1,56 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+    {% for user in user_info %}
+	<thead>
+        <h5 class="page-header">账号：{{ user.userId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户名：{{ user.userName }}</h5>
+    {% endfor %}
+	</thead>
+        <div class="tabbable">
+            {% for course_id in get_course_id %}
+                {% for course in course_info %}
+                    {% if course.courseId == course_id.courseId %}
+                        <tr>
+                            <td class="active">{{ course.courseName}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                {% for id in get_post_id %}
+                    {% if id.courseId == course_id.courseId %}
+                        {% for post in get_forum_q %}
+                            {% if post.postId == id.postId %}
+                                <tr>
+                                <td  class="active"><a href=/#/?postId={{ post.postId }}">{{ post.title }}</a></td>
+                                <tr>
+                                <th>回帖内容</th>
+                                <th>回帖时间</th>
+                                </tr>
+                                {% for answer in get_forum_a %}
+                                    {% if answer.postId == post.postId %}
+                                        <tr>
+                                        <td>{{ answer.content }}</td>
+                                        <td>{{ answer.answerTime }}</td>
+                                        <td><a href="/administrator_forum_A_delete/?postId={{ post.postId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除回复</button></a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+</table>
+</div>
+
+
+{% for user in user_info %}
+    {% if user.userType == 2 %}
+    <center><a href="/administrator_teacher_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% elif user.userType == 3 %}
+    <center><a href="/administrator_student_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% endif %}
+{% endfor %}
+{% endblock %}

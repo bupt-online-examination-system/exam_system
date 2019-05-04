@@ -1,0 +1,72 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+    <thead>
+    {% for teacher in teacher_info %}
+        <tr>
+            <td class="text-dark">老师账号：{{ teacher.userId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;老师姓名：{{ teacher.userName }}</td>
+        </tr>
+    {% endfor %}
+        <tr>
+            {% for course in course_info %}
+                <td class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</td>
+            {% endfor %}
+        </tr>
+        </thead>
+    <tbody>
+		<tr>
+			<th>学生账号</th>
+            <th>学生姓名</th>
+            <th>总成绩</th>
+            <th>是否通过</th>
+		</tr>
+    {%for id in get_student_id %}
+        <tr>
+        {% for student in student_info %}
+            {% if student.userId == id.studentId %}
+                <td>{{ student.userId }}</td>
+                {% for course in course_info %}
+                    <td><a href="/administrator_student_grades_tea/?userId={{ student.userId }}&courseId={{ course.courseId }}">{{ student.userName}}</a></td>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {% for grade in get_student_grade %}
+            {% if grade.studentId == id.studentId %}
+                {% if grade.isPass == 1 %}
+                    <td>{{ grade.grade }}</td>
+                    <td>通过</td>
+                {% else %}
+                    <td>存在未完成考试</td>
+                    <td>尚未通过</td>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+	</tbody>
+</table>
+</div>
+    <center>
+<div class="pagination">
+    <span class="step-links">
+    {% for teacher in teacher_info %}
+        {% if contacts.has_previous %}
+            <td><a href="/administrator_course_student/??userId={{ teacher.userId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/administrator_course_student/??userId={{ teacher.userId }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
+
+    <center><a href="/administrator_courselist_tea/?userId={{ teacher.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+{% endfor %}
+{% endblock %}
