@@ -1,0 +1,33 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+{% for info in student_info %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+    <tr>
+        <td class="text-dark"><h1>学生账号：{{ info.userId }}</h1></td>
+    <tr>
+        <td class="text-dark"><h1>学生姓名：{{ info.userName }}</h1></td>
+    </tr>
+	</thead>
+	<tbody>
+        <tr>
+		<td><a href="/administrator_courselist_stu/?userId={{ info.userId }}">选课详情</a></td>
+        </tr>
+        <tr>
+		<td><a href="/administrator_init_password/?userId={{ info.userId }}">密码重置</a></td>
+        </tr>
+        <tr>
+		<td><a href="/administrator_forum_Qmanage/?userId={{ info.userId }}">论坛-发帖信息</a></td>
+        </tr>
+        <tr>
+		<td><a href="/administrator_forum_Amanage/?userId={{ info.userId }}">论坛-回帖信息</a></td>
+        </tr>
+	</tbody>
+</table>
+{# <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回上级页面</button>#}
+ </div>
+    <center><a href="/administrator_studentlist/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% endfor %}
+{% endblock %}
