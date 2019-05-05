@@ -22,7 +22,7 @@
         <td>{{ info.studentId }}</td>
             {% for student in student_info %}
                 {% if student.userId == info.studentId %}
-		        <td><a href="/student_details/?studentId={{ student.userId }}&examId={{ info.examId }}">{{ student.userName}}</a></td>
+		        <td><a href="/student_detail3/?studentId={{ student.userId }}&examId={{ info.examId }}&courseId={{ course_id }}">{{ student.userName}}</a></td>
                 {% endif %}
             {% endfor %}
         <td>{{ info.score }}</td>
@@ -30,6 +30,6 @@
         {% endfor %}
 	</tbody>
 </table>
-     <center><a href="/exam_number/?courseId={{ courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+     <center><a href="/exam_number/?courseId={{ course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>
 {% endblock %}
