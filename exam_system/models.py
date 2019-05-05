@@ -8,7 +8,7 @@ class Person(models.Model):
     userId = models.AutoField(primary_key=True)  # 用户id
     userType = models.IntegerField()            # 用户类型(1:管理员  2：老师  3：学生)
     userName = models.CharField(max_length=50)  # 用户姓名
-    passWord = models.CharField(max_length=50)  # 用户密码
+    passWord = models.CharField(max_length=50)  # 0用户密码
 
 
 # 课程信息模板

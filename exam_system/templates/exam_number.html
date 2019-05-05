@@ -14,17 +14,17 @@
 	<tbody>
         {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
         {#   get方法传参   #}
-        <th>{{ courseName }}</th>
+        <th>{{ get_course_name.courseName }}</th>
         <tr>
-		<td><a href="/first_exam/?courseId={{ courseId }}">第一次月考</a></td>
+		<td><a href="/first_exam/?courseId={{ course_id }}">第一次月考</a></td>
         <tr>
-        <td><a href="/second_exam/?courseId={{ courseId }}">期中考试</a></td>  {#   和练习模式用一个界面   #}
+        <td><a href="/second_exam/?courseId={{ course_id }}">期中考试</a></td>  {#   和练习模式用一个界面   #}
         </tr>
         <tr>
-		<td><a href="/third_exam/?courseId={{ courseId }}">第二次月考</a></td>  {#   和练习模式用一个界面   #}
+		<td><a href="/third_exam/?courseId={{ course_id }}">第二次月考</a></td>  {#   和练习模式用一个界面   #}
         </tr>
         <tr>
-		<td><a href="/final_exam/?courseId={{ courseId }}">期末考</a></td>  {#   和练习模式用一个界面   #}
+		<td><a href="/final_exam/?courseId={{ course_id }}">期末考</a></td>  {#   和练习模式用一个界面   #}
         </tr>
 	</tbody>
 </table>

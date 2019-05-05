@@ -20,7 +20,9 @@
               <li><a href="/send_email/">联系我们</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-           <li><a href="#">用户名</a></li>
+           {% for info in teacher_name %}
+             <li><a href="">{{ info.userName }}</a></li>
+            {% endfor %}
            <li><a href="/logout/">注销</a></li>
          </ul>
         </div><!--/.nav-collapse -->
