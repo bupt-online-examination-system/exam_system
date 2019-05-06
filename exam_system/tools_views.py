@@ -96,9 +96,11 @@ def exam_details(request):
             if i.type == 1:
                 if ChoiceQuestion.objects.filter(type=1, choiceId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1
+                    i.save()
                     right_choice+=1
                 else:
                     i.isRight = 0
+                    i.save()
             elif i.type == 2:
                 if FillInTheBlank.objects.filter(type=1, fillId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1

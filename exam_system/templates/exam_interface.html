@@ -43,7 +43,6 @@ input[type='text']{width:40px;background:none;border:none;border-bottom:1px soli
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
         {#var data="id="+id+"&answer="+value_#}
         var data="exam="+exam+"&type="+type+"&id="+i+"&answer="+j+"&time="+Math.ceil(time/2)
-        alert(data)
         xmlhttp.send(data);
         time = 0
     }
