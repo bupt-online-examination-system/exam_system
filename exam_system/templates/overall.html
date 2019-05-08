@@ -8,7 +8,7 @@
 	<thead>
         {% for name in course_name %}
         <tr>
-            <th>期末考</th>
+            <th>最终成绩</th>
             <th>{{ name.courseName }}</th>
         </tr>
         {% endfor %}
@@ -16,13 +16,14 @@
 			<th>学生编号</th>
             <th>学生姓名</th>
 {#            <th>考试类型</th>        {#   第一次月考、期中考、第二次月考、期末考   #}
-            <th>成绩</th>
+            <th>总成绩</th>
+            <th>是否通过</th>
 		</tr>
 	</thead>
 	<tbody>
         {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
         {#get方法传参#}
-        {% for info in exam_info %}
+        {% for info in grade_info %}
         {% with i=contacts.number|add:"-1" %}
         {% widthratio i 1 10 as low %}
         {% with high=low|add:"11" %}
@@ -31,14 +32,23 @@
         <tr>
         <td>{{ info.studentId }}</td>
             {% for student in student_info %}
-                {% if student.userId == info.studentId and  info.isOver == 2  %}
-		        <td><a href="/student_detail4/?studentId={{ student.userId }}&examId={{ info.examId }}&courseId={{ course_id }}">{{ student.userName}}</a></td>
-                <td>{{ info.score }}</td>
+              {% for name in course_name %}
+                {% if student.userId == info.studentId and name.isOver == 2  %}
+		        <td>{{ student.userName}}</td>
+                <td>{{ info.grade }}</td>
+                    {% if  info.grade >= 60  %}
+                      <td>考试通过</td>
+                    {% endif %}
+                    {% if info.grade < 60 %}
+                      <td>考试没通过</td>
+                    {% endif %}
                 {% endif %}
-                {% if student.userId == info.studentId and  info.isOver == 1  %}
+                {% if student.userId == info.studentId and name.isOver == 1  %}
                 <td>{{ student.userName}}</td>
-                <td>未开始考试</td>
+                <td>考试未结束</td>
+                <td>无成绩</td>
                 {% endif %}
+              {% endfor %}
             {% endfor %}
         </tr>
         {% endif %}
@@ -55,7 +65,7 @@
 <div class="pagination">
     <span class="step-links">
         {% if contacts.has_previous %}
-            <td><a href="/final_exam/?page={{ contacts.previous_page_number }} & courseId={{ course_id }}">上一页</a></td>
+            <td><a href="/overall/?page={{ contacts.previous_page_number }} & courseId={{ course_id }}">上一页</a></td>
         {% endif %}
 
         <span class="current">
@@ -64,7 +74,7 @@
         </span>
 
         {% if contacts.has_next %}
-            <td><a href="/final_exam/?page={{ contacts.next_page_number }} & courseId={{ course_id }}">下一页</a></td>
+            <td><a href="/overall/?page={{ contacts.next_page_number }} & courseId={{ course_id }}">下一页</a></td>
         {% endif %}
     </span>
 </div>
