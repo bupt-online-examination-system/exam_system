@@ -6,16 +6,27 @@
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
 	<thead>
+        {% for name in course_name %}
+        <tr>
+            <th>第二次月考</th>
+            <th>{{ name.courseName }}</th>
+        </tr>
+        {% endfor %}
 		<tr>
 			<th>题目编号</th>
             <th>是否正确</th>
-            <th>考试类型</th>        {#   第一次月考、期中考、第二次月考、期末考
+            <th>学生答案</th>
 		</tr>
 	</thead>
 	<tbody>
 {#        利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
 {#        get方法传参#}
         {% for info in exam_info %}
+        {% with i=contacts.number|add:"-1" %}
+        {% widthratio i 1 1 as low %}
+        {% with high=low|add:"2" %}
+        {% with low=high|add:"-2" %}
+        {% if forloop.counter > low and forloop.counter < high %}
           <tr>
           <td>{{ forloop.counter }}</td>
           {% if info.isRight == 1 %}
@@ -23,16 +34,74 @@
           {% endif %}
           {% if info.isRight == 0 %}
 		  <td>错误</td>
+          <td>{{ info.answer }}</td>
           {% endif %}
-          {% if info.type == 1 %}
-		  <td>选择题</td>
-          {% endif %}
-          {% if info.type == 2 %}
-		  <td>填空题</td>
-          {% endif %}
+          <tr>
+          {% for choice in choice_info %}
+          {% if info.type == 1 and choice.choiceId == info.questionId %}
+          <th>题目内容</th>
+          <tr>
+		  <td>{{ choice.content }}</td>
           </tr>
+              <tr>
+              <td>A:{{ choice.questionA }}</td>
+              </tr>
+              <tr>
+              <td>B:{{ choice.questionB }}</td>
+              </tr>
+              <tr>
+              <td>C:{{ choice.questionC }}</td>
+              </tr>
+              <tr>
+              <td>D:{{ choice.questionD }}</td>
+              </tr>
+          </tr>
+          <th>题目答案</th>
+              <td>{{ choice.answer }}</td>
+          {% endif %}
+          {% endfor %}
+          {% for fill in fill_info %}
+          {% if info.type == 2 and fill.fillId == info.questionId %}
+          <tr>
+          <th>题目内容</th>
+              <tr>
+		      <td>{{ fill.content }}</td>
+              </tr>
+          </tr>
+          <tr>
+          <th>题目答案</th>
+              <tr>
+              <td>{{ fill.answer }}</td>
+              </tr>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
         {% endfor %}
+    </tbody>
+</table>
+ </div>
 	</tbody>
+<center>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/student_detail3/?studentId={{ student_id }}&examId={{ exam_id }}&courseId={{ course_id }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/student_detail3/?studentId={{ student_id }}&examId={{ exam_id }}&courseId={{ course_id }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
 </table>
      <center><a href="/third_exam/?courseId={{ course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>
