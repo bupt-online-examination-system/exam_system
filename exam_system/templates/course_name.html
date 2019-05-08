@@ -13,19 +13,47 @@
 		</tr>
 	</thead>
 	<tbody>
-        {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
-        {#get方法传参#}
-        {% for info in teacher_info %}
+        {% for id in get_course_id %}
+        {% with i=contacts.number|add:"-1" %}
+        {% widthratio i 1 10 as low %}
+        {% with high=low|add:"11" %}
+        {% with low=high|add:"-11" %}
+        {% if forloop.counter > low and forloop.counter < high %}
         <tr>
-        <td>{{ info.courseId }}</td>
+        <td>{{ id.courseId }}</td>
             {% for course in course_info %}
-                {% if course.courseId == info.courseId %}
-		        <td><a href="/exam_number/?courseId={{ course.courseId }}">{{ course.courseName}}</a></td>
+                {% if course.courseId == id.courseId %}
+		        <td><a href="/exam_number/?courseId={{ id.courseId }}">{{ course.courseName}}</a></td>
                 {% endif %}
             {% endfor %}
         </tr>
+        {% endif %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
         {% endfor %}
 	</tbody>
+</table>
+ </div>
+	</tbody>
+<center>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/course_name/?page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+    {#            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.#}
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/course_name/?page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
 </table>
      <center><a href="/teacher_homepage/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>

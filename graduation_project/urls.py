@@ -130,6 +130,8 @@ urlpatterns = [
     url(r'^second_exam/$', teacher_views.second_exam, name='second_exam'),
     url(r'^third_exam/$', teacher_views.third_exam, name='third_exam'),
     url(r'^final_exam/$', teacher_views.final_exam, name='final_exam'),
+    url(r'^overall/$', teacher_views.overall, name='overall'),
+    url(r'^add_course/$', teacher_views.add_course, name='add_course'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
 

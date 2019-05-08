@@ -45,6 +45,7 @@ class ExamQuestion(models.Model):
     type = models.IntegerField()  # 题目类型(1：选择  2：填空)
     checkTime = models.IntegerField(default=0)#考试中的切屏次数
 
+
 # 选择题信息模板
 class ChoiceQuestion(models.Model):
     choiceId = models.AutoField(primary_key=True)  # 选择题id
