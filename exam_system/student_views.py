@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.db.models.aggregates import Min
 from django.contrib.auth import authenticate
-import MySQLdb
+
 
 def student_login(request): #学生界面模板
     return render(request, "student_login.html",locals())
@@ -341,14 +341,14 @@ def pass_exam_details(request):    #已通过课程考试信息详情界面
     studentId=request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
     courseId = request.GET.get("courseId")
-    exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId).values('type','score')
+    exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "pass_exam_details.html", locals())
 
 def fail_exam_details(request):    #未通过课程考试信息详情界面
     studentId=request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
     courseId = request.GET.get("courseId")
-    exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId).values('type','score')
+    exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "fail_exam_details.html", locals())
 
 def exam_schedule(request):    #待考课程界面
@@ -367,7 +367,7 @@ def exam_schedule_details(request):    #待考课程考试信息详情界面
     studentId=request.session.get('studentId')
     studentName = Person.objects.filter(userId=studentId).values('userName')
     courseId = request.GET.get("courseId")
-    exam_details_info = Exam.objects.filter(courseId=courseId).values('type','score')
+    exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "exam_schedule_details.html", locals())
 
 def post_record(request):    #发帖记录
