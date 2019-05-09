@@ -1,0 +1,117 @@
+{% extends "teacher_login.html" %}
+
+{% block content %}
+<body>
+    <div class="row" style="margin-top: 80px;margin-left: 80px">
+        <table class="table table-hover">
+             <thead>
+                 <tr>
+                    {% for course in course_info %}
+                        <h5 class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</h5>
+                        <td><a href="/teacher_question_added/?courseId={{ course.courseId }}">点击跳转至加题页面</a></td>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="active">选择题</td>
+                <td>答案</td>
+                <td>选项详情</td>
+                <td>题目类型（考试题or练习题）</td>
+                    {% for choice in get_Q_C %}
+                        {% with i=contacts1.number|add:"-1" %}
+                        {% widthratio i 1 5 as low %}
+                        {% with high=low|add:"6" %}
+                        {% with low=high|add:"-6" %}
+                        {% if forloop.counter > low and forloop.counter < high %}
+                        <tr>
+                            <td>{{ choice.content }}
+                            <td>答案：{{ choice.answer }}
+                            <td>
+                                A:{{ choice.questionA }}<br>
+                                B:{{ choice.questionB }}<br>
+                                C:{{ choice.questionC }}<br>
+                                D:{{ choice.questionD }}
+                            {% if choice.type == 1 %}
+                                <td>考试题
+                            {% else %}
+                                <td>练习题
+                            {% endif %}
+                            <td><a href="/teacher_C_edit/?choiceId={{ choice.choiceId }}&page={{ contacts1.number }}">
+                                <button class="btn btn-primary btn-lg" style="margin: 0px auto;">试题修改</button></a>
+                            <td><a href="/teacher_C_delete/?choiceId={{ choice.choiceId }}&page={{ contacts1.number }}">
+                                <button class="btn btn-primary btn-lg" style="margin: 0px auto;">试题删除</button></a>
+                            </td>
+                        </tr>
+                       {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+            <tr>
+                <td class="active">填空题</td>
+                <td>答案</td>
+                <td>题目类型（考试题or练习题）</td>
+                    {% for fill in get_Q_F %}
+                        {% with i=contacts2.number|add:"-1" %}
+                        {% widthratio i 1 5 as low %}
+                        {% with high=low|add:"6" %}
+                        {% with low=high|add:"-6" %}
+                        {% if forloop.counter > low and forloop.counter < high %}
+                            <tr>
+                                <td>
+                                    {{ fill.content }}
+                                <td>
+                                    答案：{{ fill.answer }}
+                                {% if fill.type == 1 %}
+                                    <td>考试题
+                                {% else %}
+                                    <td>练习题
+                                {% endif %}
+                                <td><a href="/teacher_F_edit/?fillId={{ fill.fillId }}&page={{ contacts1.number }}">
+                                    <button class="btn btn-primary btn-lg" style="margin: 0px auto;">试题维护</button></a>
+                                <td><a href="/teacher_F_delete/?fillId={{ fill.fillId }}&page={{ contacts1.number }}">
+                                    <button class="btn btn-primary btn-lg" style="margin: 0px auto;">试题删除</button></a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                   {% endfor %}
+            </tbody>
+        </table>
+     </div>
+</body>
+
+<center>
+<div class="pagination">
+    <span class="step-links">
+    {% for course in course_info %}
+        {% if contacts1.has_previous %}
+            <td><a href="/teacher_question_list/?courseId={{ course.courseId }}&page={{ contacts1.previous_page_number }}">上一页</a></td>
+            <span class="current">
+                <td>{{ contacts1.number }}</td>
+                Page {{ contacts1.number }} of {{ contacts1.paginator.num_pages }}.
+            </span>
+        {% elif contacts2.has_previous %}
+            <td><a href="/teacher_question_list/?courseId={{ course.courseId }}&page={{ contacts2.previous_page_number }}">上一页</a></td>
+            <span class="current">
+                <td>{{ contacts2.number }}</td>
+                Page {{ contacts2.number }} of {{ contacts2.paginator.num_pages }}.
+            </span>
+        {% endif %}
+
+        {% if contacts1.has_next %}
+            <td><a href="/teacher_question_list/?courseId={{ course.courseId }}&page={{ contacts1.next_page_number }}">下一页</a></td>
+        {% elif contacts2.has_next%}
+            <td><a href="/teacher_question_list/?courseId={{ course.courseId }}&page={{ contacts2.next_page_number }}">下一页</a></td>
+        {% endif %}
+    {% endfor %}
+    </span>
+</div>
+</center>
+
+        <center><a href="/teacher_course/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+
+{% endblock %}
