@@ -155,7 +155,7 @@ def exam_specification(request):    #选择试卷类型界面
 
 def teacher_homepage(request):    #教师主页界面
     if request.method == "GET":
-        teacher_id = request.session.get('teacherId')
+        teacher_id = request.session.get('teacher_id')
         teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
         return render(request, "teacher_homepage.html", locals())
     elif request.method == "POST":
@@ -166,7 +166,7 @@ def teacher_homepage(request):    #教师主页界面
         if count == 1 and login_user_type[0] == 2:
             real_password = list(Person.objects.filter(userId=login_user).values_list('passWord', flat=True))
             if login_password == real_password[0]:
-                request.session['teacherId'] = login_user
+                request.session['teacher_id'] = login_user
                 teacher_name = Person.objects.filter(userId=login_user).values('userName')
                 return render(request, "teacher_homepage.html", locals())
             else:
@@ -276,7 +276,28 @@ def student_detail4(request):    #学生具体信息界面
     return render(request, "student_detail4.html", locals())
 
 def add_course(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
     return render(request,"add_course.html",locals())
+
+def add_student(request):
+    if request.method == "GET":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
+        return render(request,"add_course.html",locals())
+    elif request.method == "POST":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+        course_name = request.POST.get('course')
+        Course.objects.create(courseName=course_name, isOver=1, teacherId_id=teacher_id)
+        return render(request, "add_student.html", locals())
+
+def add_course(request):
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
+        return render(request, "add_course.html", locals())
+
+
 
 def all_student(request):    #全部学生成绩分析界面
     exam_id = request.GET.get('examId')
