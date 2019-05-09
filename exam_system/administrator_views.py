@@ -30,13 +30,13 @@ def administrator_error_stu(request): #管理员界面模板
 def administrator_member_list(request):    #在线考试待考课程列表界面
     if request.method == "GET":
         administrator_id = request.session.get('administrator_id')
-        administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         return render(request, "administrator_member_list.html", locals())
     elif request.method == "POST":
         login_user = request.POST.get('userId')
         login_password = request.POST.get("passWord")
         login_user_type = Person.objects.filter(userId=login_user).values_list('userType', flat=True)
-        administrator_name = Person.objects.filter(userId=login_user).values('userName')
+        administrator_name = Person.objects.filter(userId=login_user).values('userId', 'userName')
         count = Person.objects.filter(userId=login_user).count()
         if count == 1 and login_user_type[0] == 1:
             real_password = list(Person.objects.filter(userId=login_user).values_list('passWord', flat=True))
@@ -50,7 +50,7 @@ def administrator_member_list(request):    #在线考试待考课程列表界面
 
 def administrator_studentlist(request):    #考试成绩界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     student_info = Person.objects.filter(userType=3).values('userId', 'passWord').distinct()
     user_info = Person.objects.all().values('userId', 'passWord', 'userName')
 
@@ -70,14 +70,14 @@ def administrator_studentlist(request):    #考试成绩界面
 
 def administrator_student_details(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     student_id = request.GET.get('userId')
     student_info = Person.objects.filter(userId=student_id)
     return render(request, "administrator_student_details.html", locals())
 
 def administrator_forum_Qmanage(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     user_id = request.GET.get('userId')
     user_info = Person.objects.filter(userId=user_id)
     get_course_id = ForumQuestion.objects.filter(questionId=user_id).values('courseId').distinct()
@@ -87,7 +87,7 @@ def administrator_forum_Qmanage(request):
 
 def administrator_forum_Amanage(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     user_id = request.GET.get('userId')
     user_info = Person.objects.filter(userId=user_id)
     get_post_id = ForumAnswer.objects.filter(answerId=user_id).values('postId', 'courseId').distinct
@@ -99,45 +99,59 @@ def administrator_forum_Amanage(request):
 
 def administrator_forum_Q_delete(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
-    user_id = request.GET.get('userId')
-    user_info = Person.objects.filter(userId=user_id)
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
+    course_info = Course.objects.all().values('courseId', 'courseName')
     post_id = request.GET.get('postId')
-    get_forum_q = ForumQuestion.objects.filter(postId=post_id).values('questionId', 'courseId', 'postId', 'title', 'postTime','answerNum')
+    get_user_id = ForumQuestion.objects.filter(postId=post_id).values_list('questionId', flat=True)[0]
+    get_course_id = ForumQuestion.objects.filter(postId=post_id).values_list('courseId', flat=True)[0]
+    user_info = Person.objects.filter(userId=get_user_id).values('userId', 'userName', 'userType')
+    course_info = Course.objects.filter(courseId=get_course_id).values('courseId', 'courseName')
+    get_forum_q = ForumQuestion.objects.filter(postId=post_id).values('questionId', 'courseId', 'postId', 'content',
+                                                                      'title', 'postTime', 'answerNum')
     return render(request, "administrator_forum_Q_delete.html", locals())
 
 def administrator_forum_A_delete(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
-    user_id = request.GET.get('answerId')
-    user_info = Person.objects.filter(userId=user_id).values('userId', 'userName', 'userType')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_info = Course.objects.all().values('courseId', 'courseName')
     post_id = request.GET.get('postId')
-    answer_content = request.GET.get('content')
-    get_forum_q = ForumQuestion.objects.filter(postId=post_id).values('questionId', 'courseId', 'postId', 'title')
-    get_forum_a = ForumAnswer.objects.filter(content=answer_content).values('postId', 'answerId', 'content', 'answerTime')
+    get_content = request.GET.get('content')
+    get_user_id = ForumQuestion.objects.filter(postId=post_id).values_list('questionId', flat=True)[0]
+    get_course_id = ForumQuestion.objects.filter(postId=post_id).values_list('courseId', flat=True)[0]
+    user_info = Person.objects.filter(userId=get_user_id).values('userId', 'userName', 'userType')
+    course_info = Course.objects.filter(courseId=get_course_id).values('courseId', 'courseName')
+    get_forum_q = ForumQuestion.objects.filter(postId=post_id).values( 'postId', 'title')
+    get_forum_a = ForumAnswer.objects.filter(postId=post_id, content=get_content).values('answerId', 'postId', 'content', 'answerTime')
     return render(request, "administrator_forum_A_delete.html", locals())
 
-def administrator_forum_delete_succeed(request):
+def administrator_forum_A_delete_succeed(request):
+    administrator_id = request.session.get('administrator_id')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     post_id = request.GET.get('postId')
     answer_content = request.GET.get('content')
     get_answer_id = ForumAnswer.objects.filter(content=answer_content, postId=post_id).values_list('answerId', flat=True)[0]
+    get_post_id = ForumAnswer.objects.filter(content=answer_content, postId=post_id).values_list('postId', flat=True)[0]
+    get_course_id = ForumQuestion.objects.filter(postId=get_post_id).values_list('courseId', flat=True)[0]
     print(get_answer_id)
+    print(get_post_id)
+    print(get_course_id)
     ForumAnswer.objects.filter(content=answer_content, postId=post_id).delete()
-    return render(request, "administrator_forum_delete_succeed.html", locals())
+    return render(request, "administrator_forum_A_delete_succeed.html", locals())
 
-def administrator_forum_A_delete_succeed(request):
+def administrator_forum_Q_delete_succeed(request):
+    administrator_id = request.session.get('administrator_id')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     post_id = request.GET.get('postId')
     answer_content = request.GET.get('content')
-    if answer_content is not None:
-        ForumAnswer.objects.filter(content=answer_content, postId=post_id).delete()
-    else:
-        ForumQuestion.objects.filter(postId=post_id).delete()
-    return render(request, "administrator_forum_delete_succeed.html", locals())
+    get_question_id = ForumQuestion.objects.filter(postId=post_id).values_list('questionId', flat=True)[0]
+    get_course_id = ForumQuestion.objects.filter(postId=post_id).values_list('courseId', flat=True)[0]
+    ForumQuestion.objects.filter(postId=post_id).delete()
+    ForumAnswer.objects.filter(postId=post_id).delete()
+    return render(request, "administrator_forum_Q_delete_succeed.html", locals())
 
 def administrator_courselist_stu(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     student_id = request.GET.get('userId')
     student_info = Person.objects.filter(userId=student_id)
     get_course_id = CourseStudent.objects.filter(studentId=student_id).values('courseId')
@@ -159,7 +173,7 @@ def administrator_courselist_stu(request):
 
 def administrator_student_grades(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     student_id = request.GET.get('userId')
     course_id = request.GET.get('courseId')
     student_info = Person.objects.filter(userId=student_id).values('userId', 'userName')
@@ -169,7 +183,7 @@ def administrator_student_grades(request):    #在线考试待考课程列表界
 
 def administrator_teacherlist(request):    #考试成绩界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     teacher_info = Person.objects.filter(userType=2).values('userId').distinct()
     user_info = Person.objects.all().values('userId', 'userName')
 
@@ -189,14 +203,14 @@ def administrator_teacherlist(request):    #考试成绩界面
 
 def administrator_teacher_details(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     teacher_id = request.GET.get('userId')
     teacher_info = Person.objects.filter(userId=teacher_id)
     return render(request, "administrator_teacher_details.html", locals())
 
 def administrator_courselist_tea(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     teacher_id = request.GET.get('userId')
     teacher_info = Person.objects.filter(userId=teacher_id)
     get_course_id = Course.objects.filter(teacherId=teacher_id).values('courseId')
@@ -217,7 +231,7 @@ def administrator_courselist_tea(request):
 
 def administrator_course_student(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     teacher_id = request.GET.get('userId')
     course_id = request.GET.get('courseId')
     teacher_info = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
@@ -242,7 +256,7 @@ def administrator_course_student(request):
 
 def administrator_student_grades_tea(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     student_id = request.GET.get('userId')
     course_id = request.GET.get('courseId')
     student_info = Person.objects.filter(userId=student_id).values('userId', 'userName')
@@ -252,7 +266,7 @@ def administrator_student_grades_tea(request):    #在线考试待考课程列�
 
 def administrator_init_password(request):    #考试成绩界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     user_id = request.GET.get('userId')
     Person.objects.filter(userId=user_id).update(passWord=123456)
     return render(request, "administrator_init_password.html", locals())
@@ -265,7 +279,7 @@ def administrator_question_added(request):    #考试成绩界面
 
 def administrator_test_manage(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_info = Course.objects.all().values('courseId', 'courseName', 'teacherId', 'isOver')
     teacher_info = Person.objects.filter(userType=2).values('userId', 'userName')
     contact_list = course_info
@@ -284,7 +298,7 @@ def administrator_test_manage(request):    #在线考试待考课程列表界面
 
 def administrator_course_list(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_info = Course.objects.all()
     get_Q_F = FillInTheBlank.objects.all()
     get_Q_C = ChoiceQuestion.objects.all()
@@ -293,7 +307,7 @@ def administrator_course_list(request):
 
 def administrator_question_list(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
 
@@ -322,7 +336,7 @@ def administrator_question_list(request):    #在线考试待考课程列表界�
 
 def administrator_C_edit(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     question_id = request.GET.get('choiceId')
     page = request.GET.get('page')
     get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId', 'courseId',
@@ -340,7 +354,7 @@ def administrator_C_edit(request):
 
 def administrator_F_edit(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     question_id = request.GET.get('fillId')
     page = request.GET.get('page')
     get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content',
@@ -355,7 +369,7 @@ def administrator_F_edit(request):
 
 def administrator_C_delete(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     page = request.GET.get('page')
     question_id = request.GET.get('choiceId')
     get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId', 'courseId', 'content', 'answer', 'questionA', 'questionB', 'questionC', 'questionD', 'type')
@@ -369,7 +383,7 @@ def administrator_C_delete(request):
 
 def administrator_F_delete(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     page = request.GET.get('page')
     question_id = request.GET.get('fillId')
     get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content', 'answer', 'type')
@@ -398,7 +412,7 @@ def administrator_F_edit_succeed(request):
         return render(request, "administrator_F_edit_succeed.html", locals())
     elif request.method == "POST":
         administrator_id = request.session.get('administrator_id')
-        administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         question_id = request.GET.get('fillId')
         get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId')
         get_content = request.POST.get('content')
@@ -420,7 +434,7 @@ def administrator_C_edit_succeed(request):
         return render(request, "administrator_C_edit_succeed.html", locals())
     elif request.method == "POST":
         administrator_id = request.session.get('administrator_id')
-        administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         question_id = request.GET.get('choiceId')
         get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId')
         get_content = request.POST.get('content')
@@ -446,7 +460,7 @@ def administrator_feedback(request):    #在线考试待考课程列表界面
 
 def administrator_exam_Q(request):    #已通过成绩页面
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     get_type = request.GET.get('type')
     course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
@@ -463,7 +477,7 @@ def administrator_exam_Q(request):    #已通过成绩页面
 
 def administrator_exam_grade(request):
     administrator_id = request.session.get('administrator_id')
-    administrator_name = Person.objects.filter(userId=administrator_id).values('userName')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     get_type = request.GET.get('type')
     course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')

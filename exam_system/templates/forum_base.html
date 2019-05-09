@@ -9,18 +9,25 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/event_manage/">在线考试系统</a>
+          {% for user in userName %}
+          <a class="navbar-brand" href="/event_manage/?userId={{ user.userId }}">在线考试系统</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active">
-
-              <li> <a href="#">个人主页</a></li><!--“#”是默认当前页面，可以把#换成想跳转的页面-->
-            <li><a href="/event_manage/">论坛</a></li>
+            {% if user.userType == 1 %}
+                <li> <a href="/administrator_member_list/?userId={{ user.userId }}">个人主页</a></li>
+            {% elif user.userType == 2 %}
+                <li> <a href="/teacher_homepage/?userId={{ user.userId }}">个人主页</a></li>
+            {% elif user.userType == 3 %}
+                <li> <a href="/personal_homepage/?userId={{ user.userId }}">个人主页</a></li>
+            {% endif %}<!--“#”是默认当前页面，可以把#换成想跳转的页面-->
+            <li><a href="/event_manage/?userId={{ user.userId }}">论坛</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-           <li><a href="#">{{ userName }}</a></li>
-           <li><a href="/logout/">注销</a></li>
+              <li><a href="#">{{ user.userName }}</a></li>
+          {% endfor %}
+           <li><a href="/index/">注销</a></li>
          </ul>
         </div><!--/.nav-collapse -->
       </div>

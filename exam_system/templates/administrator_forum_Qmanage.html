@@ -26,7 +26,8 @@
                                             <td>{{ post.tite }}</td>
                                             <td>{{ post.postTime }}</td>
                                             <td>{{ post.answerNum }}</td>
-                                            <td><a href="/#/?postId={{ post.postId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">查看帖子详情</button></a></td>
+                                            <td><a href="/course_post/?postId={{ post.postId }}&courseId={{ post.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">跳转至论坛查看详情</button></a></td>
+                                            <td><a href="/administrator_forum_Q_delete/?postId={{ post.postId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">查看帖子细节</a></td>
                                         </tr>
                             {% endif %}
                         {% endfor %}

@@ -30,19 +30,15 @@
                     <td>{{ answer.answerTime }}</td>
                     {% for post in get_forum_q %}
                         {% for course in course_info %}
-                            {% if course.courseId == post.courseId %}
-                                <td>{{ course.courseName }}</td>
-                            {% endif %}
+                            <td>{{ course.courseName }}</td>
                         {% endfor %}
                     {% endfor %}
                     {% for person in user_info %}
-                        {% if person.userId == answer.answerId %}
-                            <td>{{ person.userName }}</td>
-                        {% endif %}
+                        <td>{{ person.userName }}</td>
                     {% endfor %}
                 {% endfor %}
                 {% for answer in get_forum_a %}
-                    <td><a href="/administrator_forum_delete_succeed/?postId={{ answer.postId }}&content={{ answer.content }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本回复</button></a></td>
+                    <td><a href="/administrator_forum_A_delete_succeed/?postId={{ answer.postId }}&content={{ answer.content }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本回复</button></a></td>
                 {% endfor %}
             </tr>
     </tbody>
@@ -52,9 +48,14 @@
 
 {% for user in user_info %}
     {% if user.userType == 2 %}
-    <center><a href="/administrator_teacher_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    <center><a href="/administrator_forum_Amanage/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">查看用户其他回帖信息</button></a></center>
     {% elif user.userType == 3 %}
-    <center><a href="/administrator_student_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    <center><a href="/administrator_forum_Amanage/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">查看用户其他回帖信息</button></a></center>
     {% endif %}
+{% endfor %}
+    <Br>
+    <Br>
+{% for info in get_forum_a %}
+        <center><a href="/course_post/?postId={{ info.postId }}&courseId={{ get_course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">在论坛中查看</button></a></center>
 {% endfor %}
 {% endblock %}

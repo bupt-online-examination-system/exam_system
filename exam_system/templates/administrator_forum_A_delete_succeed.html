@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "administrator_login.html" %}
 
-</body>
-</html>
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th class="text-dark"><h2>删除成功！</h2></th>
+		</tr>
+	</thead>
+	<tbody>
+            <h1>请返回检查！</h1>
+	</tbody>
+</table>
+ </div>
+
+
+    <center><a href="/administrator_forum_Amanage/?userId={{ get_answer_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回试题管理页面</button></a></center>
+    <Br>
+    <Br>
+    <center><a href="/course_post/?postId={{ get_post_id }}&courseId={{ get_course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回论坛页面</button></a></center>
+{% endblock %}
