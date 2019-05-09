@@ -1,0 +1,68 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<body>
+    <div class="row" style="margin-top: 80px;margin-left: 80px">
+        <table class="table table-hover">
+             <thead>
+                 <tr>
+                    {% for course in course_info %}
+                        <h5 class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</h5>
+                    {% endfor %}
+                <tr>
+                    {% for type in get_exam_score %}
+                        {% if type.type == 1 %}
+                            <h5 class="text-dark">第一次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                        {% elif type.type == 2 %}
+                            <h5 class="text-dark">期中考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                        {% elif type.type == 3 %}
+                            <h5 class="text-dark">第二次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                        {% elif type.type == 4 %}
+                            <h5 class="text-dark">期末考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                        {% elif type.type == 5 %}
+                            <h5 class="text-dark">练习</h5>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="active">选择题</td>
+                {% for id in get_frst_Q_id %}
+                    {% for choice in get_Q_C %}
+                        {% if choice.choiceId == id.questionId and id.type == 1 %}
+                            <tr>
+                            <td>{{ choice.content }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;答案：{{ choice.answer }}
+                            <td>
+                                A:{{ choice.questionA }}<br>
+                                B:{{ choice.questionB }}<br>
+                                C:{{ choice.questionC }}<br>
+                                D:{{ choice.questionD }}
+                            </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            <tr>
+                <td class="active">选择题</td>
+                {% for id in get_frst_Q_id %}
+                    {% for fill in get_Q_F %}
+                        {% if fill.fillId == id.questionId and id.type == 2 %}
+                            <tr>
+                            <td>
+                                {{ fill.content }}
+                            <td>
+                                答案：{{ fill.answer }}
+                            </td>
+                            </tr>
+                        {% endif %}
+                   {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+     </div>
+</body>
+    {% for type in get_exam_score %}
+        <center><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% endfor %}
+{% endblock %}

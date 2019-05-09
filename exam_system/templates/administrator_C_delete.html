@@ -1,0 +1,69 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<body>
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+        <tr>
+            <td>
+                <h5>警告：您的删除操作可能会带来十分严重的后果。</h5>
+            </td>
+        <tr>
+            <td>
+                <h5>请您谨慎检查要删除的信息是否有误。</h5>
+            </td>
+        </tr>
+	</thead>
+    <tbody>
+        {% for Q in get_question_info %}
+            <tr>
+                <th>选择题ID</th>
+                <td>{{ Q.choiceId }}</td>
+            <tr>
+                <th>对应课程</th>
+                {% for course in course_info %}
+                    {% if course.courseId == Q.courseId %}
+                        <td>{{ course.courseName }}</td>
+                    {% endif %}
+                {% endfor %}
+            <tr>
+                <th>题目</th>
+                <td>{{ Q.content }}</td>
+            <tr>
+                <th>答案</th>
+                <td> {{ Q.answer }}</td>
+            <tr>
+                <th>选项详情</th>
+                <td>{{ Q.questionA }}<br>
+                    {{ Q.questionB }}<br>
+                    {{ Q.questionC }}<br>
+                    {{ Q.questionD }}
+                </td>
+            <tr>
+                <th>题目类型（考试题/练习题）</th>
+                {% if Q.type == 1 %}
+                    <td>考试题</td>
+                {% elif Q.type == 2 %}
+                    <td>练习题</td>
+                {% endif %}
+            <tr>
+                {% if exist == 0 %}
+                    <td><a href="/administrator_C_delete_succeed/?questionId={{ Q.choiceId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本题</button></a></td>
+                {% elif exist == 1 %}
+                    <td>本题在试卷中含有关联项，无法删除！</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+{% for Q in get_question_info %}
+    {% for course in course_info %}
+        {% if course.courseId == Q.courseId %}
+            <center><a href="/administrator_question_list/?courseId={{ course.courseId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<body>
+    <div class="row" style="margin-top: 80px;margin-left: 80px">
+        <table class="table table-hover">
+             <thead>
+                 <tr>
+                    {% for course in course_info %}
+                        <h5 class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</h5>
+                    {% endfor %}
+                <tr>
+                    {% for type in get_exam_score %}
+                        {% if type.type == 1 %}
+                            <h5 class="text-dark">第一次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                        {% elif type.type == 2 %}
+                            <h5 class="text-dark">期中考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                        {% elif type.type == 3 %}
+                            <h5 class="text-dark">第二次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                        {% elif type.type == 4 %}
+                            <h5 class="text-dark">期末考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
+                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                        {% elif type.type == 5 %}
+                            <h5 class="text-dark">练习</h5>
+                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>学生账号</td>
+                <td>学生姓名</td>
+                <td>成绩</td>
+                {%for id in get_student_id %}
+                    {% with i=contacts.number|add:"-1" %}
+                    {% widthratio i 1 10 as low %}
+                    {% with high=low|add:"11" %}
+                    {% with low=high|add:"-11" %}
+                    {% if forloop.counter > low and forloop.counter < high %}
+                    <tr>
+                        {% for student in student_info %}
+                            {% if student.userId == id.studentId %}
+                                <td>{{ student.userId }}</td>
+                                {% for course in course_info %}
+                                    <td>{{ student.userName}}</td>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for score in get_exam_score %}
+                            {% if score.studentId == id.studentId %}
+                                {% if score.isOver == 1 %}
+                                    <td>{{ score.score }}</td>
+                                {% else %}
+                                    {% for course in course_info %}
+                                        {% if course.isOver == 1 %}
+                                            <td>尚未完成</td>
+                                        {% else %}
+                                            <td>该生未及时考试，成绩记0</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                    {% endwith %}
+                    {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+     </div>
+</body>
+
+     <center>
+<div class="pagination">
+    <span class="step-links">
+    {% for type in get_exam_score %}
+        {% if contacts.has_previous %}
+            <td><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    {% endfor %}
+    </span>
+</div>
+</center>
+
+    <center><a href="/administrator_test_manage/?"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+{% endblock %}

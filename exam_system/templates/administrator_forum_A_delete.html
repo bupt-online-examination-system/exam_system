@@ -1,0 +1,60 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+	<thead>
+        <tr>
+            <td>
+                <h5>警告：您的删除操作可能会带来十分严重的后果。</h5>
+            </td>
+        <tr>
+            <td>
+                <h5>请您谨慎检查要删除的信息是否有误。</h5>
+            </td>
+        </tr>
+	</thead>
+    <tbody>
+            <tr>
+                <th>主帖标题</th>
+                <th>回帖内容</th>
+                <th>回帖时间</th>
+                <th>回帖板块</th>
+                <th>回帖人</th>
+            <tr>
+                {% for answer in get_forum_a %}
+                    {% for post in get_forum_q %}
+                        <td class="active">{{ post.postId }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ post.title }}</td>
+                    {% endfor %}
+                    <td>{{ answer.content }}</td>
+                    <td>{{ answer.answerTime }}</td>
+                    {% for post in get_forum_q %}
+                        {% for course in course_info %}
+                            {% if course.courseId == post.courseId %}
+                                <td>{{ course.courseName }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% for person in user_info %}
+                        {% if person.userId == answer.answerId %}
+                            <td>{{ person.userName }}</td>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                {% for answer in get_forum_a %}
+                    <td><a href="/administrator_forum_delete_succeed/?postId={{ answer.postId }}&content={{ answer.content }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本回复</button></a></td>
+                {% endfor %}
+            </tr>
+    </tbody>
+</table>
+</div>
+
+
+{% for user in user_info %}
+    {% if user.userType == 2 %}
+    <center><a href="/administrator_teacher_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% elif user.userType == 3 %}
+    <center><a href="/administrator_student_details/?userId={{ user.userId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+    {% endif %}
+{% endfor %}
+{% endblock %}
