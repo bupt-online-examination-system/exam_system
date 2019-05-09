@@ -148,6 +148,18 @@ urlpatterns = [
     url(r'^add_course/$', teacher_views.add_course, name='add_course'),
     url(r'^add_exam/$', teacher_views.add_exam, name='add_exam'),
     url(r'^add_student/$', teacher_views.add_student, name='add_student'),
+    url(r'^teacher_C_delete/$', teacher_views.teacher_C_delete, name='teacher_C_delete'),
+    url(r'^teacher_F_delete/$', teacher_views.teacher_F_delete, name='teacher_F_delete'),
+    url(r'^teacher_C_edit/$', teacher_views.teacher_C_edit, name='teacher_C_edit'),
+    url(r'^teacher_F_edit/$', teacher_views.teacher_F_edit, name='teacher_F_edit'),
+    url(r'^teacher_question_list/$', teacher_views.teacher_question_list, name='teacher_question_list'),
+    url(r'^teacher_question_added/$', teacher_views.teacher_question_added, name='teacher_question_added'),
+    url(r'^teacher_course/$', teacher_views.teacher_course, name='teacher_course'),
+    url(r'^teacher_C_delete_succeed/$', teacher_views.teacher_C_delete_succeed, name='teacher_C_delete_succeed'),
+    url(r'^teacher_C_edit_succeed/$', teacher_views.teacher_C_edit_succeed, name='teacher_C_edit_succeed'),
+    url(r'^teacher_F_delete_succeed/$', teacher_views.teacher_F_delete_succeed, name='teacher_F_delete_succeed'),
+    url(r'^teacher_F_edit_succeed/$', teacher_views.teacher_F_edit_succeed, name='teacher_F_eidt_succeed'),
+    url(r'^teacher_post/$', teacher_views.teacher_post, name='teacher_post'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
 

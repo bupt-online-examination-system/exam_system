@@ -293,11 +293,189 @@ def add_student(request):
         return render(request, "add_student.html", locals())
 
 def add_course(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
+    return render(request, "add_course.html", locals())
+
+def teacher_question_added(request):
+    return render(request, "teacher_question_added.html", locals())
+
+
+def teacher_question_list(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+    course_id = request.GET.get('courseId')
+    course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
+
+    get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
+    get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id).values('choiceId', 'content', 'answer', 'questionA', 'questionB', 'questionC', 'questionD', 'type')
+
+    contact_list1 = get_Q_F
+    contact_list2 = get_Q_C
+
+    paginator = Paginator(contact_list1, 5)  # 每页5条
+    paginator = Paginator(contact_list2, 5)
+
+    page = request.GET.get('page')
+    try:
+        contacts1 = paginator.page(page)  # contacts为Page对象！
+        contacts2 = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts1 = paginator.page(1)
+        contacts2 = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts1 = paginator.page(paginator.num_pages)
+        contacts2 = paginator.page(paginator.num_pages)
+    return render(request, "teacher_question_list.html", locals())
+
+def add_exam(request):
+    return render(request, "add_exam.html", locals())
+
+
+def teacher_C_delete(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+    page = request.GET.get('page')
+    question_id = request.GET.get('choiceId')
+    get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId', 'courseId', 'content',
+                                                                                   'answer', 'questionA', 'questionB',
+                                                                                   'questionC', 'questionD', 'type')
+    course_info = Course.objects.all()
+    find_question = ExamQuestion.objects.filter(questionId=question_id, type=1).count()
+    if find_question is not 0:
+        exist = 1
+    else:
+        exist = 0
+    return render(request, "teacher_C_delete.html", locals())
+
+
+def teacher_C_delete_succeed(request):
+    question_id = request.GET.get('questionId')
+    ChoiceQuestion.objects.filter(choiceId=question_id).delete()
+    page = request.GET.get('page')
+    return render(request, "teacher_C_delete_succeed.html", locals())
+
+def teacher_C_edit(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+    question_id = request.GET.get('choiceId')
+    page = request.GET.get('page')
+    get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId', 'courseId',
+                                                                                   'content',
+                                                                                   'answer', 'questionA',
+                                                                                   'questionB',
+                                                                                   'questionC', 'questionD', 'type')
+    course_info = Course.objects.all()
+    find_question = ExamQuestion.objects.filter(questionId=question_id, type=1).count()
+    if find_question is not 0:
+        exist = 1
+    else:
+        exist = 0
+    return render(request, "teacher_C_edit.html", locals())
+
+
+def teacher_C_edit_succeed(request):
+    if request.method == "GET":
+        return render(request, "teacher_C_edit_succeed.html", locals())
+    elif request.method == "POST":
         teacher_id = request.session.get('teacher_id')
-        teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
-        return render(request, "add_course.html", locals())
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+        question_id = request.GET.get('choiceId')
+        get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId')
+        get_content = request.POST.get('content')
+        page = request.GET.get('page')
+        a = request.POST.get('A')
+        b = request.POST.get('B')
+        c = request.POST.get('C')
+        d = request.POST.get('D')
+        answer = request.POST.get('answer')
+        get_type = request.POST.get('type')
+        course_id = request.POST.get('courseId')
+        ChoiceQuestion.objects.filter(choiceId=question_id).update(content=get_content, questionA=a,
+                                                                   questionB=b, questionC=c,
+                                                                   questionD=d, answer=answer, type=get_type,
+                                                                   courseId_id=course_id)
+    return render(request, "teacher_C_edit_succeed.html", locals())
+
+def teacher_F_delete(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+    page = request.GET.get('page')
+    question_id = request.GET.get('fillId')
+    get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content', 'answer', 'type')
+    course_info = Course.objects.all()
+    find_question = ExamQuestion.objects.filter(questionId=question_id, type=2).count()
+    if find_question is not 0:
+        exist = 1
+    else:
+        exist = 0
+    return render(request, "teacher_F_delete.html", locals())
 
 
+def teacher_F_delete_succeed(request):
+    question_id = request.GET.get('questionId')
+    FillInTheBlank.objects.filter(fillId=question_id).delete()
+    page = request.GET.get('page')
+    return render(request, "teacher_F_delete_succeed.html", locals())
+
+def teacher_F_edit(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+    question_id = request.GET.get('fillId')
+    page = request.GET.get('page')
+    get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content',
+                                                                                 'answer', 'type')
+    course_info = Course.objects.all()
+    find_question = ExamQuestion.objects.filter(questionId=question_id, type=2).count()
+    if find_question is not 0:
+        exist = 1
+    else:
+        exist = 0
+    return render(request, "teacher_F_edit.html", locals())
+
+def teacher_F_edit_succeed(request):
+    if request.method == "GET":
+        return render(request, "teacher_F_edit_succeed.html", locals())
+    elif request.method == "POST":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId','userName')
+        question_id = request.GET.get('fillId')
+        get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId')
+        get_content = request.POST.get('content')
+        page = request.GET.get('page')
+        answer = request.POST.get('answer')
+        get_type = request.POST.get('type')
+        course_id = request.POST.get('courseId')
+        print(question_id)
+        print(get_content)
+        print(answer)
+        print(get_type)
+        print(course_id)
+        FillInTheBlank.objects.filter(fillId=question_id).update(content=get_content, answer=answer, type=get_type,
+                                                                 courseId_id=course_id)
+    return render(request, "teacher_F_edit_succeed.html", locals())
+
+def teacher_course(request):
+    teacher_id = request.session.get('teacherId')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userName')
+    get_course_id = Course.objects.filter(teacherId=teacher_id).values('courseId')
+    course_info = Course.objects.all().values('courseId', 'courseName')
+
+    contact_list = get_course_id
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "teacher_course.html", locals())
 
 def all_student(request):    #全部学生成绩分析界面
     exam_id = request.GET.get('examId')
@@ -305,3 +483,7 @@ def all_student(request):    #全部学生成绩分析界面
 
 def question_added(request):    #试题添加界面
     return render(request, "question_added.html", locals())
+
+
+def teacher_post(request):    #学生名单界面
+    return render(request, "teacher_post.html")
