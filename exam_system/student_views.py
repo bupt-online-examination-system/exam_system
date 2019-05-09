@@ -14,7 +14,7 @@ def student_login(request): #学生界面模板
 
 def exam_list(request):    #在线考试待考课程列表界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     exam_course_info = Exam.objects.filter(~Q(type=5),studentId=studentId,isOver=1).values('courseId').distinct()
     print(exam_course_info)
     course_info = Course.objects.all().values('courseId','courseName')
@@ -22,14 +22,14 @@ def exam_list(request):    #在线考试待考课程列表界面
 
 def mistake_list(request):    #错题集课程列表界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     my_course_info = CourseStudent.objects.filter(studentId=studentId).values('courseId')
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "mistake_list.html",locals())
 
 def mistake_choice(request):    #该课程错题集选择题练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     print(courseId)
 
@@ -61,7 +61,7 @@ def mistake_choice(request):    #该课程错题集选择题练习界面
 
 def mistake_fill(request):    #该课程错题集填空题练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
 
     deleteMistake = request.GET.get("deleteMistake")  #判断是否点击了从错题集中删除此题按钮
@@ -92,7 +92,7 @@ def mistake_fill(request):    #该课程错题集填空题练习界面
 
 def mistake_choice_details(request):    #该课程错题集选择题详情练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
     choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
@@ -101,7 +101,7 @@ def mistake_choice_details(request):    #该课程错题集选择题详情练习
 
 def mistake_choice_details_answer(request):    #该课程错题集选择题详情练习界面(有答案)
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
     choice_question_info = ChoiceQuestion.objects.filter(choiceId=choiceId)#所有选择题练习信息
@@ -110,7 +110,7 @@ def mistake_choice_details_answer(request):    #该课程错题集选择题详�
 
 def mistake_fill_details(request):    #该课程错题集填空题详情练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     fillId = request.GET.get("fillId")
     print(fillId)
     fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
@@ -119,7 +119,7 @@ def mistake_fill_details(request):    #该课程错题集填空题详情练习�
 
 def mistake_fill_details_answer(request):    #该课程错题集填空题详情练习界面(有答案)
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     fillId = request.GET.get("fillId")
     print(fillId)
     fill_question_info = FillInTheBlank.objects.filter(fillId=fillId)#所有填空题练习信息
@@ -128,14 +128,14 @@ def mistake_fill_details_answer(request):    #该课程错题集填空题详情�
 
 def practice_list(request):    #练习课程列表界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     my_course_info = CourseStudent.objects.filter(studentId=studentId).values('courseId')
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "practice_list.html",locals())
 
 def practice_choice(request):    #该课程选择题练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     print(courseId)
     examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
@@ -162,7 +162,7 @@ def practice_choice(request):    #该课程选择题练习界面
 
 def practice_fill(request):    #该课程填空题练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,type=5).values_list('examId', flat=True)) #得到该学生该课程练习的examId
     if(examId == []):
@@ -188,7 +188,7 @@ def practice_fill(request):    #该课程填空题练习界面
 
 def practice_choice_details(request):    #该课程选择题详情练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
 
@@ -208,7 +208,7 @@ def practice_choice_details(request):    #该课程选择题详情练习界面
 
 def practice_choice_details_answer(request):    #该课程选择题详情练习界面(有答案)
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     choiceId = request.GET.get("choiceId")
     print(choiceId)
 
@@ -227,7 +227,7 @@ def practice_choice_details_answer(request):    #该课程选择题详情练习�
 
 def practice_fill_details(request):    #该课程填空题详情练习界面
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     fillId = request.GET.get("fillId")
     print(fillId)
 
@@ -246,7 +246,7 @@ def practice_fill_details(request):    #该课程填空题详情练习界面
 
 def practice_fill_details_answer(request):    #该课程填空题详情练习界面(有答案)
     studentId = request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     fillId = request.GET.get("fillId")
     print(fillId)
 
@@ -266,7 +266,7 @@ def practice_fill_details_answer(request):    #该课程填空题详情练习界
 def exam_details(request):    #考试详情界面
     if request.method == "GET":
         studentId = request.session.get('studentId')
-        studentName = Person.objects.filter(userId=studentId).values('userName')
+        studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
         courseId = request.GET.get("courseId")
         examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).values_list('examId',flat=True).order_by('examId')) #得到该学生该课程下一次考试的examId
         if(examId == []):
@@ -301,12 +301,14 @@ def exam_details(request):    #考试详情界面
 
 def personal_homepage(request):    #在个人主页界面
     if request.method == "GET":
+        studentId = request.session.get('studentId')
+        studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
         return render(request, "personal_homepage.html", locals())
     elif   request.method == "POST":
         studentId = request.POST.get('userId')
         student_password = request.POST.get("passWord")
         login_user_type = list(Person.objects.filter(userId=studentId).values_list('userType',flat=True))
-        studentName = Person.objects.filter(userId=studentId).values('userName')
+        studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
         count = Person.objects.filter(userId=studentId).count()
         if count == 1 and login_user_type[0] == 3:
             real_password = list(Person.objects.filter(userId=studentId).values_list('passWord',flat=True))
@@ -319,41 +321,41 @@ def personal_homepage(request):    #在个人主页界面
             return render(request, 'administrator_error_stu.html')
 
 def score_query(request):    #考试成绩界面
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     return render(request, "score_query.html",locals())
 
 def pass_score_query(request):    #全部及格成绩
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     pass_score_info = Grade.objects.filter(studentId=studentId, isPass=1).values('courseId','grade')
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "pass_score_query.html", locals())
 
 def fail_score_query(request):    #不及格成绩
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     fail_score_info = Grade.objects.filter(studentId=studentId, isPass=2).values('courseId','grade')
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "fail_score_query.html", locals())
 
 def pass_exam_details(request):    #已通过课程考试信息详情界面
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "pass_exam_details.html", locals())
 
 def fail_exam_details(request):    #未通过课程考试信息详情界面
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "fail_exam_details.html", locals())
 
 def exam_schedule(request):    #待考课程界面
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     over_course = list(Exam.objects.filter(isOver=2,type=4).values_list('courseId', flat=True))#所有期末考结束的课
     print(over_course)
     length = len(over_course)
@@ -364,15 +366,15 @@ def exam_schedule(request):    #待考课程界面
     return render(request, "exam_schedule.html", locals())
 
 def exam_schedule_details(request):    #待考课程考试信息详情界面
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     courseId = request.GET.get("courseId")
     exam_details_info = Exam.objects.filter(~Q(type=5),courseId=courseId,studentId=studentId).values('type','score')
     return render(request, "exam_schedule_details.html", locals())
 
 def post_record(request):    #发帖记录
-    studentId=request.session.get('studentId')
-    studentName = Person.objects.filter(userId=studentId).values('userName')
+    studentId = request.session.get('studentId')
+    studentName = Person.objects.filter(userId=studentId).values('userId', 'userName')
     forum_question_info = ForumQuestion.objects.filter(questionId=studentId).values('title','courseId','postId')
     course_info = Course.objects.all().values('courseId','courseName')
     return render(request, "post_record.html", locals())

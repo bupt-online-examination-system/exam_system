@@ -22,6 +22,11 @@
         {% for post_answer in post_answer_info %}
         <tr>
 		    <td>{{ post_answer.content}}</td>
+                {% for user in user_info %}
+                    {% if user.userType == 1 %}
+                        <td><a href="/administrator_forum_A_delete/?postId={{ post_answer.postId }}&answerId={{ post_answer.answerId }}&content={{ post_answer.content }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">检视回帖细节</button></a></td>
+                    {% endif %}
+                {% endfor %}
 {#            <td>{{ answer_post_info.userName}}</td>#}
         </tr>
         {% endfor %}
@@ -30,10 +35,24 @@
     <div class="text-center">
     {#   如果是楼主或者管理员，则会出现编辑,删除帖子按钮 这里可以使用if 进行判断    #}
     {#  {% if user_id == 帖子楼主id %}  #}
-        <a  href="/edit_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">编辑帖子</a>
-        <a  href="/delete_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除帖子</a>
-        <a  href="/answer_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
-        <a  href="/course_forum/?courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">返回</a>
+    {% for user in user_info %}
+        {% if user.userType == 1 %}
+                <a  href="/administrator_forum_Q_delete/?postId={{ postId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">查看帖子细节</a>
+        {% else %}
+                {% for up in post_question_info %}
+                    {% if up.questionId == user.userId%}
+                        <a  href="/delete_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除帖子</a>
+                        <a  href="/edit_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">编辑帖子</a>
+                        <a  href="/answer_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
+                    {% else %}
+                        <a  href="/answer_post/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">我要回复</a>
+                    {% endif %}
+                {% endfor %}
+        {% endif %}
+    {% endfor %}
+    <Br>
+    <Br>
+        <a  href="/course_forum/?courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">回到本帖隶属板块</a>
     </div>
  </div>
 {% endblock %}
