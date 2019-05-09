@@ -1,0 +1,73 @@
+{% extends "administrator_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td class="text-dark"><h1>全部课程如下：</h1></td>
+        </tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>课程编号</th>
+            <th>课程名称</th>
+            <th>授课老师</th>
+            <th>课程状态</th>
+		</tr>
+	<tbody>
+        {% for course in course_info %}
+            {% with i=contacts.number|add:"-1" %}
+            {% widthratio i 1 10 as low %}
+            {% with high=low|add:"11" %}
+            {% with low=high|add:"-11" %}
+            {% if forloop.counter > low and forloop.counter < high %}
+            <tr>
+                <td>{{ course.courseId }}</td>
+                <td>{{ course.courseName}}</td>
+                {% for teacher in teacher_info %}
+                    {% if teacher.userId == course.teacherId %}
+                        <td>{{ teacher.userName}}</td>
+                    {% endif %}
+                {% endfor %}
+                {% if course.isOver == 1 %}
+                    <td>进行中</td>
+                {% else %}
+                    <td>已结课</td>
+                {% endif %}
+                     <td>
+                         <a href="/administrator_exam_grade/?courseId={{ course.courseId }}&type={{ 1 }}">第一次月考</a>
+                         <a href="/administrator_exam_grade/?courseId={{ course.courseId }}&type={{ 2 }}">期中考试</a>
+                         <a href="/administrator_exam_grade/?courseId={{ course.courseId }}&type={{ 3 }}">第二次月考</a>
+                         <a href="/administrator_exam_grade/?courseId={{ course.courseId }}&type={{ 4 }}">期末考试</a>
+                         <a href="/administrator_exam_grade/?courseId={{ course.courseId }}&type={{ 5 }}">练习</a>
+                    </td>
+            </tr>
+            {% endif %}
+            {% endwith %}
+            {% endwith %}
+            {% endwith %}
+        {% endfor %}
+	</tbody>
+</table>
+ </div>
+
+
+<center>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/administrator_courselist_stu/?page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/administrator_courselist_stu/?page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
+{% endblock %}
