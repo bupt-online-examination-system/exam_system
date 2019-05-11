@@ -76,12 +76,13 @@ def mistake_fill(request):    #该课程错题集填空题练习界面
     fill_question_info = FillInTheBlank.objects.filter(type=2)#所有填空题练习信息
     print(fill_question_info)
 
-    contact_list = exam_question_info
+    contact_list = exam_question_info    ##该课程填空题所有练习题号
     paginator = Paginator(contact_list, 10)  # 每页10条
 
     page = request.GET.get('page')
     try:
         contacts = paginator.page(page)  # contacts为Page对象！
+        print(contacts)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         contacts = paginator.page(1)
