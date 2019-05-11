@@ -26,8 +26,10 @@ def exam_details(request):
         courseId = request.GET.get("courseId")
         #examId = list(Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).values_list('examId',flat=True).order_by('examId')) #得到该学生该课程下一次考试的examId
         #exam = Exam.objects.filter(studentId=studentId, courseId=courseId)[0]
-        exam = Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).order_by('examId')[0] #得到该学生该课程下一次考试的examId
-        if not exam:
+        exam_list = Exam.objects.filter(studentId=studentId,courseId=courseId,isOver=1).order_by('examId')
+        if exam_list:
+            exam = exam_list[0]
+        else:
             return HttpResponse('现在不能考试')
         print(exam)
         course = Course.objects.filter(courseId = courseId)
@@ -82,8 +84,9 @@ def exam_details(request):
 
 
     elif request.method == 'POST':
-
+        print("交卷")
         exam_id = int(request.POST.get("exam"))
+        print("试卷id"+str(exam_id))
         studentId = request.session.get('studentId')
         studentName = Person.objects.filter(userId=studentId).values('userName')[0]['userName']
 
@@ -96,17 +99,16 @@ def exam_details(request):
             if i.type == 1:
                 if ChoiceQuestion.objects.filter(type=1, choiceId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1
-                    i.save()
                     right_choice+=1
                 else:
                     i.isRight = 0
-                    i.save()
             elif i.type == 2:
                 if FillInTheBlank.objects.filter(type=1, fillId=i.questionId)[0].answer == i.answer:
                     i.isRight = 1
                     right_choice+=1
                 else:
                     i.isRight = 0
+            i.save()
         score = (right_choice+right_fill)*5
         exam.score =  score  #写死  每题5分
         exam.isOver = 2
@@ -202,19 +204,21 @@ def data_in(request):
                 for i in range(1, rows):
                     rowVlaues = table.row_values(i)
                     rowVlaues = tuple(rowVlaues)
-
+                    if type(rowVlaues[3])==float and int(rowVlaues[3])==rowVlaues[3]:
+                        passWord = str(int(rowVlaues[3]))
+                    else:
+                        passWord = rowVlaues[3]
                     Person.objects.create(
                           userId=int(rowVlaues[0]),
                           userType=int(rowVlaues[1]),
-                          userName=rowVlaues[2],
-                          passWord=rowVlaues[3]
+                          userName=str(rowVlaues[2]),
+                          passWord=passWord,
                           )
 
             elif table_num == '1':
                 for i in range(1, rows):
                     rowVlaues = table.row_values(i)
                     rowVlaues = tuple(rowVlaues)
-
                     Course.objects.create(
                         courseId = int(rowVlaues[0]),
                         teacherId = Person.objects.get(userId = int(rowVlaues[1])),
@@ -244,7 +248,8 @@ def data_in(request):
                         isOver = int(rowVlaues[3]),
                         score = int(rowVlaues[4]),
                         type = int(rowVlaues[5]),
-                        start_time = str(rowVlaues[6]),
+                        weight = int(rowVlaues[6]),
+                        # start_time = str(rowVlaues[7]),
                     )
 
             elif table_num == '4':
@@ -403,6 +408,7 @@ def data_out(request):
 
 
 def ajax_post(request):
+    print("保存试卷改动")
     stu = request.session.get('studentId')
     exam = int(request.POST.get("exam"))
     type_ = int(request.POST.get("type"))
