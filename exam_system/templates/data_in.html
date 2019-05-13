@@ -15,8 +15,11 @@
                     <div class="contact-box text-center">
                         <form  method="post" enctype="multipart/form-data">
                             {% csrf_token %}
+                            <br><br><br><br><br>
+                            <center>
                             <div class="form-group">
                                 <input type="file" name="file">
+                            <br><br><br><br><br>
                                 <select name="table">
                                     <option value="none">--选择要导入的数据表--</option>
                                     {% for table in tables %}
@@ -25,6 +28,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">开始导入</button>
+                            </center>
                             <div id="form-messages"></div>
                         </form>
                     </div><!--end contact form-->

@@ -7,27 +7,113 @@
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
 	<thead>
-		<tr>
-			<th class="text-dark"><h2>       </h2></th>
-		</tr>
+        <tr>
+            {% for course in course_info %}
+                <tr>
+                    <td class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</td>
+                </tr>
+            {% endfor %}
+        <tr>
 	</thead>
 	<tbody>
-        {#   循环输出所有课程，将参数传给course_forum，然后输出该课程的所有帖子     #}
-        {#   get方法传参   #}
         <tr>
-		<td><a href="/course_name/">添加第一次月考</a></td>
-        </tr>
+            {% if get_state_1 == 1 %}
+                <td><a href="/first_exam_edit/?courseId={{ course_id }}">编辑第一次月考考试试题</a></td>
+                <td><a  href="/test_ready/?courseId={{ course_id }}&type={{ 1 }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">发布考试</a></td>
+            {% else %}
+                <td><a href="/exam_Q/?courseId={{ course_id }}&type={{ 1 }}">查看第一次月考考试试题</a></td>
+            {% endif %}
+            {% for test in test_info %}
+                {% if test.type == 1 %}
+                    <td>{{ test.weight }}</td>
+                {% endif %}
+            {% endfor %}
+            <td>
+                <form  method="post" action="/add_exam/?courseId={{ course_id }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>设置考试权重</label>
+                        <input type="text" name="weight1" placeholder="设置考试权重" required>
+                        <button type="submit" class="btn btn-primary btn-lg">提交</button>
+                    </div>
+                </form>
+            </td>
         <tr>
-        <td><a href="/question_added/">添加期中考试</a></td>  {#   和练习模式用一个界面   #}
-        </tr>
+             {% if get_state_2 == 1 %}
+                <td><a href="/second_exam_edit/?courseId={{ course_id }}">编辑期中考试试题</a></td>
+                <td><a  href="/test_ready/?courseId={{ course_id }}&type={{ 2 }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">发布考试</a></td>
+            {% else %}
+                <td><a href="/exam_Q/?courseId={{ course_id }}&type={{ 2 }}">查看期中考试试题</a></td>
+            {% endif %}
+            {% for test in test_info %}
+                {% if test.type == 2 %}
+                    <td>{{ test.weight }}</td>
+                {% endif %}
+            {% endfor %}
+            <td>
+                <form  method="post" action="/add_exam/?courseId={{ course_id }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>设置考试权重</label>
+                        <input type="text" name="weight2" placeholder="设置考试权重" required>
+                        <button type="submit" class="btn btn-primary btn-lg">提交</button>
+                    </div>
+                </form>
+            </td>
         <tr>
-		<td><a href="/add_course/">添加第二次月考</a></td>  {#   和练习模式用一个界面   #}
-        </tr>
+		     {% if get_state_3 == 1 %}
+                <td><a href="/third_exam_edit/?courseId={{ course_id }}">编辑第二次月考考试试题</a></td>
+                <td><a  href="/test_ready/?courseId={{ course_id }}&type={{ 3 }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">发布考试</a></td>
+            {% else %}
+                <td><a href="/exam_Q/?courseId={{ course_id }}&type={{ 3 }}">查看第二次月考考试试题</a></td>
+            {% endif %}
+            {% for test in test_info %}
+                {% if test.type == 3 %}
+                    <td>{{ test.weight }}</td>
+                {% endif %}
+            {% endfor %}
+            <td>
+                <form  method="post" action="/add_exam/?courseId={{ course_id }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>设置考试权重</label>
+                        <input type="text" name="weight3" placeholder="设置考试权重" required>
+                        <button type="submit" class="btn btn-primary btn-lg">提交</button>
+                    </div>
+                </form>
+            </td>
         <tr>
-		<td><a href="/add_course/">添加期末考试</a></td>  {#   和练习模式用一个界面   #}
+		     {% if get_state_4 == 1 %}
+                <td><a href="/final_exam_edit/?courseId={{ course_id }}">编辑期末考试试题</a></td>
+                <td><a  href="/test_ready/?courseId={{ course_id }}&type={{ 4 }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">发布考试</a></td>
+            {% else %}
+                <td><a href="/exam_Q/?courseId={{ course_id }}&type={{ 4 }}">查看期末考试试题</a></td>
+            {% endif %}
+            {% for test in test_info %}
+                {% if test.type == 4 %}
+                    <td>{{ test.weight }}</td>
+                {% endif %}
+            {% endfor %}
+            <td>
+                <form  method="post" action="/add_exam/?courseId={{ course_id }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>设置考试权重</label>
+                        <input type="text" name="weight4" placeholder="设置考试权重" required>
+                        <button type="submit" class="btn btn-primary btn-lg">提交</button>
+                    </div>
+                </form>
+            </td>
+        <tr>
+		     {% if get_state_5 == 1 %}
+                <td><a href="/practice_edit/?courseId={{ course_id }}">编辑练习题</a></td>
+                <td><a  href="/test_ready/?courseId={{ course_id }}&type={{ 5 }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">发布练习</a></td>
+            {% else %}
+                <td><a href="/exam_Q/?courseId={{ course_id }}&type={{ 5 }}">查看练习题</a></td>
+            {% endif %}
         </tr>
 	</tbody>
 </table>
-     <button  href="/index/" class="btn btn-primary btn-lg" style="margin: 0px auto;display: table;">返回主页</button>
+     <center><a href="/add_course/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
  </div>
 {% endblock %}

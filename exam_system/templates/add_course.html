@@ -5,33 +5,70 @@
 
 {% block content %}
 <center>
-    <body>
     <div class="row" style="margin-top: 80px;margin-left: 80px">
     <table class="table table-hover">
-{#    <thead>#}
-{#		<tr>#}
+    <thead>
+		<tr>
             <th>添加课程名称</th>
-{#		</tr>#}
-{#        </thead>#}
+		</tr>
+    </thead>
+    <tbody>
+    {% for course in get_course_list %}
+            {% with i=contacts.number|add:"-1" %}
+            {% widthratio i 1 10 as low %}
+            {% with high=low|add:"11" %}
+            {% with low=high|add:"-11" %}
+            {% if forloop.counter > low and forloop.counter < high %}
+            <tr>
+                <td>{{ course.courseId }}</td>
+                <td>{{ course.courseName}}</td>
+                {% if course.isOver == 1 %}
+                    <td>未结课</td>
+                    <td><a  href="/course_end/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">结束课程</a></td>
+                    <td><a  href="/add_student/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">添加学生</a></td>
+                    <td><a  href="/add_exam/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">部署考试</a></td>
+                {% else %}
+                    <td>已结课</td>
+                {% endif %}
+            </tr>
+            {% endif %}
+            {% endwith %}
+            {% endwith %}
+            {% endwith %}
+        {% endfor %}
+
+    </tbody>
     </table>
-    <section id="contact-area"  >
-        <div class="container"><!--end section heading-->
-            <div class="row">
-                <div class="col-lg-10 offset-lg-1"><!--start contact form-->
-                    <div class="contact-box text-center">
-                        <form  method="post" action="/add_student/">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="course" name="course" placeholder="名称" required></div>
-                            <button class="btn btn-primary btn-lg" type="submit">提 交</button>
-                            <div id="form-messages"></div>
-                        </form>
-                    </div><!--end contact form-->
-                </div>
-            </div>
-        </div>
-    </section>
     </div>
-    </body>
 </center>
+<center>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/add_course/?page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/add_course/?page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
+<center>
+<form  method="post" action="/add_course/">
+    {% csrf_token %}
+    <br><br><br><br><br>
+    <div class="form-group">
+        <label>在此输入要添加的课程名称</label>
+        <input type="text" id="course" name="course" placeholder="在此输入课程名称" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">加入课程</button>
+    <div id="form-messages"></div>
+</form>
+</center>}
+
 {% endblock %}

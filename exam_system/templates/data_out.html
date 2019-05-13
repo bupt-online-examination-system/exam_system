@@ -15,8 +15,12 @@
                     <div class="contact-box text-center">
                         <form  method="post" enctype="multipart/form-data">
                             {% csrf_token %}
+                        <br><br><br><br><br>
+                        <center>
                             <div class="form-group">
-                                <input type="text" name="path" value="请手动输入导出的路径">
+                            <label>请手动输入导出的路径</label>
+                                <input type="text" name="path" placeholder="在此输入">
+                            <br><br><br><br><br>
                                 <select name="table">
                                     <option value="none">--选择要导出的数据表--</option>
                                     {% for table in tables %}
@@ -24,6 +28,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </center>
                             <button type="submit" class="btn btn-primary btn-lg">开始导出</button>
                             <div id="form-messages"></div>
                         </form>

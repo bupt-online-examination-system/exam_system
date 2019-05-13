@@ -33,8 +33,16 @@ class Exam(models.Model):
     isOver = models.IntegerField(default=1)  # 考试是否结束(1:未结束  2：已结束)
     score = models.IntegerField(default=-1)  # 考试分数
     type = models.IntegerField()  # 考试类型(1：第一次月考  2：期中考 3：第二次月考 4：期末考 5：练习)
-    weight = models.DecimalField(default=0, max_digits=10, decimal_places=2)  # 考试权重（小数点后存两位，要求同一门课4次考试的权值之后为1）
+    weight = models.DecimalField(default=0, max_digits=10, decimal_places=2,)  # 考试权重（小数点后存两位，要求同一门课4次考试的权值之后为1）
     start_time = models.DateTimeField(default='1970-01-01 00:00:00')#学生开始考试的时间，用于判断考试是否结束
+
+class Test(models.Model):
+    testId = models.AutoField(primary_key=True)  # 考试试卷id
+    courseId = models.ForeignKey('Course', related_name='course_test', on_delete=models.CASCADE)  # 课程id
+    isReady = models.IntegerField(default=1)  # 考试题目是否出好(1:未出好  2：就绪)
+    type = models.IntegerField()  # 考试类型(1：第一次月考  2：期中考 3：第二次月考 4：期末考 5：练习)
+    weight = models.DecimalField(default=0, max_digits=10, decimal_places=2,)  # 考试权重（小数点后存两位，要求同一门课4次考试的权值之后为1）
+
 
 # 试卷-题目对照关系
 class ExamQuestion(models.Model):
@@ -45,6 +53,10 @@ class ExamQuestion(models.Model):
     type = models.IntegerField()  # 题目类型(1：选择  2：填空)
     checkTime = models.IntegerField(default=0)#考试中的切屏次数
 
+class TestQuestion(models.Model):#考试与题目的对照关系
+    testId = models.ForeignKey('Test', related_name='test_question', on_delete=models.CASCADE)  # 考试试卷id
+    questionId = models.IntegerField()  # 题目id
+    type = models.IntegerField()  # 题目类型(1：选择  2：填空)
 
 # 选择题信息模板
 class ChoiceQuestion(models.Model):

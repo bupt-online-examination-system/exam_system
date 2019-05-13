@@ -50,7 +50,9 @@ def course_post(request):
 
 def new_post(request):
     if request.method == "GET":
-        return render(request, "new_post.html")
+        userId = request.session.get('userId')
+        userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
+        return render(request, "new_post.html", locals())
     elif request.method == "POST":
         userId = request.session.get('userId')
         userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
@@ -66,7 +68,9 @@ def new_post(request):
 
 def edit_post(request):
     if request.method == "GET":
-        return render(request, "edit_post.html")
+        userId = request.session.get('userId')
+        userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
+        return render(request, "edit_post.html", locals())
     elif request.method == "POST":
         userId = request.session.get('userId')
         userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')

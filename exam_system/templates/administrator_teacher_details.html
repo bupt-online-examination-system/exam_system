@@ -7,6 +7,8 @@
 	<thead>
     <tr>
         <td class="text-dark">老师账号：{{ teacher.userId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;老师姓名：{{ teacher.userName }}</td>
+    <tr>
+        <td><a  href="/delete_user/?userId={{ teacher.userId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除该老师</a></td>
     </tr>
 	</thead>
 	<tbody>
