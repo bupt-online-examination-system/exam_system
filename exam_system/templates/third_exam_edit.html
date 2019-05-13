@@ -1,0 +1,103 @@
+{% extends "teacher_login.html" %}
+
+{% block content %}
+ <div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+<thead>
+        <tr>
+            {% for course in course_info %}
+                <td class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</td>
+            {% endfor %}
+        <tr>
+                <td class="text-dark">第二次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ get_weight }}</td>
+            <td>
+                <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}&type={{ 3 }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>设置考试权重</label>
+                        <input type="text" name="weight" placeholder="设置考试权重" required>
+                        <button type="submit" class="btn btn-primary btn-lg">提交</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </thead>
+	<tbody>
+        <tr>
+            <td class="active">选择题</td>
+        <tr>
+            <td>题库中编号</td>
+            <td>题目</td>
+            <td>题目选项</td>
+            <td>答案</td>
+            {% for question in get_question_list %}
+                {% if question.type == 1 %}
+                    {% for info in get_Q_C %}
+                        {% if info.choiceId == question.questionId %}
+                            <tr>
+                                <td>{{ info.choiceId }}</td>
+                                <td>{{ info.content }}</td>
+                                <td>
+                                    {{ info.questionA }}<br>
+                                    {{ info.questionB }}<br>
+                                    {{ info.questionC }}<br>
+                                    {{ info.questionD }}
+                                </td>
+                                <td>{{ info.answer }}</td>
+                                <td><a  href="/delete_Q_3/?questionId={{ info.choiceId }}&type={{ 3 }}&courseId={{ course_id }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除题目</a></td>
+                            <tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            <td class="active">填空题</td>
+        <tr>
+            <td>题库中编号</td>
+            <td>题目</td>
+            <td>答案</td>
+            {% for question in get_question_list %}
+                {% if question.type == 2 %}
+                    {% for info in get_Q_F %}
+                        {% if info.fillId == question.questionId %}
+                            <tr>
+                                <td>{{ info.fillId }}</td>
+                                <td>{{ info.content }}</td>
+                                <td>{{ info.answer }}</td>
+                                <td><a  href="/delete_Q_3/?questionId={{ info.fillId }}&type={{ 3 }}&courseId={{ course_id }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除题目</a></td>
+
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+	</tbody>
+</table>
+ </div>
+ <div>
+        <center>
+            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}&type={{ 3 }}">
+                {% csrf_token %}
+                <br><br>
+                <div class="form-group">
+                    <label>输入选择题题目编号</label>
+                    <input type="text" name="C_id" placeholder="选择题题目编号" required>
+                    <button type="submit" class="btn btn-primary btn-lg">加入题目</button>
+                </div>
+            </form>
+        </center>
+        <center>
+            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}&type={{ 3 }}">
+                {% csrf_token %}
+                <br><br>
+                <div class="form-group">
+                    <label>输入填空题题目编号</label>
+                    <input type="text" name="F_id" placeholder="填空题题目编号" required>
+                    <button type="submit" class="btn btn-primary btn-lg">加入题目</button>
+                </div>
+                <div id="form-messages"></div>
+            </form>
+        </center>
+ </div>
+    <br><br>
+        <center><a href="/add_exam/?courseId={{ course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+{% endblock %}

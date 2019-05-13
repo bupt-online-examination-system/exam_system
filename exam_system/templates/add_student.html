@@ -1,0 +1,70 @@
+{% extends "teacher_login.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 80px;margin-left: 80px">
+<table class="table table-hover">
+    <thead>
+        <tr>
+            {% for course in course_info %}
+                <td class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</td>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+		<tr>
+			<th>学生账号</th>
+            <th>学生姓名</th>
+    {%for id in get_student_id %}
+        {% with i=contacts.number|add:"-1" %}
+        {% widthratio i 1 30 as low %}
+        {% with high=low|add:"31" %}
+        {% with low=high|add:"-31" %}
+        {% if forloop.counter > low and forloop.counter < high %}
+        <tr>
+        {% for student in student_info %}
+            {% if student.userId == id.studentId %}
+                <td>{{ student.userId }}</td>
+                <td>{{ student.userName}}</td>
+                <td><a  href="/student_delete/?userId={{ student.userId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除学生</a></td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+        {% endif %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+    {% endfor %}
+	</tbody>
+</table>
+</div>
+<center>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <td><a href="/add_student/?courseId={{ course_id }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+        {% endif %}
+
+        <span class="current">
+            <td>{{ contacts.number }}</td>
+        </span>
+
+        {% if contacts.has_next %}
+            <td><a href="/add_student/?courseId={{ course_id }}&page={{ contacts.next_page_number }}">下一页</a></td>
+        {% endif %}
+    </span>
+</div>
+</center>
+<center>
+<form  method="post" action="/add_student/?courseId={{ course_id }}">
+    {% csrf_token %}
+    <br><br><br><br><br>
+    <div class="form-group">
+        <label>请手动输入学生账号</label>
+        <input type="text" name="id" placeholder="输入学生账号" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">加入学生</button>
+    <div id="form-messages"></div>
+</form>
+</center>
+
+{% endblock %}
