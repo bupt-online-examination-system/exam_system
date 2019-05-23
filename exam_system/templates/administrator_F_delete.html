@@ -42,7 +42,7 @@
                 {% endif %}
             <tr>
                 {% if exist == 0 %}
-                    <td><a href="/administrator_F_delete_succeed/?questionId={{ Q.fillId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本题</button></a></td>
+                    <td><a href="/administrator_F_delete_succeed/?questionId={{ Q.fillId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除本题</button></a></td>
                 {% elif exist == 1 %}
                     <td>本题在试卷中含有关联项，无法删除！</td>
                 {% endif %}
@@ -52,11 +52,5 @@
 </table>
 </div>
 </body>
-{% for Q in get_question_info %}
-    {% for course in course_info %}
-        {% if course.courseId == Q.courseId %}
-            <center><a href="/administrator_question_list/?courseId={{ course.courseId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
-        {% endif %}
-    {% endfor %}
-{% endfor %}
+        <center><a href="/administrator_fill_list/?courseId={{ course_id }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
 {% endblock %}

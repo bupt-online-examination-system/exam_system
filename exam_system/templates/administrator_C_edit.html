@@ -9,7 +9,7 @@
             <div class="col-lg-10 offset-lg-1"><!--start contact form-->
                 <div class="contact-box text-center">
                 {% for Q in get_question_info %}
-                    <form  method="post" action="/administrator_C_edit_succeed/?choiceId={{ Q.choiceId }}&page={{ page }}">
+                    <form  method="post" action="/administrator_C_edit/?choiceId={{ Q.choiceId }}&page={{ page }}">
                 {% endfor %}
                         {% csrf_token %}
                         <thead>
@@ -87,7 +87,7 @@
 {% for Q in get_question_info %}
     {% for course in course_info %}
         {% if course.courseId == Q.courseId %}
-            <center><a href="/administrator_question_list/?courseId={{ course.courseId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+            <center><a href="/administrator_choice_list/?courseId={{ course.courseId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
         {% endif %}
     {% endfor %}
 {% endfor %}

@@ -1,7 +1,7 @@
 <html lang>
 <head>
     <meta charset = UTF-8>
-    <title></title>
+    <title>管理员管理模块</title>
     {% load bootstrap3 %}<!-- 在你的settings.py的INSTALLED_APPS中添加bootstrap3  就可以load了 -->
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -20,7 +20,7 @@
             <li class="active">
               <li><a href="/administrator_member_list/">成员维护</a>-->      <!--“#”是默认当前页面，可以把#换成想跳转的页面-->
             <li><a href="/administrator_test_manage/">考务/课程/试题维护</a></li>
-               <li><a href="/administrator_question_added/">试题添加</a></li>
+               <li><a href="/data_in/">数据录入</a></li>
             <li><a href="/event_manage/?userId={{ info.userId }}">论坛超管</a></li>
               <li><a href="/data_out/">数据备份</a></li>
               <li><a href="/administrator_feedback/">反馈检视</a></li>

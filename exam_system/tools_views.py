@@ -175,7 +175,8 @@ def send_email(request):
 
 def data_in(request):
     if request.method == "GET":
-
+        administrator_id = request.session.get('administrator_id')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         from django.apps import apps
         tables = list(apps.get_app_config('exam_system').get_models())
         return render(request, "data_in.html",locals())
@@ -183,6 +184,8 @@ def data_in(request):
 
 
     elif request.method == "POST":
+        administrator_id = request.session.get('administrator_id')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         try:
             from django.apps import apps
             app_models = list(apps.get_app_config('exam_system').get_models())
@@ -392,12 +395,19 @@ def data_in(request):
 
 def data_out(request):
     if request.method == "GET":
+
+        administrator_id = request.session.get('administrator_id')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
+
         from django.apps import apps
         tables = list(apps.get_app_config('exam_system').get_models())
         return render(request, "data_out.html",locals())
 
     elif request.method == "POST":
-
+        
+        administrator_id = request.session.get('administrator_id')
+        administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
+        
 
         if not request.POST['path'] or not request.POST['table']:
             messages.success(request, '导出失败，输入的路径不正确或未选择数据库表')

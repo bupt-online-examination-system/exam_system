@@ -3,7 +3,24 @@
 {% block content %}
  <div class="row" style="margin-top: 80px;margin-left: 80px">
 <table class="table table-hover">
-	<thead>
+    <thead>
+        <tr>
+            <td>
+                <div>
+                <form class="bs-example bs-example-form" role="form" method="post">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="student" name="student">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">搜索学生</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+                </form>
+                </div>
+            </td>
 		<tr>
 			<th>学生账号</th>
             <th>密码</th>
@@ -11,20 +28,16 @@
 		</tr>
 	</thead>
 	<tbody>
-        {% for info in student_info %}
+        {% for student in student_info %}
         {% with i=contacts.number|add:"-1" %}
         {% widthratio i 1 10 as low %}
         {% with high=low|add:"11" %}
         {% with low=high|add:"-11" %}
         {% if forloop.counter > low and forloop.counter < high %}
         <tr>
-        <td>{{ info.userId }}</td>
-        <td>{{ info.passWord }}</td>
-            {% for student in user_info %}
-                {% if student.userId == info.userId %}
-		        <td><a href="/administrator_student_details/?userId={{ student.userId }}">{{ student.userName}}</a></td>
-                {% endif %}
-            {% endfor %}
+        <td>{{ student.userId }}</td>
+        <td>{{ student.passWord }}</td>
+        <td><a href="/administrator_student_details/?userId={{ student.userId }}">{{ student.userName}}</a></td>
         </tr>
         {% endif %}
         {% endwith %}
