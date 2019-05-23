@@ -9,7 +9,7 @@
             <div class="col-lg-10 offset-lg-1"><!--start contact form-->
                 <div class="contact-box text-center">
                 {% for Q in get_question_info %}
-                    <form  method="post" action="/administrator_F_edit_succeed/?fillId={{ Q.fillId }}&page={{ page }}">
+                    <form  method="post" action="/administrator_F_edit/?fillId={{ Q.fillId }}&page={{ page }}">
                 {% endfor %}
                         {% csrf_token %}
                         <thead>
@@ -24,7 +24,7 @@
                             <tr>
                                 {% for Q in get_question_info %}
                                 <td>
-                                    <h4>填空题ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ Q.choiceId }}</h4>
+                                    <h4>填空题ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ Q.fillId }}</h4>
                                 </td>
                                 {% endfor %}
                             </tr>
@@ -77,7 +77,7 @@
 {% for Q in get_question_info %}
     {% for course in course_info %}
         {% if course.courseId == Q.courseId %}
-            <center><a href="/administrator_question_list/?courseId={{ course.courseId }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+            <center><a href="/administrator_fill_list/?courseId={{ course_id }}&page={{ page }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
         {% endif %}
     {% endfor %}
 {% endfor %}
