@@ -995,5 +995,10 @@ def question_added(request):    #试题添加界面
     return render(request, "question_added.html", locals())
 
 
-def teacher_post(request):    #学生名单界面
-    return render(request, "teacher_post.html")
+def teacher_post(request):
+    teacher_id = request.session.get('teacher_id')
+    teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+    forum_question_info = ForumQuestion.objects.filter(questionId=teacher_id).values('title','courseId','postId')
+    course_info = Course.objects.all().values('courseId','courseName')
+    return render(request, "teacher_post.html", locals())
+
