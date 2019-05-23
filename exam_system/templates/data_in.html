@@ -5,6 +5,16 @@
 
 {% block content %}
 
+    <h1>
+            {% if messages %}
+        <script>
+            {% for msg in messages %}
+                alert('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
+
+    </h1>
 
     <body>
     <div class="row" style="margin-top: 80px;margin-left: 80px">
