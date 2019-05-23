@@ -820,28 +820,6 @@ def teacher_question_list(request):
     teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
-
-    get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
-    get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id).values('choiceId', 'content', 'answer', 'questionA', 'questionB', 'questionC', 'questionD', 'type')
-
-    contact_list1 = get_Q_F
-    contact_list2 = get_Q_C
-
-    paginator = Paginator(contact_list1, 5)  # 每页5条
-    paginator = Paginator(contact_list2, 5)
-
-    page = request.GET.get('page')
-    try:
-        contacts1 = paginator.page(page)  # contacts为Page对象！
-        contacts2 = paginator.page(page)  # contacts为Page对象！
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        contacts1 = paginator.page(1)
-        contacts2 = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        contacts1 = paginator.page(paginator.num_pages)
-        contacts2 = paginator.page(paginator.num_pages)
     return render(request, "teacher_question_list.html", locals())
 
 def teacher_C_delete(request):
@@ -994,6 +972,116 @@ def all_student(request):    #全部学生成绩分析界面
 def question_added(request):    #试题添加界面
     return render(request, "question_added.html", locals())
 
+def teacher_choice_list(request):    #添加选择题界面
+    if request.method == "GET":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+        course_id = request.GET.get('courseId')
+        course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
+
+        get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id)
+        contact_list = get_Q_C
+
+        paginator = Paginator(contact_list, 5)  # 每页5条
+
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)  # contacts为Page对象！
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+    elif request.method == "POST":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+        course_id = request.GET.get('courseId')
+        keyword = request.POST.get('choice')
+        if keyword is None:
+            get_content = request.POST.get('content')
+            a = request.POST.get('A')
+            b = request.POST.get('B')
+            c = request.POST.get('C')
+            d = request.POST.get('D')
+            answer = request.POST.get('answer')
+            get_type = request.POST.get('type')
+
+            exist = ChoiceQuestion.objects.filter(content=get_content, type=get_type, questionA=a, questionB=b, questionC=c, questionD=d, answer=answer, courseId_id=course_id).count()
+            if exist == 0:
+                ChoiceQuestion.objects.create(content=get_content, questionA=a, questionB=b, questionC=c, questionD=d,answer=answer, type=get_type, courseId_id=course_id)
+
+            course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
+            get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id)
+            contact_list = get_Q_C
+        else:
+            get_Q_C = ChoiceQuestion.objects.filter(Q(content__icontains=keyword) | Q(choiceId__icontains=keyword) | Q(questionA__contains=keyword) | Q(questionB__contains=keyword) | Q(questionC__contains=keyword) | Q(questionD__contains=keyword))
+            contact_list = get_Q_C
+
+        paginator = Paginator(contact_list, 5)  # 每页5条
+
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)  # contacts为Page对象！
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+    return render(request, "teacher_choice_list.html", locals())
+
+
+def teacher_fill_list(request):    #添加填空题界面
+    if request.method == "GET":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+        course_id = request.GET.get('courseId')
+        course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
+        get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
+
+        contact_list = get_Q_F
+        paginator = Paginator(contact_list, 5)  # 每页5条
+
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)  # contacts为Page对象！
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+    elif request.method == "POST":
+        teacher_id = request.session.get('teacher_id')
+        teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
+        course_id = request.GET.get('courseId')
+        keyword = request.POST.get('fill')
+        if keyword is None:
+            course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
+            get_content = request.POST.get('content')
+            answer = request.POST.get('answer')
+            get_type = request.POST.get('type')
+            FillInTheBlank.objects.create(content=get_content, answer=answer, type=get_type, courseId_id=course_id)
+
+            get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
+            contact_list = get_Q_F
+        else:
+            get_Q_F = FillInTheBlank.objects.filter(Q(content__icontains=keyword) | Q(fillId__icontains=keyword) |
+                                                    Q(answer__icontains=keyword))
+            contact_list = get_Q_F
+
+        paginator = Paginator(contact_list, 5)  # 每页5条
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)  # contacts为Page对象！
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+    return render(request, "teacher_fill_list.html", locals())
 
 def teacher_post(request):
     teacher_id = request.session.get('teacher_id')

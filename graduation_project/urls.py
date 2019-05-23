@@ -175,6 +175,8 @@ urlpatterns = [
     url(r'^delete_Q_5/$', teacher_views.delete_Q_5, name='delete_Q_5'),
     url(r'^test_ready/$', teacher_views.test_ready, name='test_ready'),
     url(r'^exam_Q/$', teacher_views.exam_Q, name='exam_Q'),
+    url(r'^teacher_fill_list/$', teacher_views.teacher_fill_list, name='teacher_fill_list'),
+    url(r'^teacher_choice_list/$', teacher_views.teacher_choice_list, name='teacher_choice_list'),
 ]
               #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  这种方法仅仅在debug模式下起作用
 
