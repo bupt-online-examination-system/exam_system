@@ -27,6 +27,7 @@
                     <td><a  href="/course_end/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">结束课程</a></td>
                     <td><a  href="/add_student/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">添加学生</a></td>
                     <td><a  href="/add_exam/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">部署考试</a></td>
+                    <td><a  href="/delete_course/?courseId={{ course.courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除课程</a></td>
                 {% else %}
                     <td>已结课</td>
                 {% endif %}
@@ -70,5 +71,7 @@
     <div id="form-messages"></div>
 </form>
 </center>}
-
+</table>
+     <center><a href="/teacher_homepage/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+ </div>
 {% endblock %}
