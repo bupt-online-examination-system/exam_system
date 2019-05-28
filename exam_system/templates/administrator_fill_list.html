@@ -30,6 +30,7 @@
             </thead>
             <tbody>
             <tr>
+                <td class="active">题库编号</td>
                 <td class="active">填空题</td>
                 <td>答案</td>
                 <td>题目类型（考试题or练习题）</td>
@@ -40,6 +41,7 @@
                         {% with low=high|add:"-6" %}
                         {% if forloop.counter > low and forloop.counter < high %}
                         <tr>
+                            <td>{{ fill.fillId }}
                             <td>{{ fill.content }}
                             <td>答案：{{ fill.answer }}
                             {% if choice.type == 1 %}
@@ -63,29 +65,48 @@
      </div>
 </body>
 
-<center>
-<div class="pagination">
-    <span class="step-links">
-        {% if contacts.has_previous %}
-            <td><a href="/administrator_fill_list/?courseId={{ course_id }}&page={{ contacts.previous_page_number }}">上一页</a></td>
-        {% endif %}
+    {% if keyword %}
+        <center>
+        <div class="pagination">
+        <span class="step-links">
+            {% if contacts.has_previous %}
+                <td><a href="/administrator_fill_list/?courseId={{ course_id }}&page={{ contacts.previous_page_number }}&keyword={{ keyword }}">上一页</a></td>
+            {% endif %}
 
-            <span class="current">
-                <td>{{ contacts.number }}</td>
-                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-            </span>
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                </span>
 
-        {% if contacts.has_next %}
-            <td><a href="/administrator_fill_list/?courseId={{ course_id}}&page={{ contacts.next_page_number }}">下一页</a></td>
-        {% endif %}
-    </span>
-</div>
+            {% if contacts.has_next %}
+                <td><a href="/administrator_fill_list/?courseId={{ course_id}}&page={{ contacts.next_page_number }}&keyword={{ keyword }}">下一页</a></td>
+            {% endif %}
+        </span>
+        </div>
+        </center>
+    {% else %}
+        <center>
+        <div class="pagination">
+        <span class="step-links">
+            {% if contacts.has_previous %}
+                <td><a href="/administrator_fill_list/?courseId={{ course_id }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+            {% endif %}
 
-</center>
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                </span>
 
+            {% if contacts.has_next %}
+                <td><a href="/administrator_fill_list/?courseId={{ course_id}}&page={{ contacts.next_page_number }}">下一页</a></td>
+            {% endif %}
+        </span>
+        </div>
+        </center>
+    {% endif %}
 <center><a href="/administrator_question_list/?courseId={{ course_id }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
     <center>
-    <form  method="post" action="/administrator_fill_list/?courseId={{ course_id }}&page={{ contacts.paginator.num_pages }}">
+    <form  method="post" action="/administrator_fill_list/?courseId={{ course_id }}&page={{ contacts.paginator.num_pages }}&keyword={{ keyword }}">
                                 {% csrf_token %}
                                     <div class="form-group">
                                         <label>类&nbsp;&nbsp;&nbsp;&nbsp;型（考试题填1/练习题填2）</label>

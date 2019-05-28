@@ -37,7 +37,10 @@
         {% if forloop.counter > low and forloop.counter < high %}
         <tr>
         <td>{{ teacher.userId }}</td>
-            <td><a href="/administrator_teacher_details/?userId={{ teacher.userId }}">{{ teacher.userName}}</a></td>
+        <td>{{ teacher.passWord }}</td>
+        <td><a href="/administrator_teacher_details/?userId={{ teacher.userId }}">{{ teacher.userName}}</a></td>
+        <td><a href="/administrator_teacher_delete/?userId={{ teacher.userId }}&page={{ contacts.number }}">
+                                <button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除</button></a></td>
         </tr>
         {% endif %}
         {% endwith %}
@@ -48,23 +51,63 @@
 </table>
  </div>
 
-<center>
-<div class="pagination">
-    <span class="step-links">
-        {% if contacts.has_previous %}
-            <td><a href="/administrator_teacherlist/?userId={{ userId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
-        {% endif %}
+    {% if keyword %}
+        <center>
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <td><a href="/administrator_teacherlist/&page={{ contacts.previous_page_number }}&keyword={{ keyword }}">上一页</a></td>
+                {% endif %}
 
-        <span class="current">
-            <td>{{ contacts.number }}</td>
-    {#            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.#}
-        </span>
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                </span>
 
-        {% if contacts.has_next %}
-            <td><a href="/administrator_teacherlist/?userId={{ userId }}&page={{ contacts.next_page_number }}">下一页</a></td>
-        {% endif %}
-    </span>
-</div>
-</center>
+                {% if contacts.has_next %}
+                    <td><a href="/administrator_teacherlist/&page={{ contacts.next_page_number }}&keyword={{ keyword }}">下一页</a></td>
+                {% endif %}
+            </span>
+        </div>
+        </center>
+    {% else %}
+        <center>
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <td><a href="/administrator_teacherlist/&page={{ contacts.previous_page_number }}&keyword={{ keyword }}">上一页</a></td>
+                {% endif %}
+
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                </span>
+
+                {% if contacts.has_next %}
+                    <td><a href="/administrator_teacherlist/&page={{ contacts.next_page_number }}&keyword={{ keyword }}">下一页</a></td>
+                {% endif %}
+            </span>
+        </div>
+        </center>
+    {% endif %}
             <center><a href="/administrator_member_list/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+            <center>
+    <form  method="post" action="/administrator_teacherlist/?page={{ contacts.paginator.num_pages }}">
+        {% csrf_token %}
+            <div class="form-group">
+                <label>教&nbsp;&nbsp;&nbsp;&nbsp;师&nbsp;&nbsp;&nbsp;&nbsp;账&nbsp;&nbsp;&nbsp;&nbsp;号</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="请填入纯数字" required>
+            </div>
+            <div class="form-group">
+                 <label>姓&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="教师姓名" required>
+            </div>
+            <div class="form-group">
+                <label>密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+                <input type="text" class="form-control" id="password" name="password" placeholder="教师密码" required>
+            </div>
+                <button class="btn btn-primary btn-lg" type="submit">提 交</button>
+            <div id="form-messages"></div>
+    </form>
+    </center>
 {% endblock %}

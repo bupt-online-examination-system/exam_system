@@ -70,22 +70,41 @@
 </table>
  </div>
 
+    {% if keyword %}
+        <center>
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <td><a href="/administrator_test_manage/?page={{ contacts.previous_page_number }}&keyword={{ keyword }}">上一页</a></td>
+                {% endif %}
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                </span>
 
-<center>
-<div class="pagination">
-    <span class="step-links">
-        {% if contacts.has_previous %}
-            <td><a href="/administrator_courselist_stu/?page={{ contacts.previous_page_number }}">上一页</a></td>
-        {% endif %}
-        <span class="current">
-            <td>{{ contacts.number }}</td>
-                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-        </span>
+                {% if contacts.has_next %}
+                    <td><a href="/administrator_test_manage/?page={{ contacts.next_page_number }}&keyword={{ keyword }}">下一页</a></td>
+                {% endif %}
+            </span>
+        </div>
+        </center>
+    {% else %}
+        <center>
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <td><a href="/administrator_test_manage/?page={{ contacts.previous_page_number }}">上一页</a></td>
+                {% endif %}
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                </span>
 
-        {% if contacts.has_next %}
-            <td><a href="/administrator_courselist_stu/?page={{ contacts.next_page_number }}">下一页</a></td>
-        {% endif %}
-    </span>
-</div>
-</center>
+                {% if contacts.has_next %}
+                    <td><a href="/administrator_test_manage/?page={{ contacts.next_page_number }}">下一页</a></td>
+                {% endif %}
+            </span>
+        </div>
+        </center>
+    {% endif %}
 {% endblock %}

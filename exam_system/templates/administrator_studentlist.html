@@ -38,6 +38,8 @@
         <td>{{ student.userId }}</td>
         <td>{{ student.passWord }}</td>
         <td><a href="/administrator_student_details/?userId={{ student.userId }}">{{ student.userName}}</a></td>
+        <td><a href="/administrator_student_delete/?userId={{ student.userId }}&page={{ contacts.number }}">
+                                <button class="btn btn-primary btn-lg" style="margin: 0px auto;">删除</button></a></td>
         </tr>
         {% endif %}
         {% endwith %}
@@ -48,22 +50,63 @@
 </table>
  </div>
 
-<center>
-<div class="pagination">
-    <span class="step-links">
-        {% if contacts.has_previous %}
-            <td><a href="/administrator_studentlist/?page={{ contacts.previous_page_number }}">上一页</a></td>
-        {% endif %}
+    {% if keyword %}
+        <center>
+        <div class="pagination">
+        <span class="step-links">
+            {% if contacts.has_previous %}
+                <td><a href="/administrator_studentlist/?page={{ contacts.previous_page_number }}&keyword={{ keyword }}">上一页</a></td>
+            {% endif %}
 
-        <span class="current">
-            <td>{{ contacts.number }}</td>
+            <span class="current">
+                <td>{{ contacts.number }}</td>
+                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+            </span>
+
+            {% if contacts.has_next %}
+                <td><a href="/administrator_studentlist/?page={{ contacts.next_page_number }}&keyword={{ keyword }}">下一页</a></td>
+            {% endif %}
         </span>
+        </div>
+        </center>
+    {% else %}
+        <center>
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <td><a href="/administrator_studentlist/?page={{ contacts.previous_page_number }}">上一页</a></td>
+                {% endif %}
 
-        {% if contacts.has_next %}
-            <td><a href="/administrator_studentlist/?page={{ contacts.next_page_number }}">下一页</a></td>
-        {% endif %}
-    </span>
-</div>
-</center>
+                <span class="current">
+                    <td>{{ contacts.number }}</td>
+                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                </span>
+
+                {% if contacts.has_next %}
+                    <td><a href="/administrator_studentlist/?page={{ contacts.next_page_number }}">下一页</a></td>
+                {% endif %}
+            </span>
+        </div>
+        </center>
+{% endif %}
         <center><a href="/administrator_member_list/"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
+        <center>
+    <form  method="post" action="/administrator_studentlist/?page={{ contacts.paginator.num_pages }}">
+        {% csrf_token %}
+            <div class="form-group">
+                <label>学&nbsp;&nbsp;&nbsp;&nbsp;号</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="请填入纯数字" required>
+            </div>
+            <div class="form-group">
+                 <label>姓&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="学生姓名" required>
+            </div>
+            <div class="form-group">
+                <label>密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+                <input type="text" class="form-control" id="password" name="password" placeholder="学生密码" required>
+            </div>
+                <button class="btn btn-primary btn-lg" type="submit">提 交</button>
+            <div id="form-messages"></div>
+    </form>
+    </center>
 {% endblock %}

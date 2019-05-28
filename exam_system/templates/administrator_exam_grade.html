@@ -10,24 +10,27 @@
                         <h5 class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</h5>
                     {% endfor %}
                 <tr>
-                    {% for type in get_exam_score %}
-                        {% if type.type == 1 %}
-                            <h5 class="text-dark">第一次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
-                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
-                        {% elif type.type == 2 %}
-                            <h5 class="text-dark">期中考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
-                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
-                        {% elif type.type == 3 %}
-                            <h5 class="text-dark">第二次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
-                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
-                        {% elif type.type == 4 %}
-                            <h5 class="text-dark">期末考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
-                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
-                        {% elif type.type == 5 %}
-                            <h5 class="text-dark">练习</h5>
-                            <td><a href="/administrator_exam_Q/?type={{ type.type }}&courseId={{ type.courseId }}">查看试题详情</a></td>
+                    {% for test in test_info %}
+                        {% if test.isReady == 2 %}
+                            <h5 class="text-dark">考试已部署</h5>
+                        {% elif test.isReady == 1 %}
+                            <h5 class="text-dark">考试未部署</h5>
                         {% endif %}
                     {% endfor %}
+                <tr>
+                        {% if get_type == 1 %}
+                            <h5 class="text-dark">第一次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ test.weight }}</h5>
+                        {% elif get_type == 2 %}
+                            <h5 class="text-dark">期中考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ test.weight }}</h5>
+                        {% elif get_type == 3 %}
+                            <h5 class="text-dark">第二次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ test.weight }}</h5>
+                        {% elif get_type == 4 %}
+                            <h5 class="text-dark">期末考试&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ test.weight }}</h5>
+                        {% elif get_type == 5 %}
+                            <h5 class="text-dark">练习</h5>
+                        {% endif %}
+                        <tr>
+                            <td><a href="/administrator_exam_Q/?type={{ get_type }}&courseId={{ course_id }}">查看试题详情</a></td>
                 </tr>
             </thead>
             <tbody>
@@ -79,9 +82,8 @@
      <center>
 <div class="pagination">
     <span class="step-links">
-    {% for type in get_exam_score %}
         {% if contacts.has_previous %}
-            <td><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}&page={{ contacts.previous_page_number }}">上一页</a></td>
+            <td><a href="/administrator_exam_grade/?type={{ get_type }}&courseId={{ course_id }}&page={{ contacts.previous_page_number }}">上一页</a></td>
         {% endif %}
 
         <span class="current">
@@ -89,9 +91,8 @@
         </span>
 
         {% if contacts.has_next %}
-            <td><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}&page={{ contacts.next_page_number }}">下一页</a></td>
+            <td><a href="/administrator_exam_grade/?type={{ get_type }}&courseId={{ course_id }}&page={{ contacts.next_page_number }}">下一页</a></td>
         {% endif %}
-    {% endfor %}
     </span>
 </div>
 </center>

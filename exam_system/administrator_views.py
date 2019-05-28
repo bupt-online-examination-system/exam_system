@@ -52,14 +52,18 @@ def administrator_member_list(request):    #在线考试待考课程列表界面
         else:
             return render(request, 'administrator_error_adm.html')
 
-
 def administrator_studentlist(request):    #考试成绩界面
     if request.method == "GET":
         administrator_id = request.session.get('administrator_id')
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
-        student_info = Person.objects.filter(userType=3)
+        keyword = request.GET.get('keyword')
+        if keyword is None:
+            student_info = Person.objects.filter(userType=3)
+            contact_list = student_info
+        else:
+            student_info = Person.objects.filter((Q(userType=3)) & (Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
+            contact_list = student_info
 
-        contact_list = student_info
         paginator = Paginator(contact_list, 10)  # 每页10条
 
         page = request.GET.get('page')
@@ -75,10 +79,20 @@ def administrator_studentlist(request):    #考试成绩界面
         administrator_id = request.session.get('administrator_id')
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         keyword = request.POST.get('student')
-        student_info = Person.objects.filter((Q(userType=3)) &(Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
-        contact_list = student_info
-        paginator = Paginator(contact_list, 10)  # 每页10条
+        if keyword is None:
+            student_id = request.POST.get('id')
+            student_password = request.POST.get('password')
+            student_name = request.POST.get('name')
+            exist = Person.objects.filter(userId=student_id, userType=3).count()
+            if exist == 0:
+                Person.objects.create(userId=student_id, userType=3, userName=student_name, passWord=student_password)
+            student_info = Person.objects.filter(userType=3)
+            contact_list = student_info
+        else:
+            student_info = Person.objects.filter((Q(userType=3)) &(Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
+            contact_list = student_info
 
+        paginator = Paginator(contact_list, 10)  # 每页10条
         page = request.GET.get('page')
         try:
             contacts = paginator.page(page)  # contacts为Page对象！
@@ -88,6 +102,28 @@ def administrator_studentlist(request):    #考试成绩界面
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             contacts = paginator.page(paginator.num_pages)
+    return render(request, "administrator_studentlist.html", locals())
+
+def administrator_student_delete(request):
+    administrator_id = request.session.get('administrator_id')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
+    student_id = request.GET.get('userId')
+    student_info = Person.objects.filter(userType=3)
+    exist = CourseStudent.objects.filter(studentId=student_id).count()
+    if exist == 0:
+        Person.objects.filter(userId=student_id).delete()
+    contact_list = student_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
     return render(request, "administrator_studentlist.html", locals())
 
 def administrator_student_details(request):    #在线考试待考课程列表界面
@@ -154,9 +190,6 @@ def administrator_forum_A_delete_succeed(request):
     get_answer_id = ForumAnswer.objects.filter(content=answer_content, postId=post_id).values_list('answerId', flat=True)[0]
     get_post_id = ForumAnswer.objects.filter(content=answer_content, postId=post_id).values_list('postId', flat=True)[0]
     get_course_id = ForumQuestion.objects.filter(postId=get_post_id).values_list('courseId', flat=True)[0]
-    print(get_answer_id)
-    print(get_post_id)
-    print(get_course_id)
     ForumAnswer.objects.filter(content=answer_content, postId=post_id).delete()
     return render(request, "administrator_forum_A_delete_succeed.html", locals())
 
@@ -207,9 +240,15 @@ def administrator_teacherlist(request):    #考试成绩界面
     if request.method == "GET":
         administrator_id = request.session.get('administrator_id')
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
-        teacher_info = Person.objects.filter(userType=2).values('userId', 'passWord', 'userName')
+        keyword = request.GET.get('keyword')
+        if keyword is None:
+            teacher_info = Person.objects.filter(userType=2).values('userId', 'passWord', 'userName')
+            contact_list = teacher_info
+        else:
+            teacher_info = Person.objects.filter(
+                (Q(userType=2)) & (Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
+            contact_list = teacher_info
 
-        contact_list = teacher_info
         paginator = Paginator(contact_list, 10)  # 每页10条
 
         page = request.GET.get('page')
@@ -225,8 +264,20 @@ def administrator_teacherlist(request):    #考试成绩界面
         administrator_id = request.session.get('administrator_id')
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         keyword = request.POST.get('teacher')
-        teacher_info = Person.objects.filter(
-            (Q(userType=2) )& (Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
+        if keyword is None:
+            teacher_id = request.POST.get('id')
+            teacher_password = request.POST.get('password')
+            teacher_name = request.POST.get('name')
+            exist = Person.objects.filter(userId=teacher_id, userType=3).count()
+            if exist == 0:
+                Person.objects.create(userId=teacher_id, userType=2, userName=teacher_name, passWord=teacher_password)
+            teacher_info = Person.objects.filter(userType=2)
+            contact_list = teacher_info
+        else:
+            teacher_info = Person.objects.filter(
+                (Q(userType=2)) & (Q(userName__icontains=keyword) | Q(userId__icontains=keyword)))
+            contact_list = teacher_info
+
         contact_list = teacher_info
         paginator = Paginator(contact_list, 10)  # 每页10条
 
@@ -240,6 +291,28 @@ def administrator_teacherlist(request):    #考试成绩界面
             # If page is out of range (e.g. 9999), deliver last page of results.
             contacts = paginator.page(paginator.num_pages)
     return render(request, "administrator_teacherlist.html",locals())
+
+def administrator_teacher_delete(request):
+    administrator_id = request.session.get('administrator_id')
+    administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
+    teacher_id = request.GET.get('userId')
+    teacher_info = Person.objects.filter(userType=2)
+    exist = Course.objects.filter(teacherId=teacher_id).count()
+    if exist == 0:
+        Person.objects.filter(userId=teacher_id).delete()
+    contact_list = teacher_info
+    paginator = Paginator(contact_list, 10)  # 每页10条
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, "administrator_teacherlist.html", locals())
 
 def administrator_teacher_details(request):    #在线考试待考课程列表界面
     administrator_id = request.session.get('administrator_id')
@@ -311,9 +384,6 @@ def administrator_init_password(request):    #考试成绩界面
     Person.objects.filter(userId=user_id).update(passWord=123456)
     return render(request, "administrator_init_password.html", locals())
 
-def administrator_member_added(request):    #考试成绩界面
-    return render(request, "administrator_member_added.html", locals())
-
 def administrator_question_added(request):    #考试成绩界面
     administrator_id = request.session.get('administrator_id')
     administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
@@ -324,9 +394,14 @@ def administrator_test_manage(request):    #在线考试待考课程列表界面
     if request.method == "GET":
         administrator_id = request.session.get('administrator_id')
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
-        course_info = Course.objects.all().values('courseId', 'courseName', 'teacherId', 'isOver')
+        keyword = request.GET.get('keyword')
         teacher_info = Person.objects.filter(userType=2).values('userId', 'userName')
-        contact_list = course_info
+        if keyword is None:
+            course_info = Course.objects.all().values('courseId', 'courseName', 'teacherId', 'isOver')
+            contact_list = course_info
+        else:
+            course_info = Course.objects.filter(Q(courseName__icontains=keyword) | Q(courseId__icontains=keyword))
+            contact_list = course_info
         paginator = Paginator(contact_list, 10)  # 每页10条
 
         page = request.GET.get('page')
@@ -381,9 +456,15 @@ def administrator_choice_list(request):    #在线考试待考课程列表界面
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         course_id = request.GET.get('courseId')
         course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
-
-        get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id)
-        contact_list = get_Q_C
+        keyword = request.GET.get('keyword')
+        if keyword is None:
+            get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id)
+            contact_list = get_Q_C
+        else:
+            get_Q_C = ChoiceQuestion.objects.filter(Q(courseId_id=course_id) & (Q(content__icontains=keyword) | Q(choiceId__icontains=keyword) |
+                                                    Q(questionA__contains=keyword) | Q(questionB__contains=keyword) |
+                                                    Q(questionC__contains=keyword) | Q(questionD__contains=keyword)))
+            contact_list = get_Q_C
 
         paginator = Paginator(contact_list, 5)  # 每页5条
 
@@ -420,9 +501,9 @@ def administrator_choice_list(request):    #在线考试待考课程列表界面
             get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id)
             contact_list = get_Q_C
         else:
-            get_Q_C = ChoiceQuestion.objects.filter(Q(content__icontains=keyword) | Q(choiceId__icontains=keyword) |
+            get_Q_C = ChoiceQuestion.objects.filter(Q(courseId_id=course_id) & (Q(content__icontains=keyword) | Q(choiceId__icontains=keyword) |
                                                     Q(questionA__contains=keyword) | Q(questionB__contains=keyword) |
-                                                    Q(questionC__contains=keyword) | Q(questionD__contains=keyword))
+                                                    Q(questionC__contains=keyword) | Q(questionD__contains=keyword)))
             contact_list = get_Q_C
 
         paginator = Paginator(contact_list, 5)  # 每页5条
@@ -444,9 +525,16 @@ def administrator_fill_list(request):    #在线考试待考课程列表界面
         administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
         course_id = request.GET.get('courseId')
         course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
-        get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
+        keyword = request.GET.get('keyword')
+        if keyword is None:
+            get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
+            contact_list = get_Q_F
 
-        contact_list = get_Q_F
+        else:
+            get_Q_F = FillInTheBlank.objects.filter(Q(courseId_id=course_id) & (Q(content__icontains=keyword) | Q(fillId__icontains=keyword) |
+                                                    Q(answer__icontains=keyword)))
+            contact_list = get_Q_F
+
         paginator = Paginator(contact_list, 5)  # 每页5条
 
         page = request.GET.get('page')
@@ -473,8 +561,8 @@ def administrator_fill_list(request):    #在线考试待考课程列表界面
             get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
             contact_list = get_Q_F
         else:
-            get_Q_F = FillInTheBlank.objects.filter(Q(content__icontains=keyword) | Q(fillId__icontains=keyword) |
-                                                    Q(answer__icontains=keyword))
+            get_Q_F = FillInTheBlank.objects.filter(Q(courseId_id=course_id) & (Q(content__icontains=keyword) | Q(fillId__icontains=keyword) |
+                                                    Q(answer__icontains=keyword)))
             contact_list = get_Q_F
 
         paginator = Paginator(contact_list, 5)  # 每页5条
@@ -501,7 +589,7 @@ def administrator_C_edit(request):
                                                                                        'questionB',
                                                                                        'questionC', 'questionD', 'type')
         course_info = Course.objects.all()
-        find_question = ExamQuestion.objects.filter(questionId=question_id, type=1).count()
+        find_question = TestQuestion.objects.filter(questionId=question_id, type=1).count()
         if find_question is not 0:
             exist = 1
         else:
@@ -548,7 +636,7 @@ def administrator_F_edit(request):
         get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content',
                                                                                      'answer', 'type')
         course_info = Course.objects.all()
-        find_question = ExamQuestion.objects.filter(questionId=question_id, type=2).count()
+        find_question = TestQuestion.objects.filter(questionId=question_id, type=2).count()
         if find_question is not 0:
             exist = 1
         else:
@@ -576,7 +664,6 @@ def administrator_F_edit(request):
             exist = 0
         return render(request, "administrator_F_edit.html", locals())
 
-
 def administrator_C_delete(request):
     administrator_id = request.session.get('administrator_id')
     administrator_name = Person.objects.filter(userId=administrator_id).values('userId', 'userName')
@@ -584,7 +671,7 @@ def administrator_C_delete(request):
     question_id = request.GET.get('choiceId')
     get_question_info = ChoiceQuestion.objects.filter(choiceId=question_id).values('choiceId', 'courseId', 'content', 'answer', 'questionA', 'questionB', 'questionC', 'questionD', 'type')
     course_info = Course.objects.all()
-    find_question = ExamQuestion.objects.filter(questionId=question_id, type=1).count()
+    find_question = TestQuestion.objects.filter(questionId=question_id, type=1).count()
     if find_question is not 0:
         exist = 1
     else:
@@ -599,7 +686,7 @@ def administrator_F_delete(request):
     question_id = request.GET.get('fillId')
     get_question_info = FillInTheBlank.objects.filter(fillId=question_id).values('fillId', 'courseId', 'content', 'answer', 'type')
     course_info = Course.objects.all()
-    find_question = ExamQuestion.objects.filter(questionId=question_id, type=2).count()
+    find_question = TestQuestion.objects.filter(questionId=question_id, type=2).count()
     if find_question is not 0:
         exist = 1
     else:
@@ -639,8 +726,10 @@ def administrator_exam_Q(request):    #已通过成绩页面
     get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type')
     get_Q_C = ChoiceQuestion.objects.filter(courseId=course_id).values('choiceId', 'content', 'answer', 'questionA', 'questionB', 'questionC', 'questionD', 'type')
 
-    get_first_exam_id = Exam.objects.filter(courseId=course_id, type=get_type).values_list('examId', flat=True).first()
-    get_frst_Q_id = ExamQuestion.objects.filter(examId=get_first_exam_id).values('questionId', 'type')
+    get_test_id = Test.objects.filter(courseId=course_id, type=get_type).values_list('testId', flat=True)[0]
+    print(get_test_id)
+    get_Q_id = TestQuestion.objects.filter(testId=get_test_id).values('questionId', 'type')
+    test_info = Test.objects.filter(testId=get_test_id).values('courseId', 'type', 'weight','isReady')
     return render(request, "administrator_exam_Q.html", locals())
 
 def administrator_exam_grade(request):
@@ -651,6 +740,7 @@ def administrator_exam_grade(request):
     course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName')
     student_info = Person.objects.filter(userType=3).values('userId', 'userName')
     get_student_id = CourseStudent.objects.filter(courseId=course_id).values('studentId')
+    test_info = Test.objects.filter(courseId=course_id, type=get_type).values('isReady', 'type')
     get_exam_score = Exam.objects.filter(courseId=course_id, type=get_type).values('studentId', 'courseId', 'type', 'weight', 'isOver', 'score')
 
     contact_list = get_student_id

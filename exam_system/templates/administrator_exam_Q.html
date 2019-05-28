@@ -10,7 +10,7 @@
                         <h5 class="text-dark">课程编号：{{ course.courseId }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;课程名称：{{ course.courseName }}</h5>
                     {% endfor %}
                 <tr>
-                    {% for type in get_exam_score %}
+                    {% for type in test_info %}
                         {% if type.type == 1 %}
                             <h5 class="text-dark">第一次月考&nbsp;&nbsp;&nbsp;&nbsp;考试权重：{{ type.weight }}</h5>
                         {% elif type.type == 2 %}
@@ -23,12 +23,20 @@
                             <h5 class="text-dark">练习</h5>
                         {% endif %}
                     {% endfor %}
+                <tr>
+                    {% for type in test_info %}
+                        {% if type.isReady == 1 %}
+                            <h5 class="text-dark">考试未部署</h5>
+                        {% elif type.isReady == 2 %}
+                            <h5 class="text-dark">考试已部署</h5>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
             </thead>
             <tbody>
             <tr>
                 <td class="active">选择题</td>
-                {% for id in get_frst_Q_id %}
+                {% for id in get_Q_id %}
                     {% for choice in get_Q_C %}
                         {% if choice.choiceId == id.questionId and id.type == 1 %}
                             <tr>
@@ -44,8 +52,8 @@
                     {% endfor %}
                 {% endfor %}
             <tr>
-                <td class="active">选择题</td>
-                {% for id in get_frst_Q_id %}
+                <td class="active">填空题</td>
+                {% for id in get_Q_id %}
                     {% for fill in get_Q_F %}
                         {% if fill.fillId == id.questionId and id.type == 2 %}
                             <tr>
@@ -62,7 +70,7 @@
         </table>
      </div>
 </body>
-    {% for type in get_exam_score %}
+    {% for type in test_info %}
         <center><a href="/administrator_exam_grade/?type={{ type.type }}&courseId={{ type.courseId }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">返回上级页面</button></a></center>
     {% endfor %}
 {% endblock %}
