@@ -79,8 +79,8 @@ def second_exam(request):    #第二次月考
     teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     course_name = Course.objects.filter(courseId=course_id).values('courseName')
-    exam_info = Exam.objects.filter(courseId=course_id, type=2).values('score', 'studentId','examId')
-    student_info = Person.objects.all().values('userId', 'userName')
+    exam_info = Exam.objects.filter(courseId=course_id, type=2).values('score', 'studentId','examId','isOver')
+    student_info = Person.objects.all()
 
     contact_list = exam_info
     paginator = Paginator(contact_list, 10)  # 每页10条
@@ -101,7 +101,7 @@ def third_exam(request):    #第三次月考
     teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     course_name = Course.objects.filter(courseId=course_id).values('courseName')
-    exam_info = Exam.objects.filter(courseId=course_id, type=3).values('score', 'studentId','examId')
+    exam_info = Exam.objects.filter(courseId=course_id, type=3).values('score', 'studentId','examId','isOver')
     student_info = Person.objects.all().values('userId', 'userName')
 
     contact_list = exam_info
@@ -123,7 +123,7 @@ def final_exam(request):    #最后一次考试
     teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
     course_name = Course.objects.filter(courseId=course_id).values('courseName')
-    exam_info = Exam.objects.filter(courseId=course_id, type=4).values('score', 'studentId','examId')
+    exam_info = Exam.objects.filter(courseId=course_id, type=4).values('score', 'studentId','examId','isOver')
     student_info = Person.objects.all().values('userId', 'userName')
 
     contact_list = exam_info
@@ -341,25 +341,14 @@ def course_end(request):
         contacts = paginator.page(paginator.num_pages)
     return render(request, "add_course.html", locals())
 
-def course_delete(request):
+def delete_course(request):
     teacher_id = request.session.get('teacher_id')
     teacher_name = Person.objects.filter(userId=teacher_id).values('userId', 'userName')
     course_id = request.GET.get('courseId')
-    CourseStudent.objects.filter(courseId=course_id).delete()
-    get_exam_id = Exam.objects.filter(courseId=course_id).values('examId')[0]
-    print(get_exam_id.examId)
-    exam_q = ExamQuestion.objects.all()
-    # for i in get_exam_id:
-    #     print(i.examId)
-    #     for j in exam_q:
-    #         print(j.examId)
-    #         if j.examId == i.examId:
-    #             ExamQuestion.objects.filter(examId=j.examId).delete()
-    # Exam.objects.filter(courseId=course_id).delete()
-    # Grade.objects.filter(courseId=course_id).delete()
-    # MistakesCollection.objects.filter(courseId=course_id).delete()
-    # History.objects.filter(courseId=course_id).delete()
-    # Course.objects.filter(courseId=course_id).delete()
+    exist = CourseStudent.objects.filter(courseId=course_id).count()
+    if exist == 0:
+        Test.objects.filter(courseId=course_id).delete()
+        Course.objects.filter(courseId=course_id).delete()
     get_course_list = Course.objects.filter(teacherId=teacher_id).values('courseId', 'courseName', 'isOver')
 
     contact_list = get_course_list
@@ -520,12 +509,16 @@ def first_exam_edit(request):
             f_exist = FillInTheBlank.objects.filter(courseId=course_id, type=1, fillId=get_f_id).count()
             print(f_exist)
             if f_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
+                exist_f = TestQuestion.objects.filter(questionId=get_f_id, type=2).count()
+                if exist_f == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_f_id)
         if get_c_id is not None:
             c_exist = ChoiceQuestion.objects.filter(courseId=course_id, type=1, choiceId=get_c_id).count()
             print(c_exist)
             if c_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
+                exist_c = TestQuestion.objects.filter(questionId=get_c_id, type=1).count()
+                if exist_c == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
         if change_weight is not None:
             Test.objects.filter(courseId=course_id, type=1).update(weight=change_weight)
         get_weight = Test.objects.filter(courseId=course_id, type=1).values_list('weight', flat=True)[0]
@@ -558,20 +551,20 @@ def second_exam_edit(request):
         course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName', 'isOver')
         get_f_id = request.POST.get('F_id')
         get_c_id = request.POST.get('C_id')
-        print(get_c_id)
-        print(get_f_id)
         change_weight = request.POST.get('weight')
         get_test_id = Test.objects.filter(courseId=course_id, type=2).values_list('testId', flat=True)[0]
         if get_f_id is not None:
             f_exist = FillInTheBlank.objects.filter(courseId=course_id, type=1, fillId=get_f_id).count()
-            print(f_exist)
             if f_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
+                exist_f = TestQuestion.objects.filter(questionId=get_f_id, type=2).count()
+                if exist_f == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
         if get_c_id is not None:
             c_exist = ChoiceQuestion.objects.filter(courseId=course_id, type=1, choiceId=get_c_id).count()
-            print(c_exist)
             if c_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
+                exist_c = TestQuestion.objects.filter(questionId=get_c_id, type=1).count()
+                if exist_c == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
         if change_weight is not None:
             Test.objects.filter(courseId=course_id, type=2).update(weight=change_weight)
         get_weight = Test.objects.filter(courseId=course_id, type=2).values_list('weight', flat=True)[0]
@@ -612,12 +605,16 @@ def third_exam_edit(request):
             f_exist = FillInTheBlank.objects.filter(courseId=course_id, type=1, fillId=get_f_id).count()
             print(f_exist)
             if f_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
+                exist_f = TestQuestion.objects.filter(questionId=get_f_id, type=2).count()
+                if exist_f == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
         if get_c_id is not None:
             c_exist = ChoiceQuestion.objects.filter(courseId=course_id, type=1, choiceId=get_c_id).count()
             print(c_exist)
             if c_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
+                exist_c = TestQuestion.objects.filter(questionId=get_c_id, type=1).count()
+                if exist_c == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
         if change_weight is not None:
             Test.objects.filter(courseId=course_id, type=3).update(weight=change_weight)
         get_weight = Test.objects.filter(courseId=course_id, type=3).values_list('weight', flat=True)[0]
@@ -650,20 +647,22 @@ def final_exam_edit(request):
         course_info = Course.objects.filter(courseId=course_id).values('courseId', 'courseName', 'isOver')
         get_f_id = request.POST.get('F_id')
         get_c_id = request.POST.get('C_id')
-        print(get_c_id)
-        print(get_f_id)
         change_weight = request.POST.get('weight')
         get_test_id = Test.objects.filter(courseId=course_id, type=4).values_list('testId', flat=True)[0]
         if get_f_id is not None:
             f_exist = FillInTheBlank.objects.filter(courseId=course_id, type=1, fillId=get_f_id).count()
             print(f_exist)
             if f_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
+                exist_f = TestQuestion.objects.filter(questionId=get_f_id, type=2).count()
+                if exist_f == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
         if get_c_id is not None:
             c_exist = ChoiceQuestion.objects.filter(courseId=course_id, type=1, choiceId=get_c_id).count()
             print(c_exist)
             if c_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
+                exist_c = TestQuestion.objects.filter(questionId=get_c_id, type=1).count()
+                if exist_c == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
         if change_weight is not None:
             Test.objects.filter(courseId=course_id, type=4).update(weight=change_weight)
         get_weight = Test.objects.filter(courseId=course_id, type=4).values_list('weight', flat=True)[0]
@@ -703,12 +702,16 @@ def practice_edit(request):
             f_exist = FillInTheBlank.objects.filter(courseId=course_id, type=2, fillId=get_f_id).count()
             print(f_exist)
             if f_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
+                exist_f = TestQuestion.objects.filter(questionId=get_f_id, type=2).count()
+                if exist_f == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=2, questionId=get_f_id)
         if get_c_id is not None:
             c_exist = ChoiceQuestion.objects.filter(courseId=course_id, type=2, choiceId=get_c_id).count()
             print(c_exist)
             if c_exist == 1:
-                TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
+                exist_c = TestQuestion.objects.filter(questionId=get_c_id, type=1).count()
+                if exist_c == 0:
+                    TestQuestion.objects.create(testId_id=get_test_id, type=1, questionId=get_c_id)
         get_question_list = TestQuestion.objects.filter(testId=get_test_id).values('questionId', 'type')
 
         get_Q_F = FillInTheBlank.objects.filter(courseId=course_id).values('fillId', 'content', 'answer', 'type', 'courseId')

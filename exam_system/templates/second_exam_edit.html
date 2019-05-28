@@ -44,7 +44,7 @@
                                     {{ info.questionD }}
                                 </td>
                                 <td>{{ info.answer }}</td>
-                                <td><a  href="/delete_Q_2/?questionId={{ info.choiceId }}&type={{ 2 }}&courseId={{ course_id }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除题目</a></td>
+                                <td><a  href="/delete_Q_2/?questionId={{ info.choiceId }}&type={{ 1 }}&courseId={{ course_id }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">删除题目</a></td>
                             <tr>
                         {% endif %}
                     {% endfor %}
@@ -75,7 +75,7 @@
  </div>
  <div>
         <center>
-            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}&type={{ 2 }}">
+            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}">
                 {% csrf_token %}
                 <br><br>
                 <div class="form-group">
@@ -86,7 +86,7 @@
             </form>
         </center>
         <center>
-            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}&type={{ 2 }}">
+            <form  method="post" action="/second_exam_edit/?courseId={{ course_id }}">
                 {% csrf_token %}
                 <br><br>
                 <div class="form-group">
