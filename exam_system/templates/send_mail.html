@@ -4,6 +4,18 @@
 
 
 {% block content %}
+
+     <h1>
+            {% if messages %}
+        <script>
+            {% for msg in messages %}
+                alert('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
+
+    </h1>
+
     <script>
         function download_excel()
         {
@@ -22,13 +34,15 @@
                             {% csrf_token %}
                             <div class="form-group row">
                                 <div class="col-lg-6">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="姓名" required>
+                                    <input type="text" class="form-control" id="from" name="from" placeholder="发件人邮箱(163邮箱)，需要开启smtp协议">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="邮箱密码">
+                                    <input type="text" class="form-control" id="to" name="to" placeholder="收件人邮箱，多个收件人使用“;”分隔">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="标题"></div>
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="标题" required></div>
                             <div class="form-group">
-                                <textarea class="form-control" id="message" name="message" rows="10" placeholder="留言内容*" required></textarea>
+                                <textarea class="form-control" id="message" name="message" rows="10" placeholder="正文" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">提 交</button>
                             <div id="form-messages"></div>

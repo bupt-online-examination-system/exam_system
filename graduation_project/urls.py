@@ -85,6 +85,7 @@ urlpatterns = [
     url(r'^post_record/$', student_views.post_record, name='post_record'),
 
     #管理员模块
+    url(r'^$', administrator_views.index),
     url(r'^index/$', administrator_views.index, name='index'),
     url(r'^administrator_login/$', administrator_views.administrator_login, name='administrator_login'),
     url(r'^administrator_member_list/$', administrator_views.administrator_member_list, name='administrator_member_list'),

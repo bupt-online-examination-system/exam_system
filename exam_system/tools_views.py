@@ -34,7 +34,7 @@ def exam_details(request):
         else:
             return HttpResponse('现在不能考试')
         print(exam)
-        course = Course.objects.filter(courseId = courseId)
+        course = Course.objects.get(courseId = courseId)
         choice_question_info = []
         fill_question_info = []
 
@@ -94,6 +94,8 @@ def exam_details(request):
         studentName = Person.objects.filter(userId=studentId).values('userName')[0]['userName']
 
         exam = Exam.objects.filter(examId = exam_id)[0]
+
+        courseName = exam.courseId.courseName
         print(studentName)
         exam_question_info = ExamQuestion.objects.filter(examId=exam.examId)
         right_choice = 0
@@ -159,18 +161,44 @@ def send_email(request):
     if request.method == "GET":
         return render(request, "send_mail.html")
     elif request.method == "POST":
-        name = request.POST.get('name', '')
-        subject = request.POST.get('subject','无标题')
-        text_content = request.POST.get('message','无内容')#提交的时候前端验证一下，不允许发空邮件   未完成
-        from_email = settings.DEFAULT_FROM_EMAIL
-        to_email = ['245213994@qq.com']  # 可以是多个
-        send_mail(
-            subject=subject,
-            message=text_content,
-            from_email=from_email,
-            recipient_list=to_email
-        )
-        return HttpResponse('发送成功')#然后返回主页  未完成
+
+        try:
+            to_email = []
+            from_email = request.POST.get('from','')
+            psw = request.POST.get('password', '')
+            to_emails = request.POST.get('to', '')
+            if to_emails:
+                to_email = to_emails.split(';')
+            if not to_email:
+                to_email = ['245213994@qq.com']  # 可以是多个
+            if from_email:
+                settings.DEFAULT_FROM_EMAIL = from_email#使用默认邮箱
+            else:
+                from_email = settings.DEFAULT_FROM_EMAIL
+
+            if psw:
+                settings.EMAIL_HOST_PASSWORD = psw
+
+            subject = request.POST.get('subject','无标题')
+            text_content = request.POST.get('message','无内容')
+
+
+            print()
+
+            send_mail(
+                subject=subject,
+                message=text_content,
+                from_email=from_email,
+                recipient_list=to_email
+            )
+
+        except Exception as e:
+            print(e)
+            messages.success(request, '发送失败，请检查邮箱是否正确')
+            return render(request, "send_mail.html", locals())
+        else:
+            messages.success(request, '发送成功')
+            return render(request, "send_mail.html", locals())
 
 
 def data_in(request):
@@ -706,7 +734,7 @@ def data_out(request):
 
                 ws.save(path + r"\ChoiceQuestion.xls")
                 messages.success(request, "导出成功")
-                return render(request, "ForumQuestion.html", locals())
+                return render(request, "data_out.html", locals())
 
 
         elif table_num == '10':
