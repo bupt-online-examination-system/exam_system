@@ -125,10 +125,18 @@ def exam_details(request):
 
 def reset_psw(request):
     #为了防止代考，给所有考生重置密码
-    person_list = Person.objects.all()
+
     if request.method == 'GET':
 
-        # path = request['path']#或者request.POST.get('path'):
+        person_list = []
+        courseId = request.GET.get("courseId")
+        print(courseId)
+        course = Course.objects.get(courseId=courseId)
+        temp_list = CourseStudent.objects.filter(courseId=course)
+        for i in temp_list:
+            person_list.append(Person.objects.get(id=i.studentId))
+        # person_list = Person.objects.all()
+
         chars = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         # 随机产生6个不同字符
         for i in person_list:
@@ -154,7 +162,7 @@ def reset_psw(request):
 
             ws.save(r"file\考试名单.xls")
             # return HttpResponse('导出成功')
-        return render(request, "psw_out.html")
+        return render(request, "psw_out.html",locals())
 
 
 def send_email(request):
