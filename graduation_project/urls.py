@@ -47,6 +47,8 @@ urlpatterns = [
     url(r'^top_post/$', bbs_views.top_post, name='top_post'),
     url(r'^stop_top_post/$', bbs_views.stop_top_post, name='stop_top_post'),
     url(r'^count/$', bbs_views.count, name='count'),
+    url(r'^time_sort/$', bbs_views.time_sort, name='time_sort'),
+    url(r'^answer_num_sort/$', bbs_views.answer_num_sort, name='answer_num_sort'),
 
     #工具模块
     url(r'^reset_psw/$', tools_views.reset_psw, name='reset_psw'),

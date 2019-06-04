@@ -26,7 +26,8 @@ def course_forum(request):
     userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
     courseId = request.GET.get("courseId")
     if request.method == "GET":
-        post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+        post_question_top_info = ForumQuestion.objects.filter(~Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId)).order_by('-topTime')
+        post_question_info = ForumQuestion.objects.filter(Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId))
         return render(request, "course_forum.html",locals())
     elif request.method == "POST":
         # userId = request.session.get('userId')
@@ -34,7 +35,7 @@ def course_forum(request):
         # courseId = request.GET.get("courseId")
         # post_question_info = ForumQuestion.objects.filter(courseId=courseId)
         keyword = request.POST.get('message')
-        post_question_info = ForumQuestion.objects.filter(Q(title__icontains=keyword)|Q(content__icontains=keyword)|Q(title__icontains=keyword))
+        post_question_info = ForumQuestion.objects.filter(Q(title__icontains=keyword)|Q(content__icontains=keyword))
         return render(request, "course_forum.html", locals())
 
 def course_post(request):
@@ -104,7 +105,12 @@ def answer_post(request):
         return render(request, "answer_post.html")
     elif request.method == "POST":
         message = request.POST.get('message','无内容')
-        ForumAnswer.objects.create(content=message,answerId_id=userId,postId_id=postId)
+        time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        answerTime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+        ForumAnswer.objects.create(content=message,answerId_id=userId,answerTime=answerTime,postId_id=postId)
+        #answerNum = ForumQuestion.objects.filter(postId=postId).values('answerNum')
+        #answerNum += answerNum
+        #ForumQuestion.objects.update(answerNum=answerNum)
         post_question_info = ForumQuestion.objects.filter(postId=postId)
         post_answer_info = ForumAnswer.objects.filter(postId_id=postId)
         # bug 返回时会重新插入一遍数据 刷新网页也会多添加一次数据
@@ -116,17 +122,25 @@ def top_post(request):
     userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
     postId = request.GET.get("postId")
     courseId = request.GET.get("courseId")
-    post_question_top_info = ForumQuestion.objects.filter(postId=postId)
-    post_question_info = ForumQuestion.objects.filter(~Q(postId=postId))
-
+    #post_question_top_info = ForumQuestion.objects.filter(postId=postId)
+    #post_question_info = ForumQuestion.objects.filter(~Q(postId=postId))
+    time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    topPostTime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+    ForumQuestion.objects.filter(postId=postId).update(topTime=topPostTime)
+    post_question_top_info = ForumQuestion.objects.filter(~Q(topTime="1970-01-01 00:00:00.000000")|~Q(courseId_id=courseId)).order_by('-topTime')
+    post_question_info = ForumQuestion.objects.filter(Q(topTime="1970-01-01 00:00:00.000000")|~Q(courseId_id=courseId))
     return render(request, "course_forum.html",locals())
 
 
 def stop_top_post(request):
     userId = request.session.get('userId')
     userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
+    postId = request.GET.get("postId")
     courseId = request.GET.get("courseId")
-    post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+    #post_question_info = ForumQuestion.objects.filter(courseId=courseId)
+    ForumQuestion.objects.filter(postId=postId).update(topTime="1970-01-01 00:00:00.000000")
+    post_question_top_info = ForumQuestion.objects.filter(~Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId)).order_by('-topTime')
+    post_question_info = ForumQuestion.objects.filter(Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId))
     return render(request, "course_forum.html", locals())
 
 def count(request):
@@ -137,3 +151,19 @@ def count(request):
     #count_question_info = ForumQuestion.objects.annotate(count('courseId'))
     # count_answer_info = ForumAnswer.objects.annotate(count('courseId'))
     return render(request, "count.html", locals())
+
+def time_sort(request):
+    userId = request.session.get('userId')
+    userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
+    courseId = request.GET.get("courseId")
+    post_question_top_info = ForumQuestion.objects.filter(~Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId)).order_by('-topTime')
+    post_question_info = ForumQuestion.objects.filter(Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId))
+    return render(request, "course_forum.html",locals())
+
+def answer_num_sort(request):
+    userId = request.session.get('userId')
+    userName = Person.objects.filter(userId=userId).values('userId', 'userType', 'userName')
+    courseId = request.GET.get("courseId")
+    post_question_top_info = ForumQuestion.objects.filter(~Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId)).order_by('-topTime')
+    post_question_info = ForumQuestion.objects.filter(Q(topTime="1970-01-01 00:00:00.000000") | ~Q(courseId_id=courseId)).order_by('-answerNum')
+    return render(request, "course_forum.html",locals())

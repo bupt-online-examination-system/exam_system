@@ -27,9 +27,14 @@
 			<th class="text-dark"><h2>帖子</h2></th>
 		</tr>
 	</thead>
+
+        <td><a href="/time_sort/?courseId={{ courseId }}">按时间进行排序</a></td>
+        <td><a href="/answer_num_sort/?courseId={{ courseId }}">按回复数进行排序</a></td>
+
 	<tbody>
         {#利用循环输出所有该课程的帖子,然后将参数传递到course_post,然后根据课程名输出相关帖子的信息#}
         {#get方法传参#}
+
 
         {% for post_question_top in post_question_top_info %}
         <tr>
@@ -44,6 +49,7 @@
         <td><a href="/top_post/?postId={{ post_question.postId }}&courseId={{ courseId }}">置顶</a></td>
         </tr>
         {% endfor %}
+
 
 	</tbody>
 </table>
