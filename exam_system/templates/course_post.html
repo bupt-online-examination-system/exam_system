@@ -22,6 +22,7 @@
         {% for post_answer in post_answer_info %}
         <tr>
 		    <td>{{ post_answer.content}}</td>
+
                 {% for user in user_info %}
                     {% if user.userType == 1 %}
                         <td><a href="/administrator_forum_A_delete/?postId={{ post_answer.postId }}&answerId={{ post_answer.answerId }}&content={{ post_answer.content }}"><button class="btn btn-primary btn-lg" style="margin: 0px auto;">检视回帖细节</button></a></td>
@@ -37,7 +38,7 @@
     {#  {% if user_id == 帖子楼主id %}  #}
     {% for user in user_info %}
         {% if user.userType == 1 %}
-                <a  href="/administrator_forum_Q_delete/?postId={{ postId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">查看帖子细节</a>
+                <a  href="/administrator_forum_Q_delete/?postId={{ postId }}&courseId={{ courseId }}" class="btn btn-primary btn-lg" style="margin: 0px auto;">查看帖子细节</a>
         {% else %}
                 {% for up in post_question_info %}
                     {% if up.questionId == user.userId%}
