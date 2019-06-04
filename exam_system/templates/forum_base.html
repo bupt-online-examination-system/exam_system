@@ -17,6 +17,7 @@
             <li class="active">
             {% if user.userType == 1 %}
                 <li> <a href="/administrator_member_list/?userId={{ user.userId }}">个人主页</a></li>
+                <li> <a href="/count/?userId={{ user.userId }}">统计与展示</a></li>
             {% elif user.userType == 2 %}
                 <li> <a href="/teacher_homepage/?userId={{ user.userId }}">个人主页</a></li>
             {% elif user.userType == 3 %}
